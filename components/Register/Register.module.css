@@ -1,0 +1,50 @@
+.loginSection {
+  padding-top: 2rem;
+  height: 20rem;
+  width: 25rem;
+  /*background: rgb(93, 186, 58);*/
+  background: linear-gradient(tomato, rgb(231, 141, 125));
+  border-radius: 1rem;
+  color: white;
+  /*display: grid;
+  align-self: center;*/
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  align-items: center;
+  gap: 2rem;
+  transform: translate(-50%, -50%);
+  /*border: rgb(0, 0, 0) 0.2rem solid;*/
+  /*box-shadow: rgb(204, 204, 195) -0.5rem 0.5rem 1px;*/
+}
+
+.buttons {
+  display: flex;
+  gap: 2rem;
+}
+
+.profilePicture {
+  border-radius: 50%;
+  margin-top: 1rem;
+}
+
+.buttons > button {
+  font-weight: 800;
+  border: none;
+  color: white;
+  height: 100%;
+  padding: 1rem;
+  background: rgb(207, 81, 81);
+  transition: transform ease-in 0.1s;
+}
+
+.buttons > button:hover {
+  transform: scale(1.1);
+  background: rgb(157, 26, 26);
+}
+
+.role > select {
+  margin-left: 1rem;
+}

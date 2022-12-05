@@ -1,0 +1,20 @@
+.main-sidebar {
+  /*display: flex;
+  position: relative;
+  height: 100vh;
+  width: 20rem;
+  background: rgb(195, 130, 130);*/
+  grid-area: sidebar;
+  background: rgb(243, 193, 27);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.child {
+  background: rgb(25, 143, 81);
+  min-height: 2rem;
+  border-radius: 3px;
+  color: white;
+}

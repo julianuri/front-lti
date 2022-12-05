@@ -1,0 +1,30 @@
+.canvasConfig {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.lti-config-section {
+  /*grid-row-start: 2;
+  grid-row-end: span 3;
+  grid-column-start: 2;
+  grid-column-end: span 1;*/
+  background: rgb(168, 215, 250);
+  color: white;
+  display: flex;
+  align-items: center;
+  grid-area: lti;
+}
+
+.lti-page {
+  display: grid;
+  /*grid-template-columns: 1fr 7fr;
+  grid-template-rows: 1fr 3fr 1fr;*/
+  grid-template-areas:
+    ".       . . . ."
+    "sidebar lti lti lti lti"
+    "sidebar lti lti lti lti"
+    "sidebar . . . ."
+    "sidebar . . . .";
+  gap: 2rem;
+}

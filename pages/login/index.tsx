@@ -9,6 +9,9 @@ function HomePage() {
       <h2>
         <Link href={"/login/fume"}>Link</Link>
       </h2>
+      <h2>
+        <Link href={"/lti-config"}>lti-config</Link>
+      </h2>
     </Fragment>
   );
 }

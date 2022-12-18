@@ -6,9 +6,6 @@ function LtiConfigPage() {
   return (
     <Fragment>
       <LtiConfig />
-      <h2>
-        <Link href={"/login"}>Login Page</Link>
-      </h2>
     </Fragment>
   );
 }

@@ -1,0 +1,11 @@
+@use '../../styles/colors.scss' as colors;
+@use '../Login/Login.module.scss' as login;
+
+.registration_section {
+  @extend %login_section;
+  padding-top: 2rem;
+}
+
+.role > select {
+  margin-left: 1rem;
+}

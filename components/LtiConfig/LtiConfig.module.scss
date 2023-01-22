@@ -1,0 +1,68 @@
+.lti_page {
+  display: grid;
+  height: 100vh;
+  grid-template-areas:
+    'sidebar . . . .'
+    'sidebar lti lti lti .'
+    'sidebar lti lti lti .'
+    'sidebar lti lti lti .'
+    'sidebar lti lti lti .'
+    'sidebar . . . .'
+    'sidebar . . . .'
+    'sidebar . . . .'
+    'sidebar . . . .';
+  gap: 2rem;
+}
+
+.lti_config_section {
+  background: rgb(245, 242, 242);
+  color: rgb(171, 164, 164);
+  display: grid;
+  align-items: center;
+  grid-area: lti;
+  grid-template-areas:
+    'tabs tabs'
+    'config config'
+    'config config';
+}
+
+.lti_tabs {
+  display: flex;
+  justify-content: flex-start;
+  list-style: none;
+  font-weight: 400;
+  grid-area: tabs;
+
+  & > li {
+    margin-right: 1rem;
+  }
+}
+
+.active {
+  color: rgb(0, 30, 255);
+  font-weight: 900;
+}
+
+.invalid {
+  border: red solid 1px;
+}
+
+.canvas_form {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  justify-content: flex-start;
+  grid-area: config;
+
+  & > input {
+    margin-left: 2rem;
+    width: 15rem;
+    border-radius: 4px;
+  }
+
+  & > input[type='submit'] {
+    align-self: end;
+    margin-right: 2rem;
+    width: 5rem;
+  }
+}

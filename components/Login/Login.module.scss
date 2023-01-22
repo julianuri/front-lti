@@ -1,0 +1,47 @@
+@use '../../styles/colors.scss' as colors;
+
+%login_section {
+  height: 28rem;
+  width: 25rem;
+  background: colors.$base-yellow;
+  border-radius: 1rem;
+  color: white;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  align-items: center;
+  gap: 2rem;
+  transform: translate(-50%, -50%);
+  border: 0.2rem solid black;
+}
+
+.login_section {
+  @extend %login_section;
+}
+
+.buttons {
+  display: flex;
+  gap: 2rem;
+
+  & > button {
+    font-weight: 800;
+    border: none;
+    color: white;
+    height: 100%;
+    padding: 1rem;
+    background: colors.$base-green;
+    transition: transform ease-in 0.1s;
+  }
+
+  & > button:hover {
+    transform: scale(1.1);
+    background: rgb(96, 178, 85);
+  }
+}
+
+.profile_picture {
+  border-radius: 50%;
+  margin-top: 1rem;
+}

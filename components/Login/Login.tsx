@@ -1,19 +1,20 @@
-import { useState } from "react";
-import classes from "./Login.module.css";
-import Image from "next/image";
-import profilePic from "../../public/istockphoto-518654434-612x612.jpg";
-import Link from "next/link";
+import { useState } from 'react';
+import classes from './Login.module.scss';
+import Input from '../Common/Input/Input';
+import Image from 'next/image';
+import profilePic from '../../public/istockphoto-518654434-612x612.jpg';
+import Link from 'next/link';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function fieldsHandler(e: HTMLInputElement) {
     switch (e.id) {
-      case "email":
+      case 'email':
         setEmail(e.value);
         break;
-      case "password":
+      case 'password':
         setPassword(e.value);
         break;
       default:
@@ -22,42 +23,41 @@ const LoginForm = () => {
   }
 
   return (
-    <div className={classes.loginSection}>
-      <Image
-        className={classes.profilePicture}
-        src={profilePic}
-        alt="jdjd"
-        width={200}
-        height={200}
-      />
-      <input
-        id="email"
-        type="email"
-        placeholder="Enter email"
-        value={email}
-        onChange={(e) => {
-          fieldsHandler(e.target);
-        }}
-      />
-      <input
-        id="password"
-        type="text"
-        placeholder="Enter password"
-        value={password}
-        onChange={(e) => {
-          fieldsHandler(e.target);
-        }}
-      />
+    <div className={classes.login_section}>
+      <Image className={classes.profile_picture} src={profilePic} alt="profile" width={200} height={200} />
+      <Input>
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter email"
+          value={email}
+          onChange={(e) => {
+            fieldsHandler(e.target);
+          }}
+        />
+      </Input>
+
+      <Input>
+        <input
+          id="password"
+          type="text"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => {
+            fieldsHandler(e.target);
+          }}
+        />
+      </Input>
       <div className={classes.buttons}>
         <button
           onClick={() => {
-            alert("SIGN IN");
+            alert('SIGN IN');
           }}
         >
           Sign In
         </button>
         <button>
-          <Link href={"/register"}>Sign Up</Link>
+          <Link href={'/register'}>Sign Up</Link>
         </button>
       </div>
     </div>

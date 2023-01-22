@@ -1,13 +1,7 @@
-import { Fragment } from "react";
-import LtiConfig from "../../components/LtiConfig/LtiConfig";
-import Link from "next/link";
+import LtiConfig from '../../components/LtiConfig/LtiConfig';
 
 function LtiConfigPage() {
-  return (
-    <Fragment>
-      <LtiConfig />
-    </Fragment>
-  );
+  return <LtiConfig />;
 }
 
 export default LtiConfigPage;

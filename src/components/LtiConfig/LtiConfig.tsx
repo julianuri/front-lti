@@ -4,8 +4,10 @@ import classes from './LtiConfig.module.scss';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import LtiTab from './LtiTab/LtiTab';
+import {useSelector} from "react-redux";
 
 const LtiConfig = () => {
+  const isLoggedIn = useSelector((state: any) => state.auth.isLoggedIn);
   const [configInputs, setConfigInputs] = useState([{ value: '', inputName: '' }]);
   const {
     register,
@@ -65,7 +67,8 @@ const LtiConfig = () => {
         <div>Courses</div>
         <div>Stats</div>
         <div>Config</div>
-        <Link href={'/login'}>Login Page</Link>
+        <div>{`El usuario inició sesión: ${isLoggedIn}`}</div>
+        <Link href={'/'}>Login Page</Link>
       </SideBar>
 
       <div className={classes.lti_config_section}>

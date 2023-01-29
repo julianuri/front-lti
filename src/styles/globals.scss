@@ -1,6 +1,6 @@
 html,
 body {
-  background: #84bc5e;
+  background: #5db621;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
@@ -17,11 +17,9 @@ a {
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+
   body {
     color: white;
-    background: #84bc5e;
+    background: #5db621;
   }
 }

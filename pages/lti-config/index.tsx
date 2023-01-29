@@ -1,4 +1,4 @@
-import LtiConfig from '../../components/LtiConfig/LtiConfig';
+import LtiConfig from '../../src/components/LtiConfig/LtiConfig';
 
 function LtiConfigPage() {
   return <LtiConfig />;

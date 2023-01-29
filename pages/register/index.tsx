@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import RegisterForm from "../../components/Register/Register";
+import RegisterForm from "../../src/components/Register/Register";
 import Link from "next/link";
 
 function HomePage() {
@@ -7,7 +7,7 @@ function HomePage() {
     <Fragment>
       <RegisterForm />
       <h2>
-        <Link href={"/login"}>Login Page</Link>
+        <Link href={"/"}>Login Page</Link>
       </h2>
     </Fragment>
   );

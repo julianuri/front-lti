@@ -1,4 +1,4 @@
-@use '../../styles/colors.scss' as colors;
+@use '../../styles/colors' as colors;
 
 %login_section {
   height: 28rem;
@@ -21,23 +21,34 @@
   @extend %login_section;
 }
 
-.buttons {
-  display: flex;
-  gap: 2rem;
+.invalid {
+  border: red solid 2px;
+}
 
-  & > button {
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+
+  & > :is(input, button) {
     font-weight: 800;
     border: none;
+    border-radius: 1rem;
     color: white;
-    height: 100%;
+    align-self: center;
+    min-width: 6rem;
     padding: 1rem;
-    background: colors.$base-green;
+    background: colors.$base-black;
     transition: transform ease-in 0.1s;
-  }
 
-  & > button:hover {
-    transform: scale(1.1);
-    background: rgb(96, 178, 85);
+    &:hover {
+      transform: scale(1.1);
+      background: rgb(59, 55, 55);
+    }
+
+    &:last-child {
+      margin-bottom: 1rem;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 /*const initialState = {
     loading: false,
@@ -14,24 +14,21 @@ import {createSlice} from "@reduxjs/toolkit";
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        count: 12,
-        isLoggedIn: false,
+      count: 12,
+      isLoggedIn: false
     },
     reducers: {
-        incrementByAmount: (state: authState, action: any) => {
-            state.count += action.payload.amount;
-            localStorage.lolo = true;
-            state.isLoggedIn = action.payload.isLoggedIn;
-        }
+      saveLoginInfo: (state: authState, action) => {
+        state.isLoggedIn = action.payload.isLoggedIn;
+      }
     }
-}
+  }
 );
 
 export type authState = {
-    count: number;
-    isLoggedIn: boolean;
+  isLoggedIn: boolean;
 };
 
-export const { incrementByAmount } = authSlice.actions
+export const { saveLoginInfo } = authSlice.actions;
 
-export default authSlice.reducer
+export default authSlice.reducer;

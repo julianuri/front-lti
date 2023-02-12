@@ -1,0 +1,25 @@
+@use '../../../styles/colors' as colors;
+
+.main_sidebar {
+  grid-area: sidebar;
+  background: colors.$base-white;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.child {
+  background: colors.$base-blue;
+  min-height: 4rem;
+  border-radius: 3px;
+  color: #000000;
+  height: 20%;
+  border: 0.1rem solid black;
+  font-weight: bold;
+
+  & > div, a {
+    padding: 1rem;
+    display: flex;
+  }
+}

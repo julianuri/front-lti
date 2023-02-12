@@ -1,25 +1,10 @@
-.lti_page {
-  display: grid;
-  height: 100vh;
-  grid-template-areas:
-    'sidebar . . . .'
-    'sidebar lti lti lti .'
-    'sidebar lti lti lti .'
-    'sidebar lti lti lti .'
-    'sidebar lti lti lti .'
-    'sidebar . . . .'
-    'sidebar . . . .'
-    'sidebar . . . .'
-    'sidebar . . . .';
-  gap: 2rem;
-}
+@use '../../styles/colors' as colors;
 
 .lti_config_section {
-  background: rgb(245, 242, 242);
+  background: colors.$base-white;
   color: rgb(171, 164, 164);
   display: grid;
   align-items: center;
-  grid-area: lti;
   grid-template-areas:
     'tabs tabs'
     'config config'

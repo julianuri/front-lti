@@ -1,0 +1,16 @@
+.lti_page {
+  display: grid;
+  height: 100vh;
+  grid-template-areas:
+    'sidebar . . . .'
+    'sidebar main main main .'
+    'sidebar main main main .'
+    'sidebar main main main .'
+    'sidebar main main main .'
+    'sidebar . . . .';
+  gap: 2rem;
+}
+
+.main {
+  grid-area: main;
+}

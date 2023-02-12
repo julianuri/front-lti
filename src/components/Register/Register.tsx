@@ -1,74 +1,11 @@
-import { useState } from 'react';
-import classes from './Register.module.scss';
-import Input from '../Common/Input/Input';
+import Form from '../Common/Form/Form';
 
 const RegisterForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Admin');
 
-  //e: HTMLInputElement
-  function fieldsHandler(e: any) {
-    switch (e.id) {
-      case 'email':
-        setEmail(e.value);
-        break;
-      case 'password':
-        setPassword(e.value);
-        break;
-      case 'role':
-        console.log(e);
-        setRole(e.value);
-        break;
-      default:
-        break;
-    }
-  }
+  const inputs = [{ name: 'email', type: 'email' }, { name: 'password', type: 'text' }];
 
   return (
-    <div className={classes.registration_section}>
-      <div className={classes.role}>
-        <label htmlFor="selectRole">Choose a role:</label>
-        <select id="role" name="selectRole" onClick={(e) => fieldsHandler(e.target)}>
-          <option value="Admin">Admin</option>
-          <option value="Teacher">Teacher</option>
-          <option value="Student">Student</option>
-        </select>
-      </div>
-
-      <Input>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => {
-            fieldsHandler(e.target);
-          }}
-        />
-      </Input>
-
-      <Input>
-        <input
-          id="password"
-          type="text"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => {
-            fieldsHandler(e.target);
-          }}
-        />
-      </Input>
-      <div className={classes.buttons}>
-        <button
-          onClick={() => {
-            alert('Register');
-          }}
-        >
-          Register
-        </button>
-      </div>
-    </div>
+    <Form buttonName={'Register'} inputs={inputs} submit={() => alert('register')} />
   );
 };
 

@@ -1,36 +1,41 @@
-@use '../../styles/colors' as colors;
+@use '../../../styles/colors' as colors;
 
-%login_section {
-  height: 28rem;
+%form_section {
+  height: 18rem;
   width: 25rem;
-  background: colors.$base-yellow;
+  background: colors.$base-white;
   border-radius: 1rem;
   color: white;
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 50%;
-  left: 50%;
   align-items: center;
   gap: 2rem;
-  transform: translate(-50%, -50%);
   border: 0.2rem solid black;
 }
 
-.login_section {
-  @extend %login_section;
+%centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.form_section {
+  @extend %form_section;
+  @extend %centered;
 }
 
 .invalid {
   border: red solid 2px;
 }
 
-.form {
+%form {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+  margin-top: 2rem;
 
-  & > :is(input, button) {
+  & > :is(input, button, a) {
     font-weight: 800;
     border: none;
     border-radius: 1rem;
@@ -40,6 +45,7 @@
     padding: 1rem;
     background: colors.$base-black;
     transition: transform ease-in 0.1s;
+    font-size: medium;
 
     &:hover {
       transform: scale(1.1);
@@ -50,6 +56,10 @@
       margin-bottom: 1rem;
     }
   }
+}
+
+.form {
+  @extend %form;
 }
 
 .profile_picture {

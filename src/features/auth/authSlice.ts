@@ -29,6 +29,4 @@ export type authState = {
   isLoggedIn: boolean;
 };
 
-export const { saveLoginInfo } = authSlice.actions;
-
-export default authSlice.reducer;
+export default authSlice;

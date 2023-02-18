@@ -3,7 +3,7 @@ import { SubmitHandler } from 'react-hook-form';
 import UserForm from '../../types/UserForm';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import { saveLoginInfo } from '../../features/auth/authSlice';
+import { authSliceActions } from '../../redux/store';
 import Link from 'next/link';
 
 const LoginForm = () => {
@@ -19,7 +19,7 @@ const LoginForm = () => {
       .then((res) => console.log('finished'))
       .catch((error) => {
         localStorage.isLoggedIn = true;
-        dispatch(saveLoginInfo({ isLoggedIn: true }));
+        dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true }));
         void router.push('lti-config');
       });
   };

@@ -2,7 +2,7 @@ import LoginForm from '../src/components/Login/Login';
 import { useSelector, useDispatch } from 'react-redux';
 import LtiConfigPage from './lti-config';
 import { useEffect } from 'react';
-import { saveLoginInfo } from '../src/features/auth/authSlice';
+import { authSliceActions } from '../src/redux/store';
 
 function HomePage() {
 
@@ -12,7 +12,7 @@ function HomePage() {
   useEffect(() => {
     const auth = typeof window !== 'undefined' ? localStorage.isLoggedIn : null;
     if (auth !== undefined && auth == 'true') {
-      dispatch(saveLoginInfo({ isLoggedIn: true }));
+      dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true }));
     }
   }, []);
 

@@ -1,25 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-/*const initialState = {
-    loading: false,
-    userInfo: {},
-    userToken: null,
-    error: null,
-    success: false,
-}*/
-
-/*const increment: CaseReducer<State, PayloadAction<number>> = (state, action) =>
-    state + action.payload*/
+import { getFromLocalStorage, saveInLocalStorage } from '../../utils/LocalStorage';
 
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
       count: 12,
-      isLoggedIn: false
+      isLoggedIn: getFromLocalStorage('isLoggedIn', false),
+      userId: getFromLocalStorage('userId', 0)
     },
     reducers: {
       saveLoginInfo: (state: authState, action) => {
+        saveInLocalStorage({ key: 'isLoggedIn', value: action.payload.isLoggedIn },
+          { key: 'userId', value: action.payload.userId });
+
         state.isLoggedIn = action.payload.isLoggedIn;
+        state.userId = action.payload.userId;
+      },
+      logout: (state: authState) => {
+        state.isLoggedIn = false;
+        state.userId = 0;
       }
     }
   }
@@ -27,6 +26,7 @@ const authSlice = createSlice({
 
 export type authState = {
   isLoggedIn: boolean;
+  userId: number;
 };
 
 export default authSlice;

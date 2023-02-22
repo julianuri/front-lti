@@ -9,6 +9,7 @@
     'tabs tabs'
     'config config'
     'config config';
+  min-height: 20rem;
 }
 
 .lti_tabs {
@@ -33,21 +34,23 @@
 }
 
 .canvas_form {
-  display: flex;
-  flex-direction: column;
+  min-height: 100%;
+  display: grid;
   list-style: none;
-  justify-content: flex-start;
   grid-area: config;
+  grid-template-columns: 1fr 1fr;
 
-  & > input {
-    margin-left: 2rem;
-    width: 15rem;
+  & > div {
+    margin: 1rem;
     border-radius: 4px;
-  }
 
-  & > input[type='submit'] {
-    align-self: end;
-    margin-right: 2rem;
-    width: 5rem;
+    label {
+      color: #bcbcd4;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+    }
   }
 }

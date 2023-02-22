@@ -1,7 +1,7 @@
 import classes from './Layout.module.scss';
 import SideBar from './Common/SideBar/SideBar';
 import Link from 'next/link';
-import { saveLoginInfo } from '../features/auth/authSlice';
+import { authSliceActions } from '../redux/store';
 import { useDispatch } from 'react-redux';
 
 const Layout = ({ children }) => {
@@ -9,8 +9,8 @@ const Layout = ({ children }) => {
   const dispatch = useDispatch();
 
   const logout = () => {
-    localStorage.isLoggedIn = false;
-    dispatch(saveLoginInfo({ isLoggedIn: false }));
+    localStorage.clear();
+    dispatch(authSliceActions.logout());
   };
 
   return (

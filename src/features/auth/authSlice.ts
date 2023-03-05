@@ -6,7 +6,7 @@ const authSlice = createSlice({
     initialState: {
       count: 12,
       isLoggedIn: getFromLocalStorage('isLoggedIn', false),
-      userId: getFromLocalStorage('userId', 0)
+      userId: getFromLocalStorage('userId', 0),
     },
     reducers: {
       saveLoginInfo: (state: authState, action) => {

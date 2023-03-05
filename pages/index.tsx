@@ -11,8 +11,7 @@ function HomePage() {
   const [hasLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const auth = typeof window !== 'undefined' ? localStorage.isLoggedIn : null;
-    if (auth !== undefined && auth == 'true') {
+    if (localStorage.isLoggedIn == 'true') {
       dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true }));
       setIsLoggedIn(true);
     }

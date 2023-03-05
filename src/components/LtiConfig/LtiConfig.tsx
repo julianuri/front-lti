@@ -1,143 +1,134 @@
 import { useEffect, useState } from 'react';
-import classes from './LtiConfig.module.scss';
+import styles from './LtiConfig.module.scss';
 import { useForm } from 'react-hook-form';
-import LtiTab from './LtiTab/LtiTab';
 import { getAdminConfig, updateAdminConfig } from '../../service/AdminConfigService';
 import { useSelector } from 'react-redux';
+import adminConfig from '../../types/AdminConfig';
 import { authState } from '../../features/auth/authSlice';
-import AdminConfig from '../../types/AdminConfig';
+import { authSliceActions } from '../../redux/store';
+import toast from 'react-hot-toast';
 
 const LtiConfig = () => {
 
+  const deploymentRegex = new RegExp('^\\d:([a-zA-Z\\d]){20,40}(?:[,;]\\d:([a-zA-Z\\d]){20,40}){0,9}$');
   const { userId } = useSelector((state) => state.auth);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const [activeWindow, setActiveWindow] = useState('Tool');
 
-  const [configInputs, setConfigInputs] = useState([
-    {
-      value: '',
-      inputName: '',
-      isReadOnly: false
-    }]);
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors }
-  } = useForm();
+  const tabs = ['Tool', 'Canvas'];
 
   useEffect(() => {
     console.log(userId);
-    if (userId != 0) {
+    if (userId != 'undefined' && userId != 0) {
       getAdminConfig(userId).then((res: any) => {
-        const data: authState = res;
-        console.log(res);
-        let arr = [
-          { value: res['redirect_uri'], inputName: 'oidc', isReadOnly: true },
-          {
-            value: res['openid_url'] + 'la',
-            inputName: 'openid',
-            isReadOnly: true,
-          },
-          {
-            value: res['target_uri'],
-            inputName: 'target_uri',
-            isReadOnly: true,
-          },
-          {
-            value: res['public_jwk'],
-            inputName: 'jwk',
-            isReadOnly: true,
-          },
-          {
-            value: res['client_id'],
-            inputName: 'client_id',
-            isReadOnly: false,
-          },
-          {
-            value: res['oidc_issuer'],
-            inputName: 'oidc_issuer',
-            isReadOnly: false,
-          },
-          {
-            value: res['auth_login_url'],
-            inputName: 'auth_login_url',
-            isReadOnly: false,
-          },
-          {
-            value: res['public_key_url'],
-            inputName: 'public_key_url',
-            isReadOnly: false,
-          },
-          {
-            value: res['auth_token_url'],
-            inputName: 'auth_token_url',
-            isReadOnly: false,
-          },
-          {
-            value: res['deployments'],
-            inputName: 'deployments',
-            isReadOnly: false,
-          }
-        ];
-        setConfigInputs([...arr]);
+        console.table(res);
+        reset({ ...res });
       });
     }
-  }, [userId]);
+  }, []);
 
+  const changeTab = (step: number) => {
+    let next = tabs.indexOf(activeWindow);
+    setActiveWindow(tabs[next + step]);
+  };
 
-  const onSubmit = (data: any) => {
-
+  const onSubmit = (data: adminConfig) => {
     console.table(data);
-    //let next = tabs.indexOf(activeWindow);
-    //setActiveWindow(tabs[next + 1]);
+    const deployments = '[' + data.deployments.split(',').map(x => `"${x}"`).join(',') + ']';
     const adminConfig = {
       clientID: data.client_id,
       oidcIssuer: data.oidc_issuer,
       authLoginURL: data.auth_login_url,
       publicKeyURL: data.public_key_url,
       authTokenURL: data.auth_token_url,
-      deployments: data.deployments,
-      userId: userId,
+      deployments: deployments,
+      userId: userId
     };
-    updateAdminConfig(adminConfig);
+    updateAdminConfig(adminConfig).then(async (response) => {
+      if (!response.ok) {
+        const message = `An error has occurred: ${response.status}`;
+        throw new Error(message);
+      }
+      toast.success('Configuration updated!');
+    }).catch((error) =>
+      toast.error(error.message)
+    );
   };
-  const [activeWindow, setActiveWindow] = useState('Configuration');
-  const [fields, setFields] = useState({});
-
-  const tabs = ['Configuration'];
 
   return (
     <>
-      <div className={classes.lti_config_section}>
-        <ul className={classes.lti_tabs}>
+      <div className={styles.lti_config_section}>
+        <ul className={styles.lti_tabs}>
           {tabs.map((tab) => {
             return (
-              <li key={tab} id={tab} className={activeWindow === tab ? classes.active : undefined}>
+              <li key={tab} id={tab} className={activeWindow === tab ? styles.active : undefined}>
                 {tab}
               </li>
             );
           })}
         </ul>
-        {/*activeWindow === 'Basics' ? (
-          <form onSubmit={handleSubmit(onSubmit)} className={classes.canvas_form}>
-            <input
-              placeholder="LTI 1.3 Connection Name"
-              className={errors.appName ? classes['invalid'] : undefined}
-              {...register('appName', { required: true })}
-            />
-            {errors.appName && <span>This field is required</span>}
-            <input value="Next" type="submit" />
-          </form>
-        ) : null*/}
+        <>
+          {activeWindow === 'Tool' ? (
+            <>
+              <div>Copy the fields in your Canvas instance.</div>
+              <form className={styles.form}>
+                <div>
+                  <label>Redirect URI</label>
+                  <input readOnly {...register('redirect_uri', { required: true })} />
+                </div>
+                <div>
+                  <label>Target Link URI</label>
+                  <input readOnly {...register('target_uri', { required: true })} />
+                </div>
+                <div>
+                  <label>OpenID URL</label>
+                  <input readOnly {...register('openid_url', { required: true })} />
+                </div>
+                <div className={styles.deployments}>
+                  <label>JWK</label>
+                  <input readOnly {...register('public_jwk', { required: true })} />
+                </div>
+                <input value='Next' type='submit' onClick={() => changeTab(1)} />
+              </form>
+            </>) : null}
 
-        {activeWindow === 'Configuration' && configInputs.length > 1 ? (
-          <>
-            <div>Copy the first 4 fields in your Canvas instance.</div>
-            <form onSubmit={handleSubmit(onSubmit)} className={classes.canvas_form}>
-              <LtiTab fields={configInputs} register={register} />
-              <input value='Next' type='submit' />
+          {activeWindow === 'Canvas' ? (
+            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <label>Client ID</label>
+                <input {...register('client_id', { required: true })} />
+                {errors.client_id && 'Client id is required'} </div>
+              <div>
+                <label>OIDC Issuer</label>
+                <input {...register('oidc_issuer', { required: true })} />
+              </div>
+              <div>
+                <label>Auth Login URL</label>
+                <input {...register('auth_login_url', { required: true })} />
+              </div>
+              <div>
+                <label>Public Key URL</label>
+                <input {...register('public_key_url', { required: true })} />
+              </div>
+              <div>
+                <label>Auth Token URL</label>
+                <input {...register('auth_token_url', { required: true })} />
+              </div>
+              <div className={styles.deployments}>
+                <label>Deployment IDs</label>
+                <textarea {...register('deployments', {
+                  required: true, pattern: {
+                    value: deploymentRegex,
+                    message: 'Wrong deployment format'
+                  }
+                })} />
+              </div>
+              {errors?.deployments ? <div>{errors.deployments.message}</div> : null}
+              <input value='Back' type='submit' onClick={() => changeTab(-1)} />
+              <input value='Save' type='submit' />
             </form>
-          </>) : null}
+          ) : null}
+        </>
       </div>
     </>
   );

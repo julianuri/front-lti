@@ -2,14 +2,47 @@
 
 .lti_config_section {
   background: colors.$base-white;
-  color: rgb(171, 164, 164);
+  min-height: 25rem;
+  border-radius: 0.3rem;
+  border: 0.1rem solid black;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.form {
   display: grid;
-  align-items: center;
-  grid-template-areas:
-    'tabs tabs'
-    'config config'
-    'config config';
-  min-height: 20rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 1rem;
+  justify-content: center;
+  gap: 1rem;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+  }
+
+  & > input[type=submit] {
+    width: 100px;
+    grid-column: 2 / 3;
+    justify-self: end;
+    background-color: white;
+    border-radius: 0.3rem;
+
+    &:hover {
+      background-color: colors.$base-blue;
+    }
+  }
+
+  .deployments {
+    grid-column: 1 / 3;
+
+    & > input {
+      height: 3rem;
+    }
+  }
 }
 
 .lti_tabs {
@@ -31,26 +64,4 @@
 
 .invalid {
   border: red solid 1px;
-}
-
-.canvas_form {
-  min-height: 100%;
-  display: grid;
-  list-style: none;
-  grid-area: config;
-  grid-template-columns: 1fr 1fr;
-
-  & > div {
-    margin: 1rem;
-    border-radius: 4px;
-
-    label {
-      color: #bcbcd4;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-    }
-  }
 }

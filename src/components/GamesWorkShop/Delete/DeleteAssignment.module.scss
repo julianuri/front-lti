@@ -1,0 +1,33 @@
+.cardsContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+}
+
+.card {
+  border: white 0.3rem solid;
+  padding: 1rem;
+  background: white;
+
+  border-radius: 1rem;
+  color: #6f7bba;
+  font-weight: 600;
+  font-family: monospace;
+  box-shadow: 0 1px 5px #00000099;
+  transition-duration: 300ms;
+  transition-property: transform, box-shadow;
+  transition-timing-function: ease-out;
+  align-items: center;
+
+  & > p {
+    margin: auto;
+  }
+
+  &:hover {
+    transition-duration: 150ms;
+    box-shadow: 0 5px 20px 5px #d03131;
+    color: white;
+    background-color: #d03131;
+    border-color: #d03131;
+  }
+}

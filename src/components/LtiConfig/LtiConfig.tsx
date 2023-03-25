@@ -1,95 +1,132 @@
-import { useState } from 'react';
-import classes from './LtiConfig.module.scss';
+import { useEffect, useState } from 'react';
+import styles from './LtiConfig.module.scss';
 import { useForm } from 'react-hook-form';
-import LtiTab from './LtiTab/LtiTab';
+import { getAdminConfig, updateAdminConfig } from '../../service/AdminConfigService';
+import { useSelector } from 'react-redux';
+import adminConfig from '../../types/AdminConfig';
+import toast from 'react-hot-toast';
 
 const LtiConfig = () => {
 
-  const [configInputs, setConfigInputs] = useState([{ value: '', inputName: '' }]);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const deploymentRegex = new RegExp('^\\d:([a-zA-Z\\d]){20,40}(?:[,;]\\d:([a-zA-Z\\d]){20,40}){0,9}$');
+  const { userId } = useSelector((state) => state.auth);
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const [activeWindow, setActiveWindow] = useState('Tool');
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    fetch(`https://localhost:9001/api/user-config`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ data }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let next = tabs.indexOf(activeWindow);
-        setActiveWindow(tabs[next + 1]);
-        setFields(data);
+  const tabs = ['Tool', 'Canvas'];
 
-        setConfigInputs([
-          { value: data['OIDC Redirect URL'], inputName: 'oidc' },
-          {
-            value: data['OpenID Connect Initiation Url'],
-            inputName: 'openid',
-          },
-          {
-            value: data['domain'],
-            inputName: 'domain',
-          },
-          {
-            value: data['JWK URL'],
-            inputName: 'jwk',
-          },
-        ]);
-        console.log(configInputs);
-        console.log(data);
+  useEffect(() => {
+    if (userId != 'undefined' && userId != undefined && userId != 0) {
+      getAdminConfig(userId).then((res: any) => {
+        reset({ ...res });
       });
-  };
-  const [activeWindow, setActiveWindow] = useState('Basics');
-  const [fields, setFields] = useState({
-    domain: '',
-    'OIDC Redirect URL': '',
-    'OpenID Connect Initiation Url': '',
-    'JWK URL': '',
-  });
+    }
+  }, []);
 
-  const tabs = ['Basics', 'Configuration', 'Registration', 'LTI Advantage'];
+  const changeTab = (step: number) => {
+    let next = tabs.indexOf(activeWindow);
+    setActiveWindow(tabs[next + step]);
+  };
+
+  const onSubmit = (data: adminConfig) => {
+    console.table(data);
+    const deployments = '[' + data.deployments.split(',').map(x => `"${x}"`).join(',') + ']';
+    const adminConfig = {
+      clientID: data.client_id,
+      oidcIssuer: data.oidc_issuer,
+      authLoginURL: data.auth_login_url,
+      publicKeyURL: data.public_key_url,
+      authTokenURL: data.auth_token_url,
+      deployments: deployments,
+      userId: userId
+    };
+    updateAdminConfig(adminConfig).then(async (response) => {
+      if (!response.ok) {
+        const message = `An error has occurred: ${response.status}`;
+        throw new Error(message);
+      }
+      toast.success('Configuration updated!');
+    }).catch((error) =>
+      toast.error(error.message)
+    );
+  };
 
   return (
-    <div>
-      <div className={classes.lti_config_section}>
-        <ul className={classes.lti_tabs}>
+    <>
+      <div className={styles.lti_config_section}>
+        <ul className={styles.lti_tabs}>
           {tabs.map((tab) => {
             return (
-              <li key={tab} id={tab} className={activeWindow === tab ? classes.active : undefined}>
+              <li key={tab} id={tab} className={activeWindow === tab ? styles.active : undefined}>
                 {tab}
               </li>
             );
           })}
         </ul>
-        {activeWindow === 'Basics' ? (
-          <form onSubmit={handleSubmit(onSubmit)} className={classes.canvas_form}>
-            <input
-              placeholder="LTI 1.3 Connection Name"
-              className={errors.appName ? classes['invalid'] : undefined}
-              {...register('appName', { required: true })}
-            />
-            {errors.appName && <span>This field is required</span>}
-            <input value="Next" type="submit" />
-          </form>
-        ) : null}
+        <>
+          {activeWindow === 'Tool' ? (
+            <>
+              <div>Copy the fields in your Canvas instance.</div>
+              <form className={styles.form}>
+                <div>
+                  <label>Redirect URI</label>
+                  <input readOnly {...register('redirect_uri', { required: true })} />
+                </div>
+                <div>
+                  <label>Target Link URI</label>
+                  <input readOnly {...register('target_uri', { required: true })} />
+                </div>
+                <div>
+                  <label>OpenID URL</label>
+                  <input readOnly {...register('openid_url', { required: true })} />
+                </div>
+                <div className={styles.deployments}>
+                  <label>JWK</label>
+                  <input readOnly {...register('public_jwk', { required: true })} />
+                </div>
+                <input value='Next' type='submit' onClick={() => changeTab(1)} />
+              </form>
+            </>) : null}
 
-        {activeWindow === 'Configuration' ? (
-          <form onSubmit={handleSubmit(onSubmit)} className={classes.canvas_form}>
-            <LtiTab fields={configInputs} register={register} />
-            <input value="Next" type="submit" />
-          </form>
-        ) : null}
+          {activeWindow === 'Canvas' ? (
+            <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <label>Client ID</label>
+                <input {...register('client_id', { required: true })} />
+                {errors.client_id && 'Client id is required'} </div>
+              <div>
+                <label>OIDC Issuer</label>
+                <input {...register('oidc_issuer', { required: true })} />
+              </div>
+              <div>
+                <label>Auth Login URL</label>
+                <input {...register('auth_login_url', { required: true })} />
+              </div>
+              <div>
+                <label>Public Key URL</label>
+                <input {...register('public_key_url', { required: true })} />
+              </div>
+              <div>
+                <label>Auth Token URL</label>
+                <input {...register('auth_token_url', { required: true })} />
+              </div>
+              <div className={styles.deployments}>
+                <label>Deployment IDs</label>
+                <textarea {...register('deployments', {
+                  required: true, pattern: {
+                    value: deploymentRegex,
+                    message: 'Wrong deployment format'
+                  }
+                })} />
+              </div>
+              {errors?.deployments ? <div>{errors.deployments.message}</div> : null}
+              <input value='Back' type='submit' onClick={() => changeTab(-1)} />
+              <input value='Save' type='submit' />
+            </form>
+          ) : null}
+        </>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,25 +1,26 @@
 import LoginForm from '../src/components/Login/Login';
-import { useSelector, useDispatch } from 'react-redux';
-import LtiConfigPage from './lti-config';
-import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { authSliceActions } from '../src/redux/store';
+import { useRouter } from 'next/navigation';
 
 function HomePage() {
 
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const router = useRouter();
+  const [hasLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const auth = typeof window !== 'undefined' ? localStorage.isLoggedIn : null;
-    if (auth !== undefined && auth == 'true') {
+    if (localStorage.isLoggedIn == 'true') {
       dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true }));
+      setIsLoggedIn(true);
     }
   }, []);
 
   return (
     <>
-      {(isLoggedIn) ?
-        <LtiConfigPage /> :
+      {(hasLoggedIn) ?
+        router.push('lti-config') :
         <LoginForm />
       }
     </>

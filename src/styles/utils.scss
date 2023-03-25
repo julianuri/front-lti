@@ -1,0 +1,13 @@
+%delete {
+  padding: 0.5rem;
+  border-radius: 1rem;
+  color: red;
+  font-size: x-large;
+  font-weight: 500;
+  transition: transform 0.3s ease-in;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.3);
+  }
+}

@@ -2,7 +2,7 @@ import '../src/styles/globals.scss';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import store from '../src/redux/store';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

@@ -1,0 +1,92 @@
+@use '../../../../../styles/colors' as colors;
+@import '../../../../../styles/utils.scss';
+
+.isInvalid {
+  border: 0.1rem solid red;
+}
+
+.delete {
+  @extend %delete;
+}
+
+.modal {
+  position: absolute;
+  background-color: #ffffff;
+  border: 0.1rem solid black;
+  border-radius: 1rem;
+  padding: 1rem;
+
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 50rem;
+  min-height: 25rem;
+
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+  }
+}
+
+.rightAnswer {
+  color: green;
+}
+
+
+.question {
+  grid-area: question;
+}
+
+.first {
+  grid-area: first;
+}
+
+.second {
+  grid-area: second;
+}
+
+.third {
+  grid-area: third;
+}
+
+.fourth {
+  grid-area: fourth;
+}
+
+
+.form {
+  display: grid;
+  gap: 1rem;
+  //grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "question question question question"
+                        "first first second second"
+                        "third third fourth fourth";
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+  /* margin: 1rem; */
+
+  & > textarea:focus, input:focus {
+    outline: none;
+  }
+
+  & > input[type=submit] {
+    width: 100px;
+    grid-column: 2 / 3;
+    justify-self: end;
+    background-color: white;
+    border-radius: 0.3rem;
+
+    &:hover {
+      background-color: colors.$base-blue;
+    }
+
+  }
+}

@@ -1,0 +1,54 @@
+@use '../../../../styles/colors' as colors;
+@import '../../../../styles/utils.scss';
+
+.isInvalid {
+  border: 0.1rem solid red;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  margin: 1rem;
+  justify-content: center;
+  gap: 1rem;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+  }
+
+  & input[type=text] {
+    border-radius: 0.3rem;
+  }
+
+  & > input[type=submit] {
+    width: 100px;
+    grid-column: 2 / 3;
+    justify-self: end;
+    background-color: white;
+    border-radius: 0.3rem;
+
+    &:hover {
+      background-color: colors.$base-blue;
+    }
+  }
+
+  & > textarea:focus, input:focus{
+    outline: none;
+  }
+
+}
+
+.delete {
+  /*background-color: #f93232;
+  border: 0.14rem solid black;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: white;*/
+  @extend %delete;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,27 @@
+.gameCard {
+  border: white 0.3rem solid;
+  padding: 1rem;
+  background: white;
+  width: 100%;
+  height: 40%;
+  border-radius: 1rem;
+  color: #6f7bba;
+  font-weight: 600;
+  font-family: monospace;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 5px #00000099;
+  transition-duration: 300ms;
+  transition-property: transform, box-shadow;
+  transition-timing-function: ease-out;
+  align-items: center;
+
+  & > p {
+    margin: auto;
+  }
+
+  &:hover {
+    transition-duration: 150ms;
+    box-shadow: 0 5px 20px 5px #00000044;
+  }
+}

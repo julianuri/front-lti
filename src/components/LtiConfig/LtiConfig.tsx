@@ -4,8 +4,6 @@ import { useForm } from 'react-hook-form';
 import { getAdminConfig, updateAdminConfig } from '../../service/AdminConfigService';
 import { useSelector } from 'react-redux';
 import adminConfig from '../../types/AdminConfig';
-import { authState } from '../../features/auth/authSlice';
-import { authSliceActions } from '../../redux/store';
 import toast from 'react-hot-toast';
 
 const LtiConfig = () => {
@@ -18,10 +16,8 @@ const LtiConfig = () => {
   const tabs = ['Tool', 'Canvas'];
 
   useEffect(() => {
-    console.log(userId);
-    if (userId != 'undefined' && userId != 0) {
+    if (userId != 'undefined' && userId != undefined && userId != 0) {
       getAdminConfig(userId).then((res: any) => {
-        console.table(res);
         reset({ ...res });
       });
     }

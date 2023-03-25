@@ -1,16 +1,12 @@
 .lti_page {
   display: grid;
   height: 100vh;
-  grid-template-areas:
-    'sidebar . . . .'
-    'sidebar main main main .'
-    'sidebar main main main .'
-    'sidebar main main main .'
-    'sidebar main main main .'
-    'sidebar . . . .';
-  gap: 2rem;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 1fr repeat(4, 2fr);
 }
 
 .main {
-  grid-area: main;
+  padding: 1rem;
+  grid-column-start: 2;
+  grid-row: 2 / 6;
 }

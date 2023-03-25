@@ -1,7 +1,9 @@
 @use '../../../styles/colors' as colors;
 
 .main_sidebar {
-  grid-area: sidebar;
+  //grid-area: sidebar;
+  grid-column-start: 1;
+  grid-row: 1 / 6;
   background: colors.$base-white;
   display: flex;
   flex-direction: column;

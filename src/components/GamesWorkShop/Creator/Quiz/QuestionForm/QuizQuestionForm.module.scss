@@ -1,12 +1,16 @@
 @use '../../../../../styles/colors' as colors;
 @import '../../../../../styles/utils.scss';
 
-.isInvalid {
-  border: 0.1rem solid red;
+.isInvalidCheckBox {
+  @extend %isInvalidCheckBox;
 }
 
 .delete {
   @extend %delete;
+}
+
+.isInvalidField {
+  @extend %isInvalidField;
 }
 
 .modal {
@@ -15,12 +19,10 @@
   border: 0.1rem solid black;
   border-radius: 1rem;
   padding: 1rem;
-
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   min-width: 50rem;
-  min-height: 25rem;
 
   & > div {
     display: flex;
@@ -29,39 +31,26 @@
   }
 }
 
-.rightAnswer {
-  color: green;
-}
-
-
 .question {
-  grid-area: question;
+  grid-column: 1 / 3;
+  display: flex;
 }
 
-.first {
-  grid-area: first;
-}
+.option {
+  & > div {
+    display: flex;
 
-.second {
-  grid-area: second;
-}
-
-.third {
-  grid-area: third;
-}
-
-.fourth {
-  grid-area: fourth;
+    & > input[type=text] {
+      flex-grow: 1;
+    }
+  }
 }
 
 
 .form {
   display: grid;
   gap: 1rem;
-  //grid-template-columns: repeat(2, 1fr);
-  grid-template-areas: "question question question question"
-                        "first first second second"
-                        "third third fourth fourth";
+  grid-template-columns: repeat(2, 1fr);
 
   & > div {
     display: flex;
@@ -71,7 +60,6 @@
   background-color: #ffffff;
   width: 100%;
   height: 100%;
-  /* margin: 1rem; */
 
   & > textarea:focus, input:focus {
     outline: none;

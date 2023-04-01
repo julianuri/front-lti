@@ -1,6 +1,6 @@
-type UserForm = {
-    email: string,
-    password: string,
+interface UserForm {
+  email: string
+  password: string
 }
 
 export default UserForm;

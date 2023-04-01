@@ -1,27 +1,12 @@
+@import '../../../styles/utils';
+
 .cardsContainer {
-  display: flex;
-  gap: 1rem;
-  justify-content: space-around;
+  @extend %cardsContainer;
+  flex-wrap: wrap;
 }
 
 .card {
-  border: white 0.3rem solid;
-  padding: 1rem;
-  background: white;
-
-  border-radius: 1rem;
-  color: #6f7bba;
-  font-weight: 600;
-  font-family: monospace;
-  box-shadow: 0 1px 5px #00000099;
-  transition-duration: 300ms;
-  transition-property: transform, box-shadow;
-  transition-timing-function: ease-out;
-  align-items: center;
-
-  & > p {
-    margin: auto;
-  }
+  @extend %card;
 
   &:hover {
     transition-duration: 150ms;

@@ -1,76 +1,88 @@
 import { useForm } from 'react-hook-form';
 import styles from './QuizQuestionForm.module.scss';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useState } from 'react';
+import QuestionFormProps from '../../../../../types/QuestionFormProps';
 
+const QuizQuestionForm = ({ questions, setQuestions, setShowModal }: QuestionFormProps) => {
+	const [checkedIndex, setCheckedIndex] = useState(-1);
+	const options = [{ name: 'first', index: 0 }, { name: 'second', index: 1 }, { name: 'third', index: 2 },
+		{ name: 'fourth', index: 3 }];
 
-const QuizQuestionForm = (props) => {
+	const schema = yup.object().shape({
+		checkbox: yup.array().min(1),
+		question: yup.string().required(),
+		firstOption: yup.string().required(),
+		secondOption: yup.string().required(),
+		thirdOption: yup.string().required(),
+		fourthOption: yup.string().required()
+	});
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+	const { register, handleSubmit, formState: { errors } } = useForm({
+		resolver: yupResolver(schema)
+	});
 
-  const onSubmit = (data: any) => {
-    const newData = {
-      'question': data.question,
-      'answers': [{ 'option': data.firstOption },
-        { 'option': data.secondOption },
-        { 'option': data.thirdOption },
-        { 'option': data.fourthOption }],
-      'order': props.questions.length,
-      'answer': data.answer - 1
-    };
+	const onSubmit = (data: any) => {
+		const newData = {
+			question: data.question,
+			answers: [{ option: data.firstOption },
+				{ option: data.secondOption },
+				{ option: data.thirdOption },
+				{ option: data.fourthOption }],
+			order: questions.length,
+			answer: checkedIndex
+		};
 
-    props.setQuestions([...props.questions, { ...newData }]);
-    props.setShowModal(false);
-  };
+		setQuestions([...questions, { ...newData }]);
+		setShowModal(false);
+	};
 
-  return (
-    <div className={styles.modal}>
-      <div>Question: <span className={styles.delete} onClick={() => props.setShowModal(false)}>X</span></div>
-      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+	const checkBoxChange = (index: any) => {
+		if (!index.checked) {
+			setCheckedIndex(-1);
+		} else {
+			setCheckedIndex(index.value);
+		}
+	};
 
-        <div className={styles.question}>
-          <label>Enter question:</label>
-          <input type='text'
-                 className={errors.question ? 'question ' + styles.isInvalid : 'question'} {...register('question', { required: true })} />
-          {errors.question && 'Question is required'}
+	return (
+		<div className={styles.modal}>
+			<div>Question: <span className={styles.delete} onClick={() => setShowModal(false)}>X</span></div>
+			<form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
 
-        </div>
-        <div className={styles.first}>
-          <label>First option:</label>
-          <input type='text'
-                 className={errors.firstOption ? 'form-control ' + styles.isInvalid : 'form-control'} {...register('firstOption', { required: true })} />
-          {errors.firstOption && 'First option is required'}
-        </div>
-        <div className={styles.second}>
-          <label>Second option:</label>
-          <input type='text'
-                 className={errors.secondOption ? 'form-control ' + styles.isInvalid : 'form-control'} {...register('secondOption', { required: true })} />
-          {errors.secondOption && 'Second option is required'}
-        </div>
-        <div className={styles.third}>
-          <label>Third option:</label>
-          <input type='text'
-                 className={errors.thirdOption ? 'form-control ' + styles.isInvalid : 'form-control'} {...register('thirdOption', { required: true })} />
-          {errors.thirdOption && 'Third option is required'
-          }
-        </div>
-        <div className={styles.fourth}>
-          <label>Fourth option:</label>
-          <input type='text'
-                 className={errors.fourthOption ? 'form-control ' + styles.isInvalid : 'form-control'} {...register('fourthOption', { required: true })} />
-          {errors.fourthOption && 'Fourth option is required'}
-        </div>
+				<div className={styles.question}>
+					<label>Enter question:</label>
+					<input
+						type='text'
+						className={(errors.question != null) ? 'question ' + styles.isInvalidField : 'question'} {...register('question', { required: true })}
+					/>
 
-        <div>
-          <label>Enter right answer number</label>
-          <input type='number' min={1} max={4}
-                 className={errors.answer ? 'form-control ' + styles.isInvalid : 'form-control'} {...register('answer', { required: true })} />
-          {errors.answer && 'Right answer is required'}
-        </div>
+				</div>
+				{options.map(option => {
+					return (
+						<div key={option.index} className={styles.option}>
+							<label>{option.name} option</label>
+							<div>
+								<input
+									type='text'
+									className={(errors[option.name + 'Option'] != null) ? 'form-control ' + styles.isInvalidField : 'form-control'} {...register(option.name + 'Option', { required: true })}
+								/>
+								<input
+									className={(errors.checkbox != null) ? styles.isInvalidCheckBox : 'empty'}
+									disabled={checkedIndex != -1 && checkedIndex != option.index}
+									type='checkbox' {...register('checkbox', { onChange: (e) => checkBoxChange(e.target) })}
+									value={option.index}
+								/>
+							</div>
+						</div>
+					);
+				})}
 
-        <input value='Create' type='submit' />
-      </form>
-
-    </div>)
-    ;
+				<input value='Create' type='submit' />
+			</form>
+		</div>
+	);
 };
 
 export default QuizQuestionForm;

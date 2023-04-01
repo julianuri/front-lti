@@ -9,31 +9,30 @@ import toast from 'react-hot-toast';
 import { authState } from '../../features/auth/authSlice';
 
 const RegisterForm = () => {
+	const dispatch = useDispatch();
+	const router = useRouter();
 
-  const dispatch = useDispatch();
-  const router = useRouter();
+	const onSubmit: SubmitHandler<UserForm> = (data) => {
+		registerUser(data).then(async (response) => {
+			if (!response.ok) {
+				const message = `An error has occurred: ${response.status}`;
+				throw new Error(message);
+			}
+			const data: authState = await response.json();
+			dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true, userId: data.userId }));
+			toast.success('User registered!');
+			router.push('lti-config');
+		}).catch((error) => {
+			toast.error(error.message);
+		}
+		);
+	};
 
-  const onSubmit: SubmitHandler<UserForm> = (data) => {
-    registerUser(data).then(async (response) => {
-      if (!response.ok) {
-        const message = `An error has occurred: ${response.status}`;
-        throw new Error(message);
-      }
-      const data: authState = await response.json();
-      dispatch(authSliceActions.saveLoginInfo({ isLoggedIn: true, userId: data.userId }));
-      toast.success('User registered!');
-      void router.push('lti-config');
-    }).catch((error) => {
-        toast.error(error.message);
-      }
-    );
-  };
+	const inputs = [{ name: 'email', type: 'email' }, { name: 'password', type: 'text' }];
 
-  const inputs = [{ name: 'email', type: 'email' }, { name: 'password', type: 'text' }];
-
-  return (
-    <Form buttonName={'Register'} inputs={inputs} submit={onSubmit} />
-  );
+	return (
+		<Form buttonName='Register' inputs={inputs} submit={onSubmit} />
+	);
 };
 
 export default RegisterForm;

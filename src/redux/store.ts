@@ -12,3 +12,4 @@ const store = configureStore({
 export const authSliceActions = authSlice.actions;
 export const assignmentSliceActions = assignmentsSlice.actions;
 export default store;
+export type RootState = ReturnType<typeof store.getState>

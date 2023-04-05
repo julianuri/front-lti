@@ -1,0 +1,21 @@
+@use "../../../../styles/colors";
+
+.key {
+  padding: 1rem;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 1rem;
+  border: none;
+
+  &:not([disabled]):hover {
+    background-color: colors.$dark-blue;
+    color: colors.$base-white;
+  }
+}
+
+.keyboard {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}

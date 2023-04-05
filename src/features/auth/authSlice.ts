@@ -1,24 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getFromLocalStorage, saveInLocalStorage } from '../../utils/LocalStorage';
-import { stat } from 'fs';
+import { getFromSessionStorage, saveInSessionStorage } from '../../utils/LocalStorage';
 
 const authSlice = createSlice({
 	name: 'auth',
 	initialState: {
-		isLoggedIn: getFromLocalStorage('isLoggedIn', false),
-		userId: getFromLocalStorage('userId', '0'),
-		isStudent: getFromLocalStorage('isStudent', false),
-		isInstructor: getFromLocalStorage('isInstructor', false),
-		contextId: getFromLocalStorage('contextId', '0'),
-		launchId: getFromLocalStorage('launchId', '')
+		isLoggedIn: getFromSessionStorage('isLoggedIn', false),
+		userId: getFromSessionStorage('userId', '0'),
+		isStudent: getFromSessionStorage('isStudent', false),
+		isInstructor: getFromSessionStorage('isInstructor', false),
+		contextId: getFromSessionStorage('contextId', '0'),
+		launchId: getFromSessionStorage('launchId', '')
 	},
 	reducers: {
-		saveLoginInfo: (state: authState, action) => {
+		saveLoginInfo: (state: AuthState, action) => {
 			basicLogin(state, action);
 		},
 		ltiLogin: (state: any, action) => {
 			basicLogin(state, action);
-			saveInLocalStorage({ key: 'isStudent', value: action.payload.isStudent },
+			saveInSessionStorage({ key: 'isStudent', value: action.payload.isStudent },
 				{ key: 'isInstructor', value: action.payload.isInstructor },
 				{ key: 'contextId', value: action.payload.contextId },
 				{ key: 'launchId', value: action.payload.launchId });
@@ -28,7 +27,7 @@ const authSlice = createSlice({
 			state.contextId = action.payload.contextId;
 			state.launchId = action.payload.launchId;
 		},
-		logout: (state: authState) => {
+		logout: (state: AuthState) => {
 			state.isLoggedIn = false;
 			state.userId = '0';
 		}
@@ -36,15 +35,15 @@ const authSlice = createSlice({
 }
 );
 
-function basicLogin (state: authState, action) {
-	saveInLocalStorage({ key: 'isLoggedIn', value: action.payload.isLoggedIn },
+function basicLogin (state: AuthState, action) {
+	saveInSessionStorage({ key: 'isLoggedIn', value: action.payload.isLoggedIn },
 		{ key: 'userId', value: action.payload.userId });
 
 	state.isLoggedIn = action.payload.isLoggedIn;
 	state.userId = action.payload.userId;
 }
 
-export interface authState {
+export interface AuthState {
   isLoggedIn: boolean
   userId: string
 }

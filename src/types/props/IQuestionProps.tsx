@@ -1,13 +1,12 @@
-interface QuestionForm {
+interface IQuestionProps {
   question: string
-  answers: Option[]
+  options: Option[]
   order: number
   answer: number
-
 }
 
 interface Option {
   option: string
 }
 
-export default QuestionForm;
+export default IQuestionProps;

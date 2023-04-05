@@ -1,14 +1,15 @@
 import classes from './Layout.module.scss';
 import SideBar from './Common/SideBar/SideBar';
 import Link from 'next/link';
-import { authSliceActions } from '../redux/store';
+import { authSliceActions, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
-const Layout = ({ children }) => {
+const Layout = (props: any) => {
+
 	const dispatch = useDispatch();
-	const { assignments } = useSelector((state) => state.assignment);
-	const { isStudent, isInstructor } = useSelector((state) => state.auth);
+	const { assignments } = useSelector((state: RootState) => state.assignment);
+	const { isStudent, isInstructor } = useSelector((state: RootState) => state.auth);
 	const [assignmentsState, setAssignments] = useState([]);
 
 	useEffect(() => {
@@ -28,7 +29,7 @@ const Layout = ({ children }) => {
 				<div>Assignments: {assignmentsState.length}</div>
 				{(isStudent || isInstructor) ? null : <Link onClick={() => logout()} href='/'>Logout</Link>}
 			</SideBar>
-			<main className={classes.main}>{children}</main>
+			<main className={classes.main}>{props?.children}</main>
 		</div>
 	);
 };

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { assignmentSliceActions } from '../../redux/store';
+import { assignmentSliceActions, RootState } from '../../redux/store';
 import Link from 'next/link';
 import { getAssignments } from '../../service/AssignmentService';
 import toast from 'react-hot-toast';
@@ -8,8 +8,9 @@ import styles from './Instructor.module.scss';
 import IAssignment from '../../types/IAssignment';
 
 const InstructorHome = () => {
+
 	const dispatch = useDispatch();
-	const { userId, contextId } = useSelector((state) => state.auth);
+	const { userId, contextId } = useSelector((state: RootState) => state.auth);
 
 	useEffect(() => {
 		if (userId != undefined) {

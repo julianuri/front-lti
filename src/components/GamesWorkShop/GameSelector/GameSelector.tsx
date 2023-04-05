@@ -6,45 +6,47 @@ import GameCard from './GameCard/GameCard';
 import Link from 'next/link';
 import QuizCreator from '../Creator/Quiz/QuizCreator';
 import styles from '../Creator/Quiz/QuizCreator.module.scss';
+import IGame from '../../../types/IGame';
+import GameEnum from '../../../types/enums/GameEnum';
+import HangmanCreator from '../Creator/Hangman/HangmanCreator';
+import ISelectedGame from '../../../types/ISelectedGame';
 
 const GameSelector = () => {
-	const [games, setGames] = useState([]);
-	const [selectedGame, setSelectedGame] = useState({ name: '', id: 0 });
 
-	useEffect(() => {
-		getGames().then(async (response) => {
-			setGames(response.data);
-		}).catch((error) =>
-			toast.error(error.message)
-		);
-	}, []);
+  const [games, setGames] = useState<IGame[]>([]);
+  const [selectedGame, setSelectedGame] = useState<ISelectedGame>({ name: '', id: 0 });
 
-	const gameSelector = (
-		<>
-			<div>Choose game:</div>
-			<br />
-			<div className={classes.cardsContainer}>
-				{games.map(x => {
-					return (
-						<GameCard
-							key={x.id} game={x} image={x.image_url} game_link={x.game_page}
-							setGame={setSelectedGame}
-						/>
-					);
-				})}
-			</div>
-			<Link href='/instructor'>Back</Link>
-		</>
-	);
+  useEffect(() => {
+    getGames().then(async (response) => {
+      setGames(response.data);
+    }).catch((error) =>
+      toast.error(error.message)
+    );
+  }, []);
 
-	return (
-		<>
-			{(selectedGame.name == 'quiz') ? <QuizCreator gameId={selectedGame.id} /> : null}
-			{(selectedGame.name == '')
-				? gameSelector
-				: <button className={styles.button} onClick={() => setSelectedGame({ name: '', id: 0 })}>Back</button>}
-		</>
-	);
+  const gameSelector = (
+    <div className={classes.page}>
+      <div>Choose game:</div>
+      <div className={classes.cardsContainer}>
+        {games.map((game: IGame) => {
+          return (
+            <GameCard key={game.id} id={game.id} name={game.name} setGame={setSelectedGame} />
+          );
+        })}
+      </div>
+      <Link className={styles.button} href='/instructor'>Back</Link>
+    </div>
+  );
+
+  return (
+    <>
+      {(selectedGame.id == GameEnum.quiz) ? <QuizCreator gameId={selectedGame.id} /> : null}
+      {(selectedGame.id == GameEnum.hangman) ? <HangmanCreator gameId={selectedGame.id}/> : null}
+      {(selectedGame.name == '')
+        ? gameSelector
+        : <button className={styles.button} onClick={() => setSelectedGame({ name: '', id: 0 })}>Back</button>}
+    </>
+  );
 };
 
 export default GameSelector;

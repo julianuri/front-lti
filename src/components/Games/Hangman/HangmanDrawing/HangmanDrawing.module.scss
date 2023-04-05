@@ -1,0 +1,96 @@
+@use '../../../../styles/colors' as colors;
+
+.floor {
+  width: 7rem;
+  height: 0.7rem;
+  background-color: colors.$dark-blue;
+  border-radius: 100% 100% 0 0;
+}
+
+.stick {
+  width: 0.5rem;
+  height: 15rem;
+  background-color: #0374B5;
+  margin-left: 3.25rem;
+}
+
+.top {
+   width: 7rem;
+   height: 0.5rem;
+   background-color: #0374B5;
+   margin-left: 3.25rem;
+ }
+
+.rope {
+  width: 0.5rem;
+  height: 3rem;
+  background-color: #ab6950;
+  position: absolute;
+  top: 0.5rem;
+  left: 9.75rem;
+  border-radius: 0 0 0 0;
+}
+
+.hangmanContainer {
+  position: relative;
+}
+
+.head {
+  //border: 0.1rem solid #ffcca8;
+  background-color: #ffcca8;
+  position: absolute;
+  border-radius: 100%;
+  height: 2rem;
+  width: 2rem;
+  top: 3.5rem;
+  left: 9rem;
+}
+
+.body {
+   background-color: #ffcca8;
+   position: absolute;
+   width: 0.5rem;
+   height: 4rem;
+   top: 5.5rem;
+   left: 9.75rem;
+ }
+
+.rightArm {
+  background-color: #ffcca8;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 0.5rem;
+  height: 2.5rem;
+  top: 5rem;
+  left: 10.5rem;
+}
+
+.leftArm {
+   background-color: #ffcca8;
+   position: absolute;
+   transform: rotate(135deg);
+   width: 0.5rem;
+   height: 2.5rem;
+   top: 5rem;
+   left: 9rem;
+ }
+
+.leftLeg {
+  background-color: #ffcca8;
+  position: absolute;
+  transform: rotate(225deg);
+  width: 0.5rem;
+  height: 2.5rem;
+  top: 9rem;
+  left: 9rem;
+}
+
+.rightLeg {
+   background-color: #ffcca8;
+   position: absolute;
+   transform: rotate(315deg);
+   width: 0.5rem;
+   height: 2.5rem;
+   top: 9rem;
+   left: 10.5rem;
+ }

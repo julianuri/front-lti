@@ -1,0 +1,9 @@
+@import '../../styles/utils';
+
+.button {
+  @extend %inverse-button;
+}
+
+.centered {
+  @extend %centered;
+}

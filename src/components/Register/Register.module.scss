@@ -1,0 +1,11 @@
+@import '../../styles/utils';
+
+.centered {
+  @extend %centered;
+
+  & > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}

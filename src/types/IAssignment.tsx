@@ -2,7 +2,7 @@ interface IAssignment {
   id: number
   name: string
   gameId: number
-  isInProgress: boolean,
+  inProgress: boolean
 }
 
 export default IAssignment;

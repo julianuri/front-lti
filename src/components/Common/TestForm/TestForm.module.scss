@@ -1,0 +1,59 @@
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils.scss';
+
+.isInvalidCheckBox {
+  @extend %isInvalidCheckBox;
+}
+
+.delete {
+  @extend %delete;
+}
+
+.isInvalidField {
+  @extend %isInvalidField;
+}
+
+.question {
+  grid-column: 1 / 3;
+  display: flex;
+}
+
+
+.form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+      display: flex;
+
+      & > input[type=text] {
+        flex-grow: 1;
+        color: colors.$dark-blue;
+      }
+    }
+  }
+
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+
+  & > textarea:focus, input:focus {
+    outline: none;
+  }
+
+}
+
+.fullRow {
+  grid-column: 1 / 3;
+  display: flex;
+}
+
+
+.button {
+  @extend %inverse-button;
+}

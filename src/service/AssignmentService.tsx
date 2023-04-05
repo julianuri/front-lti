@@ -1,4 +1,4 @@
-async function getAssignments (userId: string, courseId: string) {
+async function getAssignments(userId: string, courseId: string) {
 	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/assignments?userId=' + userId + '&assignmentId=' + courseId);
 
 	if (!response.ok) {
@@ -9,7 +9,7 @@ async function getAssignments (userId: string, courseId: string) {
 	return await response.json();
 }
 
-async function saveAssignment (data: any) {
+async function saveAssignment(data: any) {
 	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/assignments', {
 		method: 'POST',
 		body: JSON.stringify({ ...data }),

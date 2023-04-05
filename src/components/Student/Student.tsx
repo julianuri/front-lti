@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { assignmentSliceActions } from '../../redux/store';
+import { assignmentSliceActions, RootState } from '../../redux/store';
 import { getAssignments } from '../../service/AssignmentService';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -8,9 +8,10 @@ import Link from 'next/link';
 import IAssignment from '../../types/IAssignment';
 
 const Student = () => {
+
   const dispatch = useDispatch();
-  const { userId, contextId } = useSelector((state) => state.auth);
-  const { assignments } = useSelector((state) => state.assignment);
+  const { userId, contextId } = useSelector((state: RootState) => state.auth);
+  const { assignments } = useSelector((state: RootState) => state.assignment);
   const [currentAssignments, setAssignments] = useState<IAssignment[]>([]);
 
   useEffect(() => {
@@ -20,8 +21,8 @@ const Student = () => {
             toast.success('Teacher has not created any assigment yet');
           } else {
             setAssignments(response.data);
-            dispatch(assignmentSliceActions.saveAssignments(response.data.map(a => {
-              return { id: a.id, name: a.name, gameId: a.game };
+            dispatch(assignmentSliceActions.saveAssignments(response.data.map((a: IAssignment) => {
+              return { id: a.id, name: a.name, gameId: a.gameId };
             })));
           }
         }
@@ -33,7 +34,7 @@ const Student = () => {
 
   return (
     <>
-      {assignments.length === 0
+      {assignments?.length === 0
         ? <div>Your teacher has not created any assignments, please try again later</div>
         : <div className={styles.cardsContainer}>
           {currentAssignments.map((a) => {

@@ -6,10 +6,12 @@ import { getRun } from '../../../service/RunService';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { setLTIScore } from '../../../service/ScoreService';
+import IBoardProps from '../../../types/props/IBoardProps';
+import { RootState } from '../../../redux/store';
 
-const Board = ({ assignmentId, gameId }) => {
+const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
-	const { userId } = useSelector((state) => state.auth);
+	const { userId } = useSelector((state: RootState) => state.auth);
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
@@ -19,20 +21,24 @@ const Board = ({ assignmentId, gameId }) => {
 	const dataFetchedRef = useRef(false);
 
 	useEffect(() => {
-		if (dataFetchedRef.current) {
-			getRun(assignmentId, userId, gameId, currentQuestion, answers[currentQuestion - 1]).then(async (data) => {
+		console.log('rendering');
+		if (!dataFetchedRef.current) {
+			const data = {
+				assignmentId, userId: userId, gameId, order: currentQuestion, answerIndex: answers[currentQuestion - 1]
+			};
+
+			getRun(data).then(async (data) => {
 				if (currentQuestion < totalQuestions) {
 					setAnswers(data.answers);
 
-					if (currentQuestion != data.game_data.order) {
-						setCurrentQuestion(data.game_data.order);
+					if (currentQuestion != data.game_data.info.order) {
+						setCurrentQuestion(data.game_data.info.order);
 					}
 
 					setQuestion({
-						question: data.game_data.question,
-						options: data.game_data.answers
+						question: data.game_data.info.question,
+						options: data.game_data.info.options
 					});
-
 
 					setTotalQuestions(data.totalQuestions);
 				} else if (currentQuestion >= totalQuestions) {

@@ -1,4 +1,4 @@
-async function getGames () {
+async function getGames() {
 	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/games');
 
 	if (!response.ok) {

@@ -1,0 +1,54 @@
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+
+.hangmanContainer {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  flex-wrap: wrap;
+  gap: 1rem;
+  //background-color: colors.$base-green;
+  padding: 1rem;
+  border-radius: 2rem;
+}
+
+.wordToGuess {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: xx-large;
+
+  & > .letter {
+    border-bottom: 0.1rem solid black;
+  }
+}
+
+.show {
+  visibility: visible;
+}
+
+.doNotShow {
+  visibility: hidden;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.clue {
+  color: colors.$dark-blue;
+  width: 100%;
+  display: flex;
+  font-size: x-large;
+}
+
+.scoreSection {
+  display: flex;
+  font-size: 24px;
+  align-items: center;
+}

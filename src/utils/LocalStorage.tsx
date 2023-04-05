@@ -1,12 +1,12 @@
-export const getFromLocalStorage = (key: string, defaultValue: unknown): any => {
+export const getFromSessionStorage = (key: string, defaultValue: unknown): any => {
 	if (!key || typeof window === 'undefined') {
 		return defaultValue;
 	}
-	return localStorage.getItem(key);
+	return sessionStorage.getItem(key);
 };
 
-export const saveInLocalStorage = (...arr: Array<{ key: string, value: any }>): void => {
+export const saveInSessionStorage = (...arr: Array<{ key: string, value: any }>): void => {
 	for (const e of arr) {
-		localStorage.setItem(e.key, e.value);
+		sessionStorage.setItem(e.key, e.value);
 	}
 };

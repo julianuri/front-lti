@@ -5,10 +5,12 @@ import { getAdminConfig, updateAdminConfig } from '../../service/AdminConfigServ
 import { useSelector } from 'react-redux';
 import adminConfig from '../../types/AdminConfig';
 import toast from 'react-hot-toast';
+import { RootState } from '../../redux/store';
 
 const LtiConfig = () => {
+
 	const deploymentRegex = /^\d:([a-zA-Z\d]){20,40}(?:[,;]\d:([a-zA-Z\d]){20,40}){0,9}$/;
-	const { userId } = useSelector((state) => state.auth);
+	const { userId } = useSelector((state: RootState) => state.auth);
 	const { register, handleSubmit, formState: { errors }, reset } = useForm();
 	const [activeWindow, setActiveWindow] = useState('Tool');
 

@@ -5,6 +5,16 @@
   flex-wrap: wrap;
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.button {
+  @extend %inverse-button;
+}
+
 .card {
   @extend %card;
 

@@ -30,7 +30,7 @@ const DeleteAssignment = () => {
 	};
 
 	return (
-		<>
+		<div className={styles.page}>
 			<div className={styles.cardsContainer}>
 				{currentAssignments.map(assignment => {
 					return (
@@ -42,9 +42,8 @@ const DeleteAssignment = () => {
 					);
 				})}
 			</div>
-			<br />
-			<Link href='/instructor'>Back</Link>
-		</>
+			<Link className={styles.button} href='/instructor'>Back</Link>
+		</div>
 	);
 };
 

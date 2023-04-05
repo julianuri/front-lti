@@ -1,24 +1,21 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { authSliceActions } from '../../src/redux/store';
 
 function RedirectPage() {
 	const router = useRouter();
-	const [isStudent, setIsStudent] = useState(false);
 	const { user_id, is_student, is_instructor, context_id, launch_id } = router.query;
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (is_student === 'True') {
-			setIsStudent(true);
 			dispatchUser();
 			router.push({ pathname: 'student', query: { ...router.query } });
 		} else if (is_instructor === 'True') {
 			dispatchUser();
 			router.push('instructor');
 		}
-		console.table(router.query);
 	}, [router.isReady]);
 
 	function dispatchUser() {
@@ -30,14 +27,6 @@ function RedirectPage() {
 			launchId: launch_id
 		}));
 	}
-
-	return (
-		<>
-			{(isStudent)
-				? <div>estudiante</div>
-				: <div>No eres estudiante</div>}
-		</>
-	);
 }
 
 export default RedirectPage;

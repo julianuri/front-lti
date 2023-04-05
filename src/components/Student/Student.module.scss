@@ -1,5 +1,6 @@
 @use '../../styles/colors' as colors;
 @import '../../styles/utils';
+@import '../../styles/animations/animations';
 
 .card {
   @extend %card;

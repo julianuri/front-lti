@@ -1,5 +1,7 @@
 @use '../../../../../styles/colors' as colors;
 @import '../../../../../styles/utils.scss';
+@import '../../../../../styles/form/form.scss';
+
 
 .isInvalidCheckBox {
   @extend %isInvalidCheckBox;
@@ -13,68 +15,45 @@
   @extend %isInvalidField;
 }
 
+.fullRow {
+  @extend %fullRow;
+}
+
 .modal {
   position: absolute;
   background-color: #ffffff;
-  border: 0.1rem solid black;
   border-radius: 1rem;
   padding: 1rem;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   min-width: 50rem;
+  z-index: 50;
 
   & > div {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     margin: 0;
   }
 }
 
-.question {
-  grid-column: 1 / 3;
-  display: flex;
-}
-
-.option {
-  & > div {
-    display: flex;
-
-    & > input[type=text] {
-      flex-grow: 1;
-    }
-  }
-}
-
-
 .form {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(2, 1fr);
-
+  @extend %form;
   & > div {
     display: flex;
     flex-direction: column;
-  }
 
-  background-color: #ffffff;
-  width: 100%;
-  height: 100%;
+    & > div {
+      display: flex;
 
-  & > textarea:focus, input:focus {
-    outline: none;
-  }
-
-  & > input[type=submit] {
-    width: 100px;
-    grid-column: 2 / 3;
-    justify-self: end;
-    background-color: white;
-    border-radius: 0.3rem;
-
-    &:hover {
-      background-color: colors.$base-blue;
+      & > input[type=text] {
+        flex-grow: 1;
+        //color: #6f7bba;
+      }
     }
-
   }
+}
+
+.button {
+  @extend %inverse-button;
 }

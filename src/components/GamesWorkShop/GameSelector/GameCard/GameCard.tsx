@@ -1,17 +1,12 @@
 import classes from './GameCard.module.scss';
+import IGameCard from '../../../../types/props/IGameCardProps';
 
-const GameCard = (props) => {
-	return (
-		<div className={classes.card} onClick={() => props.setGame({ name: props.game.name, id: props.game.id })}>
-			<img
-				src={props.game.image_url}
-				alt='game picture'
-				width='50'
-				height={50}
-			/>
-			<div>{props.game.name}</div>
-		</div>
-	);
+const GameCard = ({ id, name, setGame }: IGameCard) => {
+  return (
+    <div className={classes.card} onClick={() => setGame({ id, name })}>
+      <div>{name}</div>
+    </div>
+  );
 };
 
 export default GameCard;

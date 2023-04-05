@@ -44,35 +44,64 @@
 }
 
 %isInvalidField {
-  border: red solid 1px;
+  border: red solid 2px;
 }
 
 %button {
-   margin: auto;
-   border: solid 1px black;
-   padding: 1rem;
-   background-color: white;
-   border-radius: 0.3rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.3rem;
+  border: none;
+  width: fit-content;
 
   &:hover {
     cursor: pointer;
-    background-color: colors.$base-blue;
+    color: white;
+    background-color: colors.$dark-blue;
+  }
+
+  &[disabled] {
+    background-color: red;
   }
  }
 
-@keyframes changewidth {
-  from {
-    transform: scale(1);
+%inverse-button {
+  padding: 1rem;
+  border-radius: 0.3rem;
+  border: none;
+  width: fit-content;
+  background-color: colors.$dark-blue;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+    color: colors.$dark-blue;
+    background-color: white;
   }
 
-  to {
-    transform: scale(1.2);
+  &[disabled] {
+    opacity: 0.5;
   }
 }
 
-%assignmentsInProgress {
-  animation-duration: 0.6s;
-  animation-name: changewidth;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+%centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  position: absolute;
+  padding: 2rem;
+  background-color: colors.$base-white;
+  border-radius: 1rem;
+}
+
+%overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  opacity: 0.7;
+  z-index: 0;
 }

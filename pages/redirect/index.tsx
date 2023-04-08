@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { authSliceActions } from '../../src/redux/store';
 
 function RedirectPage() {
+
 	const router = useRouter();
 	const { user_id, is_student, is_instructor, context_id, launch_id } = router.query;
 	const dispatch = useDispatch();
@@ -11,10 +12,10 @@ function RedirectPage() {
 	useEffect(() => {
 		if (is_student === 'True') {
 			dispatchUser();
-			router.push({ pathname: 'student', query: { ...router.query } });
+			void router.push({ pathname: 'student', query: { ...router.query } });
 		} else if (is_instructor === 'True') {
 			dispatchUser();
-			router.push('instructor');
+			void router.push({ pathname: 'instructor', query: { ...router.query } });
 		}
 	}, [router.isReady]);
 

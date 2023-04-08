@@ -1,4 +1,4 @@
-interface IQuestionProps {
+interface IQuizQuestion {
   question: string
   options: Option[]
   order: number
@@ -9,4 +9,4 @@ interface Option {
   option: string
 }
 
-export default IQuestionProps;
+export default IQuizQuestion;

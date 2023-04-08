@@ -22,7 +22,7 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
 	useEffect(() => {
 		console.log('rendering');
-		if (!dataFetchedRef.current) {
+		if (dataFetchedRef.current) {
 			const data = {
 				assignmentId, userId: userId, gameId, order: currentQuestion, answerIndex: answers[currentQuestion - 1]
 			};

@@ -1,7 +1,7 @@
 import HangmanDrawing from './HangmanDrawing/HangmanDrawing';
 import Keyboard from './Keyboard/Keyboard';
 import styles from './Hangman.module.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import IBoardProps from '../../../types/props/IBoardProps';
 import { getRun } from '../../../service/RunService';
 import { setLTIScore } from '../../../service/ScoreService';
@@ -22,33 +22,46 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   const [totalQuestions, setTotalQuestions] = useState<number>(999);
   const [clue, setClue] = useState<string>('');
   const [score, setScore] = useState<number | null>(null);
+  const dataFetchedRef = useRef(false);
 
   useEffect(() => {
-    const data = {
-      assignmentId, userId: userId, gameId, order, hasWon
+    const audio = new Audio('/static/audios/hangup.mp3');
+    //void audio.play();
+    if (dataFetchedRef.current) {
+      const data = {
+        assignmentId, userId: userId, gameId, order, hasWon
+      };
+
+      getRun(data).then(async (data) => {
+        if (order < totalQuestions) {
+          setGuessedLetters([getRandomLetter(data.game_data.info.word_to_guess)]);
+
+          if (order != data.game_data.info.order) {
+            setOrder(data.game_data.info.order);
+          }
+
+          setWord(data.game_data.info.word_to_guess);
+          setTotalQuestions(data.totalQuestions);
+          setClue(data.game_data.info.clue);
+          setHasWon(null);
+          setMistakes(0);
+        } else if (order >= totalQuestions) {
+          setLTIScore(assignmentId, userId, gameId)
+            .then((data) => {
+              setScore(data.score);
+            });
+        }
+      }).catch((error) =>
+        toast.error(error.message));
+    } else {
+      dataFetchedRef.current = true;
+    }
+
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
     };
 
-    getRun(data).then(async (data) => {
-      if (order < totalQuestions) {
-        setGuessedLetters([getRandomLetter(data.game_data.info.word_to_guess)]);
-
-        if (order != data.game_data.info.order) {
-          setOrder(data.game_data.info.order);
-        }
-
-        setWord(data.game_data.info.word_to_guess);
-        setTotalQuestions(data.totalQuestions);
-        setClue(data.game_data.info.clue);
-        setHasWon(null);
-        setMistakes(0);
-      } else if (order >= totalQuestions) {
-        setLTIScore(assignmentId, userId, gameId)
-          .then((data) => {
-            setScore(data.score);
-          });
-      }
-    }).catch((error) =>
-      toast.error(error.message));
   }, [order]);
 
   const getRandomLetter = function(word: string): string {

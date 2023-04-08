@@ -1,6 +1,12 @@
 import styles from './WordForm.module.scss';
 import { useForm } from 'react-hook-form';
-import HangmanFormProps from '../../../../../types/props/HangmanFormProps';
+import IHangmanQuestion from '../../../../../types/props/IHangmanQuestion';
+
+interface HangmanFormProps {
+  words: IHangmanQuestion[]
+  setWords: (words: IHangmanQuestion[]) => void
+  setShowModal: (showModal: boolean) => void
+}
 
 const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
   const options = [{ name: 'word', index: 0 }, { name: 'clue', index: 1 }];

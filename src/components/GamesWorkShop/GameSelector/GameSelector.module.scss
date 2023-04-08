@@ -4,8 +4,6 @@
   @extend %cardsContainer;
 }
 
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.container {
+  @extend %container;
 }

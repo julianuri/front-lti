@@ -9,7 +9,11 @@ import styles from '../Creator/Quiz/QuizCreator.module.scss';
 import IGame from '../../../types/IGame';
 import GameEnum from '../../../types/enums/GameEnum';
 import HangmanCreator from '../Creator/Hangman/HangmanCreator';
-import ISelectedGame from '../../../types/ISelectedGame';
+
+interface ISelectedGame {
+  id: number
+  name: string
+}
 
 const GameSelector = () => {
 
@@ -25,7 +29,7 @@ const GameSelector = () => {
   }, []);
 
   const gameSelector = (
-    <div className={classes.page}>
+    <div className={classes.container}>
       <div>Choose game:</div>
       <div className={classes.cardsContainer}>
         {games.map((game: IGame) => {

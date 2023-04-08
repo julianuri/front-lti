@@ -1,5 +1,10 @@
 import classes from './GameCard.module.scss';
-import IGameCard from '../../../../types/props/IGameCardProps';
+
+interface IGameCard {
+  id: number,
+  name: string,
+  setGame: (game: {id: number, name: string}) => void
+}
 
 const GameCard = ({ id, name, setGame }: IGameCard) => {
   return (

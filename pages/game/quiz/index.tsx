@@ -10,7 +10,7 @@ function QuizPage() {
 	return (
 		<Layout>
 			<Board assignmentId={parseInt(assignmentId as string)} gameId={parseInt(gameId as string)}/>
-			<Link href='/student'>back</Link>
+			<Link href='/student/assignments'>back</Link>
 		</Layout>
 	);
 }

@@ -105,3 +105,9 @@
   opacity: 0.7;
   z-index: 0;
 }
+
+%container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

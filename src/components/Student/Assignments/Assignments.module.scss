@@ -1,10 +1,11 @@
-@use '../../styles/colors' as colors;
-@import '../../styles/utils';
-@import '../../styles/animations/animations';
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+@import '../../../styles/animations/animations';
 
 .card {
   @extend %card;
-  position: relative;
+  padding: 0;
+  border: 0;
 
   &:hover {
     transition-duration: 150ms;
@@ -32,4 +33,12 @@
 .disabledCard {
   background-color: #aaa3a3;
   color: white;
+}
+
+.button {
+  @extend %inverse-button;
+}
+
+.container {
+  @extend %container;
 }

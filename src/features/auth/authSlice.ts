@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getFromSessionStorage, saveInSessionStorage } from '../../utils/LocalStorage';
+import { getFromSessionStorage, saveInSessionStorage } from '../../utils/SessionStorage';
 
 const authSlice = createSlice({
 	name: 'auth',

@@ -10,11 +10,11 @@ import IAssignment from '../../types/IAssignment';
 const InstructorHome = () => {
 
 	const dispatch = useDispatch();
-	const { userId, contextId } = useSelector((state: RootState) => state.auth);
+	const { userId, contextId, isStudent } = useSelector((state: RootState) => state.auth);
 
 	useEffect(() => {
 		if (userId != undefined) {
-			getAssignments(userId, contextId).then(async (response) => {
+			getAssignments(userId, contextId, isStudent).then(async (response) => {
 				if (response.data?.length == 0) {
 					toast.success('Teacher has not created any assigment yet');
 				} else {

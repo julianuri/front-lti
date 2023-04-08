@@ -6,14 +6,16 @@ import styles from './QuizCreator.module.scss';
 import QuizQuestionForm from './QuestionForm/QuizQuestionForm';
 import { saveAssignment } from '../../../../service/AssignmentService';
 import { assignmentSliceActions, RootState } from '../../../../redux/store';
-import IQuestionProps from '../../../../types/props/IQuestionProps';
+import IQuizQuestion from '../../../../types/props/IQuizQuestion';
+import IAssignment from '../../../../types/IAssignment';
 
 const QuizCreator = ({ gameId }: { gameId: number }) => {
 
   const dispatch = useDispatch();
+  const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const [questions, setQuestions] = useState<IQuestionProps[]>([]);
+  const [questions, setQuestions] = useState<IQuizQuestion[]>([]);
   const [showQuestionModal, setQuestionModal] = useState<boolean>(false);
 
   const onSubmit = (data: any) => {
@@ -22,8 +24,13 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
       attempts: data.attempts,
       questions: [...questions],
       courseId: contextId,
-      gameId: gameId
+      gameId: gameId,
+      requiredAssignmentId: null,
     };
+
+    if (data.requiredAssignmentId != '' ) {
+      request.requiredAssignmentId = data.requiredAssignmentId;
+    }
 
     saveAssignment(request).then(async (response) => {
       dispatch(assignmentSliceActions.saveAssignment({
@@ -46,22 +53,33 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
 
   return (
     <>
-    <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.field}>
           <label>Assignment Name</label>
           <input
             type='text'
-            className={errors.assignmentName != null ?  styles.isInvalidField : undefined} {...register('assignmentName', { required: true })}
+            className={errors.assignmentName != null ? styles.isInvalidField : undefined} {...register('assignmentName', { required: true })}
           />
         </div>
         <div className={styles.field}>
           <label>Attempts</label>
           <div>
             <input
-              type='number' min={1} max={3}
-              className={(errors['attempts'] != null) ? styles.isInvalidField : undefined} {...register('attempts', { required: true })}
+              type='number' min={1} max={5}
+              className={(errors['attempts'] != null) ? styles.isInvalidField + '' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
             />
           </div>
+        </div>
+        <div className={styles.field}>
+          <label>
+            Linked Assignment
+          </label>
+          <select {...register('requiredAssignmentId')}>
+            <option value=''>No Linked Assignment</option>
+            {assignments.map((a: IAssignment) => {
+              return <option key={a.id} value={a.id}>{a.name}</option>;
+            })}
+          </select>
         </div>
         <div className={styles.cardsContainer}> {questions.map((question, index) => {
           return (
@@ -79,13 +97,13 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
 
         <div className={styles.button} onClick={() => setQuestionModal(true)}>Add question</div>
 
-        <input className={styles.button} value='Create' type='submit' disabled={questions.length == 0} />
-    </form>
+        <input className={styles.button + ' ' + styles.atTheEnd} value='Create' type='submit' disabled={questions.length == 0} />
+      </form>
       {showQuestionModal
         ? <>
-					<div className={styles.overlay}></div>
-					<QuizQuestionForm questions={questions} setQuestions={setQuestions} setShowModal={setQuestionModal} />
-				</>
+          <div className={styles.overlay}></div>
+          <QuizQuestionForm questions={questions} setQuestions={setQuestions} setShowModal={setQuestionModal} />
+        </>
         : null}
     </>
   );

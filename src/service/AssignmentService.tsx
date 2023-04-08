@@ -1,5 +1,6 @@
-async function getAssignments(userId: string, courseId: string) {
-	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/assignments?userId=' + userId + '&assignmentId=' + courseId);
+async function getAssignments(userId: string, courseId: string, isStudent: boolean) {
+	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/assignments?userId=' +
+		userId + '&courseId=' + courseId + '&isStudent=' + isStudent);
 
 	if (!response.ok) {
 		const message = `An error has occurred: ${response.status}`;

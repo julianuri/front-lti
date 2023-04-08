@@ -2,8 +2,14 @@ import styles from './QuizQuestionForm.module.scss';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
-import QuestionFormProps from '../../../../../types/props/QuestionFormProps';
 import { useForm } from 'react-hook-form';
+import IQuizQuestion from '../../../../../types/props/IQuizQuestion';
+
+interface QuestionFormProps {
+  questions: IQuizQuestion[]
+  setQuestions: (questions: IQuizQuestion[]) => void
+  setShowModal: (showModal: boolean) => void
+}
 
 const QuizQuestionForm = ({ questions, setQuestions, setShowModal }: QuestionFormProps) => {
 

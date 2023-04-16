@@ -26,7 +26,7 @@
   @extend %assignmentsInProgress;
 }
 
-.noPointerEvents {
+.unclickable {
   pointer-events: none;
 }
 

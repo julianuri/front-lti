@@ -42,7 +42,7 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
 					setTotalQuestions(data.totalQuestions);
 				} else if (currentQuestion >= totalQuestions) {
-					setLTIScore(assignmentId, userId, gameId)
+					setLTIScore({assignmentId, userId, gameId})
 						.then((data) => {
 							setScore(data.score);
 							setShowScore(true);

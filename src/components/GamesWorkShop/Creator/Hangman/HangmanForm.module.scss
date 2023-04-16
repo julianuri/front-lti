@@ -1,6 +1,6 @@
-@use '../../../../../styles/colors' as colors;
-@import '../../../../../styles/utils.scss';
-@import '../../../../../styles/form/form.scss';
+@use '../../../../styles/colors' as colors;
+@import '../../../../styles/utils';
+@import '../../../../styles/form/form';
 
 
 .isInvalidCheckBox {
@@ -27,7 +27,7 @@
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 50rem;
+  min-width: 30rem;
   z-index: 50;
 
   & > div {

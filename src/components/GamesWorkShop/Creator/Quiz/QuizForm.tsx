@@ -1,17 +1,17 @@
-import styles from './QuizQuestionForm.module.scss';
+import styles from './QuizForm.module.scss';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import IQuizQuestion from '../../../../../types/props/IQuizQuestion';
+import IQuizQuestion from '../../../../types/props/IQuizQuestion';
 
-interface QuestionFormProps {
-  questions: IQuizQuestion[]
-  setQuestions: (questions: IQuizQuestion[]) => void
+type QuestionFormProps = {
+  items: IQuizQuestion[]
+  setItems: (questions: IQuizQuestion[]) => void
   setShowModal: (showModal: boolean) => void
 }
 
-const QuizQuestionForm = ({ questions, setQuestions, setShowModal }: QuestionFormProps) => {
+const QuizForm = ({ items, setItems, setShowModal }: QuestionFormProps) => {
 
   const [checkedIndex, setCheckedIndex] = useState<number>(-1);
   const options = [{ name: 'first', index: 0 }, { name: 'second', index: 1 }, { name: 'third', index: 2 },
@@ -38,11 +38,11 @@ const QuizQuestionForm = ({ questions, setQuestions, setShowModal }: QuestionFor
         { option: data.secondOption },
         { option: data.thirdOption },
         { option: data.fourthOption }],
-      order: questions.length,
+      order: items.length,
       answer: checkedIndex
     };
 
-    setQuestions([...questions, { ...newData }]);
+    setItems([...items, { ...newData }]);
     setShowModal(false);
   };
 
@@ -92,4 +92,4 @@ const QuizQuestionForm = ({ questions, setQuestions, setShowModal }: QuestionFor
   );
 };
 
-export default QuizQuestionForm;
+export default QuizForm;

@@ -1,6 +1,6 @@
-@use '../../../../styles/colors' as colors;
-@import '../../../../styles/utils.scss';
-@import '../../../../styles/form/form';
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+@import '../../../styles/form/form';
 
 .isInvalidField {
   @extend %isInvalidField;

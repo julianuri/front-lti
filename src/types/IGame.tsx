@@ -3,7 +3,7 @@ interface IGame {
   name: string
   description: string
   instructions: string
-  image_url: string
+  svgRoute: string
 }
 
 export default IGame;

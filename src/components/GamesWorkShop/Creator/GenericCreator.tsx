@@ -2,33 +2,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import styles from './HangmanCreator.module.scss';
-import WordForm from './WordForm/WordForm';
-import { saveAssignment } from '../../../../service/AssignmentService';
-import { assignmentSliceActions, RootState } from '../../../../redux/store';
-import IHangmanQuestion from '../../../../types/props/IHangmanQuestion';
-import IAssignment from '../../../../types/IAssignment';
+import styles from './GenericCreator.module.scss';
+import { saveAssignment } from '../../../service/AssignmentService';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
+import IQuizQuestion from '../../../types/props/IQuizQuestion';
+import IAssignment from '../../../types/IAssignment';
+import IHangmanQuestion from '../../../types/props/IHangmanQuestion';
+import { buildItem, getCustomGameForm } from './GameCreationFactory';
+import IMemoryMatch from '../../../types/props/IMemoryMatch';
 
-const HangmanCreator = ({ gameId }: { gameId: number }) => {
+const QuizCreator = ({ gameId }: { gameId: number }) => {
 
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const [words, setWords] = useState<IHangmanQuestion[]>([]);
-  const [showQuestionModal, setQuestionModal] = useState(false);
+  const [items, setItems] = useState<IQuizQuestion[] | IHangmanQuestion[] | IMemoryMatch[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onSubmit = (data: any) => {
     const request = {
       assignmentName: data.assignmentName,
       attempts: data.attempts,
-      questions: [...words],
+      questions: [...items],
       courseId: contextId,
       gameId: gameId,
-      requiredAssignmentId: null,
+      requiredAssignmentId: null
     };
 
-    if (data.requiredAssignmentId != '' ) {
+    if (data.requiredAssignmentId != '') {
       request.requiredAssignmentId = data.requiredAssignmentId;
     }
 
@@ -38,7 +40,7 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
         name: response.data.name,
         gameId: response.data.gameId
       }));
-      setWords([]);
+      setItems([]);
       reset();
       toast.success('Assignment Saved!');
     }).catch((error) =>
@@ -46,9 +48,9 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
     );
   };
 
-  const deleteQuestion = (index: number) => {
-    const newQuestions = words.filter((q, i) => i != index);
-    setWords([...newQuestions]);
+  const deleteItem = (index: number) => {
+    const newItems = (items as never[]).filter((q: unknown, i: number) => i != index);
+    setItems([...newItems]);
   };
 
   return (
@@ -66,7 +68,7 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
           <div>
             <input
               type='number' min={1} max={5}
-              className={(errors['attempts'] != null) ? styles.isInvalidField + '' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
+              className={(errors['attempts'] != null) ? styles.isInvalidField + ' ' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
             />
           </div>
         </div>
@@ -81,32 +83,19 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
             })}
           </select>
         </div>
-        <div className={styles.cardsContainer}> {words.map((wordProps, index) => {
-          return (
-            <>
-              <div className={styles.card} key={wordProps.wordToGuess}>{wordProps.wordToGuess} <span
-                className={styles.delete}
-                onClick={() => deleteQuestion(index)}
-              >X
-							</span>
-              </div>
-            </>
-          );
-        })}
-        </div>
+        {(<div className={styles.cardsContainer}> {items.map((item, id) =>
+          buildItem({item, deleteQuestion: deleteItem, gameId, id })
+        )}
+        </div>)}
 
-        <div className={styles.button} onClick={() => setQuestionModal(true)}>Add question</div>
-
-        <input className={styles.button + ' ' + styles.atTheEnd} value='Create' type='submit' disabled={words.length == 0} />
+        <div className={styles.button} onClick={() => setShowModal(true)}>Add question</div>
+        <input className={styles.button + ' ' + styles.atTheEnd} value='Create' type='submit'
+               disabled={items.length == 0} />
       </form>
-      {showQuestionModal
-        ? <>
-          <div className={styles.overlay}></div>
-          <WordForm words={words} setWords={setWords} setShowModal={setQuestionModal} />
-        </>
-        : null}
+      {showModal ? (<> <div className={styles.overlay}></div>
+        {getCustomGameForm({items, setShowModal: setShowModal, setItems, gameId })} </>) : null}
     </>
   );
 };
 
-export default HangmanCreator;
+export default QuizCreator;

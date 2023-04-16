@@ -1,27 +1,26 @@
-import styles from './WordForm.module.scss';
+import styles from './MemoryForm.module.scss';
 import { useForm } from 'react-hook-form';
-import IHangmanQuestion from '../../../../../types/props/IHangmanQuestion';
+import IMemoryMatch from '../../../../types/props/IMemoryMatch';
 
-interface HangmanFormProps {
-  words: IHangmanQuestion[]
-  setWords: (words: IHangmanQuestion[]) => void
+interface MemoryFormProps {
+  items: IMemoryMatch[]
+  setItems: (words: IMemoryMatch[]) => void
   setShowModal: (showModal: boolean) => void
 }
 
-const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
-  const options = [{ name: 'word', index: 0 }, { name: 'clue', index: 1 }];
+const MemoryForm = ({ items, setItems, setShowModal }: MemoryFormProps) => {
 
-
+  const options = [{ name: 'first', index: 0 }, { name: 'second', index: 1 }];
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data: any) => {
     const newData = {
-      wordToGuess: data.word.toUpperCase(),
-      order: words.length,
-      clue: data.clue,
+      id: items.length,
+      firstMatch: data.first,
+      secondMatch: data.second,
     };
-
-    setWords([...words, { ...newData }]);
+   // setItems([...items, { 'id': items.length, 'match': data.first}, { 'id': items.length, 'match': data.second}]);
+    setItems([...items, newData]);
     setShowModal(false);
   };
 
@@ -51,4 +50,4 @@ const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
   );
 };
 
-export default WordForm;
+export default MemoryForm;

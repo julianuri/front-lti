@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react';
 import { getGames } from '../../../service/GameService';
 import GameCard from './GameCard/GameCard';
 import Link from 'next/link';
-import QuizCreator from '../Creator/Quiz/QuizCreator';
-import styles from '../Creator/Quiz/QuizCreator.module.scss';
+import styles from '../Creator/GenericCreator.module.scss';
 import IGame from '../../../types/IGame';
-import GameEnum from '../../../types/enums/GameEnum';
-import HangmanCreator from '../Creator/Hangman/HangmanCreator';
+import GenericCreator from '../Creator/GenericCreator';
+import Memory from '../../Games/Memory/Memory';
 
 interface ISelectedGame {
   id: number
@@ -34,7 +33,7 @@ const GameSelector = () => {
       <div className={classes.cardsContainer}>
         {games.map((game: IGame) => {
           return (
-            <GameCard key={game.id} id={game.id} name={game.name} setGame={setSelectedGame} />
+            <GameCard key={game.id} id={game.id} name={game.name} setGame={setSelectedGame} svgImage={game.svgRoute} />
           );
         })}
       </div>
@@ -44,8 +43,7 @@ const GameSelector = () => {
 
   return (
     <>
-      {(selectedGame.id == GameEnum.quiz) ? <QuizCreator gameId={selectedGame.id} /> : null}
-      {(selectedGame.id == GameEnum.hangman) ? <HangmanCreator gameId={selectedGame.id}/> : null}
+      {selectedGame.name != '' ? <GenericCreator gameId={selectedGame.id} /> : null}
       {(selectedGame.name == '')
         ? gameSelector
         : <button className={styles.button} onClick={() => setSelectedGame({ name: '', id: 0 })}>Back</button>}

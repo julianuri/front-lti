@@ -18,6 +18,9 @@ function GamePage() {
       case GameEnumId.memory:
         void router.push({ pathname: '/game/memory', query: { ...router.query } });
         break;
+      case GameEnumId.snake:
+        void router.push({ pathname: '/game/snake', query: { ...router.query } });
+        break;
     }
 
   }, [router.isReady]);

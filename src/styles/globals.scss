@@ -2,7 +2,6 @@
 
 html,
 body {
-  background: colors.$base-blue;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
@@ -16,14 +15,4 @@ a {
 
 * {
   box-sizing: border-box;
-  font-weight: 600;
-  font-family: monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-
-  body {
-    color: white;
-    background: colors.$base-blue;
-  }
 }

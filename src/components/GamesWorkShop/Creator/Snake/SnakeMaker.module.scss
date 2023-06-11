@@ -1,0 +1,62 @@
+@use '../../../../styles/colors' as colors;
+@import '../../../../styles/utils';
+@import '../../../../styles/form/form';
+
+.isInvalidField {
+  @extend %isInvalidField;
+}
+
+.button {
+  @extend %inverse-button;
+}
+
+.atTheEnd {
+  grid-column: 5 / 6;
+  justify-self: center;
+}
+
+.overlay {
+  @extend %overlay;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.form {
+  @extend %form;
+  background-color: colors.$base-white;
+  padding: 1rem;
+  grid-template-columns: 2fr 0.8fr 0.8fr 2fr 2fr;
+  grid-template-rows: 0.2fr 2.5fr 0.2fr;
+  margin: 1rem;
+  justify-content: center;
+
+  & > .field {
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+  }
+}
+
+.delete {
+  @extend %delete;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.cardsContainer {
+  @extend %cardsContainer;
+  justify-content: center;
+  flex-wrap: wrap;
+  grid-column: 1 / 6;
+  align-items: center;
+  border: 0.1rem black solid;
+}
+
+.card {
+  @extend %card;
+  max-height: 33%;
+}

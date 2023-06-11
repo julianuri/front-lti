@@ -7,6 +7,8 @@
   display: inline-flex;
   align-items: center;
   flex-direction: column;
+  background-color: colors.$base-green;
+  border: colors.$dark-green 0.3rem solid;
 
   & > p {
     margin: auto;

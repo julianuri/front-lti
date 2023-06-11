@@ -4,6 +4,7 @@
 
 .card {
   @extend %card;
+  width: 50%;
 
   &:hover {
     transition-duration: 150ms;
@@ -13,4 +14,6 @@
 
 .cardsContainer {
   @extend %cardsContainer;
+  flex-direction: column;
+  align-items: center;
 }

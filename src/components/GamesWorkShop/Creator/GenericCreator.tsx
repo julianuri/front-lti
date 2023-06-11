@@ -67,7 +67,7 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
           <label>Attempts</label>
           <div>
             <input
-              type='number' min={1} max={5}
+              type='number' min={1} max={20}
               className={(errors['attempts'] != null) ? styles.isInvalidField + ' ' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
             />
           </div>

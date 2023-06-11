@@ -7,7 +7,8 @@ import Link from 'next/link';
 import styles from '../Creator/GenericCreator.module.scss';
 import IGame from '../../../types/IGame';
 import GenericCreator from '../Creator/GenericCreator';
-import Memory from '../../Games/Memory/Memory';
+import GameEnum from '../../../types/enums/GameEnum';
+import SnakeMaker from '../Creator/Snake/SnakeMaker';
 
 interface ISelectedGame {
   id: number
@@ -29,7 +30,6 @@ const GameSelector = () => {
 
   const gameSelector = (
     <div className={classes.container}>
-      <div>Choose game:</div>
       <div className={classes.cardsContainer}>
         {games.map((game: IGame) => {
           return (
@@ -43,8 +43,9 @@ const GameSelector = () => {
 
   return (
     <>
-      {selectedGame.name != '' ? <GenericCreator gameId={selectedGame.id} /> : null}
-      {(selectedGame.name == '')
+      {selectedGame.id != 0 && selectedGame.id != GameEnum.snake ? <GenericCreator gameId={selectedGame.id} /> : null}
+      {selectedGame.id == GameEnum.snake ? <SnakeMaker gameId={selectedGame.id} /> : null}
+      {(selectedGame.id == 0)
         ? gameSelector
         : <button className={styles.button} onClick={() => setSelectedGame({ name: '', id: 0 })}>Back</button>}
     </>

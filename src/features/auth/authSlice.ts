@@ -35,7 +35,7 @@ const authSlice = createSlice({
 }
 );
 
-function basicLogin (state: AuthState, action) {
+function basicLogin (state: AuthState, action: any) {
 	saveInSessionStorage({ key: 'isLoggedIn', value: action.payload.isLoggedIn },
 		{ key: 'userId', value: action.payload.userId });
 

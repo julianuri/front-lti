@@ -17,7 +17,7 @@ const Student = () => {
   useEffect(() => {
     if (userId !== undefined) {
       if (hasLoaded.current) {
-        getAssignments(userId, contextId, isStudent).then(async (response) => {
+        getAssignments(userId, contextId, isStudent).then((response) => {
             if (response.data?.length === 0) {
               toast.success('Teacher has not created any assigment yet');
             } else {
@@ -39,7 +39,7 @@ const Student = () => {
     <>
       <div className={styles.cardsContainer}>
         <Link className={styles.card} href={'/student/assignments'}>Assignments</Link>
-        <div className={styles.card}>Avatar Personalization [WORK IN PROGRESS]</div>
+        <Link className={styles.card} href={'student/avatar'}>Avatar Builder</Link>
       </div>
     </>
   )

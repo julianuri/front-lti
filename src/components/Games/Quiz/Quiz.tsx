@@ -21,7 +21,6 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 	const dataFetchedRef = useRef(false);
 
 	useEffect(() => {
-		console.log('rendering');
 		if (dataFetchedRef.current) {
 			const data = {
 				assignmentId, userId: userId, gameId, order: currentQuestion, answerIndex: answers[currentQuestion - 1]

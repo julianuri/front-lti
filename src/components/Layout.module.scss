@@ -1,3 +1,4 @@
+@use '../styles/colors' as colors;
 @import '../styles/utils';
 
 .lti_page {
@@ -11,9 +12,26 @@
   padding: 1rem;
   grid-column-start: 2;
   grid-row: 1 / 6;
+  //background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-color: colors.$main-color;
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  height: 100vh;
 
   & > a {
     margin-top: 2rem;
     @extend %inverse-button;
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

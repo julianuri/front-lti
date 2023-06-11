@@ -15,15 +15,6 @@ const shuffle = function(array: FlipCard[]) {
   return array;
 };
 
-const getCardClasses = function(x: FlipCard, selectedIndexes: FlipCard[]) {
-  const elem = selectedIndexes.find((y) => x.id === y.id && x.match == y.match);
-  let classes = styles['flip-card'] + ' ';
-  if (elem !== undefined) {
-    classes += styles['flip-card-click'] + ' ' + (elem?.unclickable === true ? styles.unclickable : null);
-  }
-  return classes;
-};
-
 interface FlipCard {
   id: number;
   match: string;
@@ -38,6 +29,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
   const [selectedCards, setSelectedCards] = useState<FlipCard[]>([]);
   const [score, setScore] = useState<number>(0);
   const dataFetchedRef = useRef(false);
+  const [canFlipCards, setCanFlipCards] = useState<boolean>(true);
 
   useEffect(() => {
     if (dataFetchedRef.current) {
@@ -64,6 +56,16 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
     }
   }, [selectedCards.length]);
 
+  const getCardClasses = function(x: FlipCard, selectedIndexes: FlipCard[]) {
+    const elem = selectedIndexes.find((y) => x.id === y.id && x.match == y.match);
+    let classes = styles['flip-card'] + ' ';
+    if (elem !== undefined) {
+      classes += styles['flip-card-click'] + ' ' + (elem?.unclickable === true ? styles.unclickable : null);
+    }
+
+    if (!canFlipCards) classes += ' ' + styles.unclickable;
+    return classes;
+  };
 
   const clickHandler = function(card: FlipCard) {
     const audio = new Audio('/static/audios/flip_card.mp3');
@@ -72,8 +74,8 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
 
     setSelectedCards((prev) => [...prev, { 'id': card.id, 'match': card.match }]);
     if (selectedCards.length % 2 != 0) {
+      setCanFlipCards(false);
       const selectedCard = selectedCards[selectedCards.length - 1];
-
       if (selectedCard.id === card.id && selectedCard.match != card.match) {
         setSelectedCards((prev) => prev.map(x => {
           return { ...x, 'unclickable': true };
@@ -81,15 +83,16 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
         const audio = new Audio('/static/audios/won.mp3');
         audio.volume = 0.2;
         void audio.play();
-
+        setCanFlipCards(true);
       } else {
         setTimeout(() => setSelectedCards((prev) => {
             if (selectedCard.id != card.id) {
               setFailedAttempts(prev => prev + 1);
             }
+            setCanFlipCards(true);
             return [...prev.filter(p => p.unclickable === true)];
           }
-        ), 700);
+        ), 600);
       }
     }
   };

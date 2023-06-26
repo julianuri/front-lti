@@ -2,24 +2,49 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import styles from './GenericCreator.module.scss';
-import { saveAssignment } from '../../../service/AssignmentService';
-import { assignmentSliceActions, RootState } from '../../../redux/store';
-import IQuizQuestion from '../../../types/props/IQuizQuestion';
-import IAssignment from '../../../types/IAssignment';
-import IHangmanQuestion from '../../../types/props/IHangmanQuestion';
-import { buildItem, getCustomGameForm } from './GameCreationFactory';
+import styles from './MemoryCreator.module.scss';
+import { saveMemoryAssignment } from '../../../../service/AssignmentService';
+import { assignmentSliceActions, RootState } from '../../../../redux/store';
+import IAssignment from '../../../../types/IAssignment';
+import IMemoryMatch from '../../../../types/props/IMemoryMatch';
+import MemoryForm from './MemoryForm';
+import MemoryAnswerType from '../../../../types/enums/MemoryAnswerType';
+import LoadingSpinner from '../../../Common/Spinner/Spinner';
 
-const QuizCreator = ({ gameId }: { gameId: number }) => {
+const MemoryCreator = ({ gameId }: { gameId: number }) => {
 
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const [items, setItems] = useState<IQuizQuestion[] | IHangmanQuestion[]>([]);
+  const [items, setItems] = useState<object[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSubmit = (data: any) => {
+    setIsLoading(true);
+    const formData = new FormData();
+
+    items.forEach((item) => {
+      if (item.type === MemoryAnswerType.IMAGE) {
+        formData.append('files', item.secondMatch);
+      }
+    });
+
+    formData.append('assignmentName', data.assignmentName);
+    formData.append('attempts', data.attempts);
+    formData.append('courseId', contextId);
+    formData.append('gameId', gameId.toString());
+
+    const newArray = items.map(({secondMatch, ...keepAttrs}) => {
+      if (keepAttrs.type === MemoryAnswerType.IMAGE) {
+        return keepAttrs;
+      } else {
+        return {secondMatch, ...keepAttrs};
+      }
+    });
+
+    console.table(formData);
     const request = {
       assignmentName: data.assignmentName,
       attempts: data.attempts,
@@ -29,11 +54,14 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
       requiredAssignmentId: null
     };
 
+    formData.set('questions',  JSON.stringify(newArray));
+
     if (data.requiredAssignmentId != '') {
+      formData.set('requiredAssignmentId', data.requiredAssignmentId);
       request.requiredAssignmentId = data.requiredAssignmentId;
     }
 
-    saveAssignment(request).then(async (response) => {
+    saveMemoryAssignment(formData).then(async (response) => {
       dispatch(assignmentSliceActions.saveAssignment({
         id: response.data.id,
         name: response.data.name,
@@ -41,6 +69,7 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
       }));
       setItems([]);
       reset();
+      setIsLoading(false);
       toast.success('Assignment Saved!');
     }).catch((error) =>
       toast.error(error.message)
@@ -82,8 +111,13 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
             })}
           </select>
         </div>
-        {(<div className={styles.cardsContainer}> {items.map((item, id) =>
-          buildItem({item, deleteQuestion: deleteItem, gameId, id })
+        {(<div className={styles.cardsContainer}> {items.map((item: any, id) => {
+            return (<div className={styles.card} key={(item?.firstMatch)}>
+              {(item?.firstMatch)}<span
+              className={styles.delete}
+              onClick={() => deleteItem(id)}>X</span>
+            </div>);
+          }
         )}
         </div>)}
 
@@ -92,9 +126,10 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
                disabled={items.length == 0} />
       </form>
       {showModal ? (<> <div className={styles.overlay}></div>
-        {getCustomGameForm({items, setShowModal: setShowModal, setItems, gameId })} </>) : null}
+        {<MemoryForm items={items} setItems={setItems} setShowModal={setShowModal} />} </>) : null}
+      {(!isLoading) ? null :  <><div className={styles.overlay}></div><LoadingSpinner/></>}
     </>
   );
 };
 
-export default QuizCreator;
+export default MemoryCreator;

@@ -19,6 +19,12 @@
   @extend %fullRow;
 }
 
+.horizontal-row {
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+
 .modal {
   position: absolute;
   background-color: #ffffff;

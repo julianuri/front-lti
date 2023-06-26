@@ -19,7 +19,7 @@ async function saveAvatarConfig(data: any, userId: string) {
 	if (!response.ok) {
 		const message = `An error has occurred: ${response.status}`;
 		throw new Error(message);
-	}A;
+	}
 
 	return await response.json();
 }

@@ -9,6 +9,7 @@ import IGame from '../../../types/IGame';
 import GenericCreator from '../Creator/GenericCreator';
 import GameEnum from '../../../types/enums/GameEnum';
 import SnakeMaker from '../Creator/Snake/SnakeMaker';
+import MemoryCreator from '../Creator/Memory/MemoryCreator';
 
 interface ISelectedGame {
   id: number
@@ -43,7 +44,8 @@ const GameSelector = () => {
 
   return (
     <>
-      {selectedGame.id != 0 && selectedGame.id != GameEnum.snake ? <GenericCreator gameId={selectedGame.id} /> : null}
+      {selectedGame.id != 0 && (selectedGame.id == GameEnum.quiz || selectedGame.id == GameEnum.hangman) ? <GenericCreator gameId={selectedGame.id} /> : null}
+      {selectedGame.id == GameEnum.memory ? <MemoryCreator gameId={selectedGame.id} /> : null}
       {selectedGame.id == GameEnum.snake ? <SnakeMaker gameId={selectedGame.id} /> : null}
       {(selectedGame.id == 0)
         ? gameSelector

@@ -41,6 +41,11 @@
 
 .delete {
   @extend %delete;
+  padding: 0;
+  right: 0;
+  position: absolute;
+  color: colors.$dark-green;
+  top: 0;
 
   &:hover {
     cursor: pointer;

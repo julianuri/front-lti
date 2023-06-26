@@ -10,7 +10,7 @@ import IMemoryMatch from '../../../types/props/IMemoryMatch';
 interface FactoryProp {
   id: number;
   gameId: number;
-  item: IQuizQuestion | IHangmanQuestion | IMemoryMatch;
+  item: IQuizQuestion | IHangmanQuestion;
   deleteQuestion: (index: number) => void;
 }
 
@@ -34,23 +34,14 @@ const buildItem = function(props: FactoryProp) {
         onClick={() => props.deleteQuestion(props.id)}>X</span>
       </div>
     </>);
-  case GameEnum.memory:
-    return (<>
-      <div className={styles.card} key={(props?.item as IMemoryMatch).firstMatch}>
-        {(props?.item as IMemoryMatch).firstMatch}<span
-        className={styles.delete}
-        onClick={() => props.deleteQuestion(props.id)}>X</span>
-      </div>
-    </>);
-
   }
 };
 
 
 interface FactorySpecificForm {
   gameId: number;
-  items: IQuizQuestion[] | IHangmanQuestion[] | IMemoryMatch[];
-  setItems: (items: IQuizQuestion[] | IHangmanQuestion[] | IMemoryMatch[]) => void;
+  items: IQuizQuestion[] | IHangmanQuestion[];
+  setItems: (items: IQuizQuestion[] | IHangmanQuestion[]) => void;
   setShowModal: (showModal: boolean) => void;
 }
 
@@ -60,8 +51,6 @@ const getCustomGameForm = function(props: FactorySpecificForm) {
     return <QuizForm items={(props.items as IQuizQuestion[])} setItems={props.setItems} setShowModal={props.setShowModal} />;
   case GameEnum.hangman:
     return <HangmanForm items={(props.items as IHangmanQuestion[])} setItems={props.setItems} setShowModal={props.setShowModal} />;
-  case GameEnum.memory:
-    return <MemoryForm items={(props.items as IMemoryMatch[])} setItems={props.setItems} setShowModal={props.setShowModal} />;
   }
 };
 

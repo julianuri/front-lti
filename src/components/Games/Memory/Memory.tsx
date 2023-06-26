@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import IBoardProps from '../../../types/props/IBoardProps';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import MemoryAnswerType from '../../../types/enums/MemoryAnswerType';
 
 const shuffle = function(array: FlipCard[]) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -18,6 +19,7 @@ const shuffle = function(array: FlipCard[]) {
 interface FlipCard {
   id: number;
   match: string;
+  type: number;
   unclickable?: boolean;
 }
 
@@ -106,9 +108,14 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
         <div className={styles['flip-card-inner'] + ' ' + styles['flip-card-inner-click']}>
           <div className={styles['flip-card-front']}>
           </div>
+          {(card.type === MemoryAnswerType.TEXT) ?
           <div className={styles['flip-card-back']}>
             {card.match}
-          </div>
+          </div> :
+            <div className={styles['flip-card-back']}>
+              <img src={card.match}/>
+            </div>
+          }
         </div>
       </div>;
     })}</div>

@@ -12,7 +12,7 @@ import { RootState } from '../../../redux/store';
 const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
 
   const BODY_PARTS = 5;
-  const { userId } = useSelector((state: RootState) => state.auth);
+  const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
 
   const [word, setWord] = useState<string>('');
   const [order, setOrder] = useState<number>(0);
@@ -46,7 +46,7 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
           setHasWon(null);
           setMistakes(0);
         } else if (order >= totalQuestions) {
-          setLTIScore(assignmentId, userId, gameId)
+          setLTIScore(assignmentId, userId, gameId, sessionId, launchId)
             .then((data) => {
               setScore(data.score);
             });

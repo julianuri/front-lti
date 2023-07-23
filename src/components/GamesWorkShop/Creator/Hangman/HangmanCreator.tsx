@@ -13,7 +13,7 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
 
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const [words, setWords] = useState<IHangmanQuestion[]>([]);
   const [showQuestionModal, setQuestionModal] = useState(false);
@@ -26,6 +26,8 @@ const HangmanCreator = ({ gameId }: { gameId: number }) => {
       courseId: contextId,
       gameId: gameId,
       requiredAssignmentId: null,
+      resourceId: resourceId,
+      lineitemUrl: lineitemUrl,
     };
 
     if (data.requiredAssignmentId != '' ) {

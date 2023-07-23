@@ -11,7 +11,7 @@ import { RootState } from '../../../redux/store';
 
 const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
-	const { userId } = useSelector((state: RootState) => state.auth);
+	const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
@@ -42,7 +42,7 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
 					setTotalQuestions(data.totalQuestions);
 				} else if (currentQuestion >= totalQuestions) {
-					setLTIScore(assignmentId, userId, gameId)
+					setLTIScore(assignmentId, userId, gameId, sessionId, launchId)
 						.then((data) => {
 							setScore(data.score);
 							setShowScore(true);

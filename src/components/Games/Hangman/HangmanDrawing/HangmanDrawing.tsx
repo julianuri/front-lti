@@ -2,8 +2,6 @@ import styles from './HangmanDrawing.module.scss';
 
 const HangmanDrawing = (props: any) => {
 
-
-
   const head = <div key={'head'} className={styles.head}/>;
   const body = <div key={'body'} className={styles.body}/>;
   const leftArm = <div key={'leftArm'} className={styles.leftArm}/>;

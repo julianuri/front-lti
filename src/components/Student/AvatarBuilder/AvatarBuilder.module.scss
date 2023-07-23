@@ -1,0 +1,38 @@
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+@import '../../../styles/form/form';
+
+.isInvalidField {
+  @extend %isInvalidField;
+}
+
+.container {
+  @extend %container;
+}
+
+.button {
+  @extend %inverse-button;
+}
+
+.atTheEnd {
+  grid-column: 3 / 4;
+  grid-row: 6 / 7;
+  justify-self: center;
+}
+
+.form {
+  @extend %form;
+  background-color: colors.$base-white;
+  padding: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 4fr repeat(4, 1fr);
+  margin: 1rem;
+  justify-items: center;
+
+  & > .field {
+    color: colors.$dark-blue;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}

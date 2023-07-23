@@ -21,7 +21,6 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 	const dataFetchedRef = useRef(false);
 
 	useEffect(() => {
-		console.log('rendering');
 		if (dataFetchedRef.current) {
 			const data = {
 				assignmentId, userId: userId, gameId, order: currentQuestion, answerIndex: answers[currentQuestion - 1]
@@ -42,7 +41,7 @@ const Board = ({ assignmentId, gameId }: IBoardProps) => {
 
 					setTotalQuestions(data.totalQuestions);
 				} else if (currentQuestion >= totalQuestions) {
-					setLTIScore(assignmentId, userId, gameId, sessionId, launchId)
+					setLTIScore({assignmentId, userId, gameId, sessionId, launchId})
 						.then((data) => {
 							setScore(data.score);
 							setShowScore(true);

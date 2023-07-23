@@ -1,14 +1,14 @@
-import styles from './WordForm.module.scss';
+import styles from './HangmanForm.module.scss';
 import { useForm } from 'react-hook-form';
-import IHangmanQuestion from '../../../../../types/props/IHangmanQuestion';
+import IHangmanQuestion from '../../../../types/props/IHangmanQuestion';
 
 interface HangmanFormProps {
-  words: IHangmanQuestion[]
-  setWords: (words: IHangmanQuestion[]) => void
+  items: IHangmanQuestion[]
+  setItems: (words: IHangmanQuestion[]) => void
   setShowModal: (showModal: boolean) => void
 }
 
-const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
+const HangmanForm = ({ items, setItems, setShowModal }: HangmanFormProps) => {
   const options = [{ name: 'word', index: 0 }, { name: 'clue', index: 1 }];
 
 
@@ -17,11 +17,11 @@ const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
   const onSubmit = (data: any) => {
     const newData = {
       wordToGuess: data.word.toUpperCase(),
-      order: words.length,
+      order: items.length,
       clue: data.clue,
     };
 
-    setWords([...words, { ...newData }]);
+    setItems([...items, { ...newData }]);
     setShowModal(false);
   };
 
@@ -51,4 +51,4 @@ const WordForm = ({ words, setWords, setShowModal }: HangmanFormProps) => {
   );
 };
 
-export default WordForm;
+export default HangmanForm;

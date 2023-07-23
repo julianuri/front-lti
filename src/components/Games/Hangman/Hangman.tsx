@@ -13,7 +13,6 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
 
   const BODY_PARTS = 5;
   const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
-
   const [word, setWord] = useState<string>('');
   const [order, setOrder] = useState<number>(0);
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
@@ -46,7 +45,7 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
           setHasWon(null);
           setMistakes(0);
         } else if (order >= totalQuestions) {
-          setLTIScore(assignmentId, userId, gameId, sessionId, launchId)
+          setLTIScore({assignmentId, userId, gameId, sessionId, launchId})
             .then((data) => {
               setScore(data.score);
             });
@@ -69,7 +68,6 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   };
 
   const checkLetter = function(key: string): void {
-    console.log(key);
     if (guessedLetters.includes(key)) return;
 
     setGuessedLetters((prev) => {

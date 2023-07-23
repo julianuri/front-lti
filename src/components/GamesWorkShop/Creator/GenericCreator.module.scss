@@ -1,6 +1,6 @@
-@use '../../../../styles/colors' as colors;
-@import '../../../../styles/utils.scss';
-@import '../../../../styles/form/form';
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+@import '../../../styles/form/form';
 
 .isInvalidField {
   @extend %isInvalidField;
@@ -41,6 +41,11 @@
 
 .delete {
   @extend %delete;
+  padding: 0;
+  right: 0;
+  position: absolute;
+  color: colors.$dark-green;
+  top: 0;
 
   &:hover {
     cursor: pointer;
@@ -58,5 +63,9 @@
 
 .card {
   @extend %card;
+  position: relative;
+  border: colors.$base-green 0.3rem solid;
+  padding: 1rem;
+  background: colors.$base-green;
   max-height: 33%;
 }

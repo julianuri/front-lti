@@ -41,7 +41,7 @@ const Student = () => {
     let classes = undefined;
     let cardClasses = styles.card + ' ';
     if (a.attemptsLeft <= 0 || (a.requiredAssignment != null && !a.requiredAssignmentSatisfied)) {
-      classes = styles.noPointerEvents;
+      classes = styles.unclickable;
       cardClasses += styles.disabledCard;
     }
     return { classes, cardClasses };

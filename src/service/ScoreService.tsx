@@ -1,11 +1,11 @@
-async function setLTIScore(assignmentId: number, userId: string, gameId: number, sessionId: string, launchId: string) {
+async function setLTIScore(data: object) {
 	const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/score', {
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ assignmentId, userId, gameId, sessionId, launchId })
+		body: JSON.stringify({ ...data })
 	});
 
 	if (!response.ok) {

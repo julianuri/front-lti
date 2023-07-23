@@ -1,0 +1,70 @@
+@use '../../../styles/colors' as colors;
+@import '../../../styles/utils';
+
+.main-container {
+  display: grid;
+  grid-template-areas:
+        "board board board dice"
+        "board board board score";
+  grid-gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.chip {
+  position: absolute;
+  border-radius: 50%;
+  transition: left 0.1s linear, top 0.1s linear;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 0.1rem solid black;
+}
+
+.board {
+  grid-area: board;
+  position: relative;
+  border: 0.5rem solid colors.$dark-red;
+}
+
+.empty-score {
+  grid-area: score;
+}
+
+.score {
+  grid-area: score;
+  color: white;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  padding: 1rem;
+  font-size: xx-large;
+  background-color: colors.$base-green;
+  text-align: center;
+  border-radius: 2rem;
+  max-height: 7rem;
+}
+
+.disabled {
+  background-color: #BB7711;
+}
+
+.base {
+  background-color: tomato;
+}
+
+.dice-container {
+  grid-area: dice;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  margin-top: 2rem;
+  @extend %inverse-button;
+
+}
+
+.overlay {
+  @extend %overlay;
+}

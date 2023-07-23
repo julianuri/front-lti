@@ -2,12 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import styles from './QuizCreator.module.scss';
-import QuizQuestionForm from './QuestionForm/QuizQuestionForm';
-import { saveAssignment } from '../../../../service/AssignmentService';
-import { assignmentSliceActions, RootState } from '../../../../redux/store';
-import IQuizQuestion from '../../../../types/props/IQuizQuestion';
-import IAssignment from '../../../../types/IAssignment';
+import styles from './GenericCreator.module.scss';
+import { saveAssignment } from '../../../service/AssignmentService';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
+import IQuizQuestion from '../../../types/props/IQuizQuestion';
+import IAssignment from '../../../types/IAssignment';
+import IHangmanQuestion from '../../../types/props/IHangmanQuestion';
+import { buildItem, getCustomGameForm } from './GameCreationFactory';
 
 const QuizCreator = ({ gameId }: { gameId: number }) => {
 
@@ -15,14 +16,14 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const [questions, setQuestions] = useState<IQuizQuestion[]>([]);
-  const [showQuestionModal, setQuestionModal] = useState<boolean>(false);
+  const [items, setItems] = useState<IQuizQuestion[] | IHangmanQuestion[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onSubmit = (data: any) => {
     const request = {
       assignmentName: data.assignmentName,
       attempts: data.attempts,
-      questions: [...questions],
+      questions: [...items],
       courseId: contextId,
       gameId: gameId,
       requiredAssignmentId: null,
@@ -30,7 +31,7 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
       lineitemUrl: lineitemUrl,
     };
 
-    if (data.requiredAssignmentId != '' ) {
+    if (data.requiredAssignmentId != '') {
       request.requiredAssignmentId = data.requiredAssignmentId;
     }
 
@@ -40,7 +41,7 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
         name: response.data.name,
         gameId: response.data.gameId
       }));
-      setQuestions([]);
+      setItems([]);
       reset();
       toast.success('Assignment Saved!');
     }).catch((error) =>
@@ -48,9 +49,9 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
     );
   };
 
-  const deleteQuestion = (index: number) => {
-    const newQuestions = questions.filter((q, i) => i != index);
-    setQuestions([...newQuestions]);
+  const deleteItem = (index: number) => {
+    const newItems = (items as never[]).filter((q: unknown, i: number) => i != index);
+    setItems([...newItems]);
   };
 
   return (
@@ -67,8 +68,8 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
           <label>Attempts</label>
           <div>
             <input
-              type='number' min={1} max={5}
-              className={(errors['attempts'] != null) ? styles.isInvalidField + '' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
+              type='number' min={1} max={20}
+              className={(errors['attempts'] != null) ? styles.isInvalidField + ' ' + styles.fullWidth : styles.fullWidth} {...register('attempts', { required: true })}
             />
           </div>
         </div>
@@ -83,30 +84,17 @@ const QuizCreator = ({ gameId }: { gameId: number }) => {
             })}
           </select>
         </div>
-        <div className={styles.cardsContainer}> {questions.map((question, index) => {
-          return (
-            <>
-              <div className={styles.card} key={question.question}>{question.question} <span
-                className={styles.delete}
-                onClick={() => deleteQuestion(index)}
-              >X
-							</span>
-              </div>
-            </>
-          );
-        })}
-        </div>
+        {(<div className={styles.cardsContainer}> {items.map((item, id) =>
+          buildItem({item, deleteQuestion: deleteItem, gameId, id })
+        )}
+        </div>)}
 
-        <div className={styles.button} onClick={() => setQuestionModal(true)}>Add question</div>
-
-        <input className={styles.button + ' ' + styles.atTheEnd} value='Create' type='submit' disabled={questions.length == 0} />
+        <div className={styles.button} onClick={() => setShowModal(true)}>Add question</div>
+        <input className={styles.button + ' ' + styles.atTheEnd} value='Create' type='submit'
+               disabled={items.length == 0} />
       </form>
-      {showQuestionModal
-        ? <>
-          <div className={styles.overlay}></div>
-          <QuizQuestionForm questions={questions} setQuestions={setQuestions} setShowModal={setQuestionModal} />
-        </>
-        : null}
+      {showModal ? (<> <div className={styles.overlay}></div>
+        {getCustomGameForm({items, setShowModal: setShowModal, setItems, gameId })} </>) : null}
     </>
   );
 };

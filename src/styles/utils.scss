@@ -21,16 +21,15 @@
 }
 
 %card {
-  border: white 0.3rem solid;
+  border: colors.$base-red 0.3rem solid;
   padding: 1rem;
-  background: white;
-
-  border-radius: 1rem;
-  color: #6f7bba;
-  font-weight: 600;
+  min-width: 5rem;
+  background: colors.$base-red;
+  color: white;
+  text-align: center;
   font-family: monospace;
-  box-shadow: 0 1px 5px #00000099;
-  transition-duration: 300ms;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
+  transition-duration: 200ms;
   transition-property: transform, box-shadow;
   transition-timing-function: ease-out;
 
@@ -70,7 +69,7 @@
   border-radius: 0.3rem;
   border: none;
   width: fit-content;
-  background-color: colors.$dark-blue;
+  background-color: colors.$dark-red;
   color: white;
 
   &:hover {

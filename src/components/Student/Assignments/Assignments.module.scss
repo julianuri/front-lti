@@ -26,12 +26,12 @@
   @extend %assignmentsInProgress;
 }
 
-.noPointerEvents {
+.unclickable {
   pointer-events: none;
 }
 
 .disabledCard {
-  background-color: #aaa3a3;
+  background-color: colors.$base-black;
   color: white;
 }
 

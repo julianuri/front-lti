@@ -5,6 +5,8 @@
 .card {
   @extend %card;
   position: relative;
+  width: 50%;
+
 
   &:hover {
     transition-duration: 150ms;
@@ -19,13 +21,15 @@
 .cardsContainer {
   @extend %cardsContainer;
   flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
 }
 
 .inProgress {
   @extend %assignmentsInProgress;
 }
 
-.noPointerEvents {
+.unclickable {
   pointer-events: none;
 }
 

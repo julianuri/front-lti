@@ -25,7 +25,7 @@ interface FlipCard {
 
 const Memory = ({ assignmentId, gameId }: IBoardProps) => {
 
-  const { userId } = useSelector((state: RootState) => state.auth);
+  const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
   const [cards, setCards] = useState<FlipCard[]>([]);
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [selectedCards, setSelectedCards] = useState<FlipCard[]>([]);
@@ -51,7 +51,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
 
   useEffect(() => {
     if (selectedCards.length !== 0 && selectedCards.length === cards.length && selectedCards.every(s => s.unclickable)) {
-      setLTIScore({ assignmentId, userId, gameId, failedAttempts, 'totalMatches': cards.length / 2 })
+      setLTIScore({ assignmentId, userId, gameId, failedAttempts, 'totalMatches': cards.length / 2, sessionId, launchId,  })
         .then((data) => {
           setScore(data.score);
         });

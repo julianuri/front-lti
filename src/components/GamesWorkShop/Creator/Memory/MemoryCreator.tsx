@@ -15,7 +15,7 @@ const MemoryCreator = ({ gameId }: { gameId: number }) => {
 
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const [items, setItems] = useState<object[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -35,6 +35,8 @@ const MemoryCreator = ({ gameId }: { gameId: number }) => {
     formData.append('attempts', data.attempts);
     formData.append('courseId', contextId);
     formData.append('gameId', gameId.toString());
+    formData.append('resourceId', resourceId);
+    formData.append('lineitemUrl', lineitemUrl);
 
     const newArray = items.map(({secondMatch, ...keepAttrs}) => {
       if (keepAttrs.type === MemoryAnswerType.IMAGE) {

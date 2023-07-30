@@ -1,53 +1,76 @@
 import styles from './HangmanForm.module.scss';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import IHangmanQuestion from '../../../../types/props/IHangmanQuestion';
+import { Button, Grid, Group, Paper } from '@mantine/core';
+import { TextInput } from 'react-hook-form-mantine';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { object, string } from 'yup';
 
 interface HangmanFormProps {
-  items: IHangmanQuestion[]
-  setItems: (words: IHangmanQuestion[]) => void
-  setShowModal: (showModal: boolean) => void
+  items: IHangmanQuestion[];
+  setItems: (words: IHangmanQuestion[]) => void;
+  closeModal: () => void;
 }
 
-const HangmanForm = ({ items, setItems, setShowModal }: HangmanFormProps) => {
-  const options = [{ name: 'word', index: 0 }, { name: 'clue', index: 1 }];
+interface HangmanFormValues {
+  word: string
+  clue: string
+}
 
+const HangmanForm = ({ items, setItems, closeModal }: HangmanFormProps) => {
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const schema = object().shape({
+    word: string().required(),
+    clue: string().required()
+  });
 
-  const onSubmit = (data: any) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid }
+  } = useForm(
+    {
+      mode: 'all',
+      resolver: yupResolver(schema),
+      defaultValues: {
+        word: '',
+        clue: ''
+      }
+    }
+  );
+
+  const onSubmit: SubmitHandler<HangmanFormValues> = (data: HangmanFormValues) => {
     const newData = {
       wordToGuess: data.word.toUpperCase(),
       order: items.length,
-      clue: data.clue,
+      clue: data.clue
     };
 
     setItems([...items, { ...newData }]);
-    setShowModal(false);
   };
 
   return (
-    <div className={styles.modal}>
-      <div><span className={styles.delete} onClick={() => setShowModal(false)}>X</span></div>
+    <Paper p={30} mt={30} radius='md' style={{ marginTop: 0, padding: 0 }}>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-
-
-        {options.map(option => {
-          return (
-            <div key={option.index} className={styles.fullRow}>
-              <label>{option.name}</label>
-              <div>
-                <input
-                  type='text'
-                  className={(errors[option.name] != null) ? styles.isInvalidField : undefined} {...register(option.name, { required: true })}
-                />
-              </div>
-            </div>
-          );
-        })}
-
-        <input className={styles.button} value='Create' type='submit' />
+        <Grid>
+          <Grid.Col span={12}>
+            <TextInput name='word' control={control} label='Palabra a Adivinar'
+                       error={errors.word !== undefined ? 'Introduzca palabra' : null}
+                         withAsterisk={errors.word !== undefined}/>
+          </Grid.Col>
+          <Grid.Col span={12}>
+            <TextInput name='clue' control={control} label='Pista'
+                       error={errors.clue !== undefined ? 'Introduzca pista' : null}
+                       withAsterisk={errors.clue !== undefined}/>
+          </Grid.Col>
+          <Grid.Col span={12}>
+            <Group position='right' mt='md' style={{ 'marginTop': '1rem' }}>
+              <Button type='submit' disabled={!isValid} variant='outline' onClick={closeModal}>Agregar</Button>
+            </Group>
+          </Grid.Col>
+        </Grid>
       </form>
-    </div>
+    </Paper>
   );
 };
 

@@ -6,11 +6,12 @@
 
   background-color: #ffffff;
 
-  & > textarea:focus, input:focus{
+  & > textarea:focus,
+  input:focus {
     outline: none;
   }
 
-  & input[type=text] {
+  & input[type="text"] {
     border-radius: 0.3rem;
   }
 }

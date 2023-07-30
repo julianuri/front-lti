@@ -4,8 +4,8 @@
 .main-container {
   display: grid;
   grid-template-areas:
-        "board board board dice"
-        "board board board score";
+    "board board board dice"
+    "board board board score";
   grid-gap: 1rem;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,9 @@
 .chip {
   position: absolute;
   border-radius: 50%;
-  transition: left 0.1s linear, top 0.1s linear;
+  transition:
+    left 0.1s linear,
+    top 0.1s linear;
   width: 1.3rem;
   height: 1.3rem;
   border: 0.1rem solid black;
@@ -45,7 +47,7 @@
 }
 
 .disabled {
-  background-color: #BB7711;
+  background-color: #bb7711;
 }
 
 .base {
@@ -62,7 +64,6 @@
 .button {
   margin-top: 2rem;
   @extend %inverse-button;
-
 }
 
 .overlay {

@@ -8,7 +8,7 @@
 }
 
 .question {
-  background-color: #0374B5;
+  background-color: #0374b5;
   width: 450px;
   min-height: 300px;
   height: min-content;
@@ -22,8 +22,15 @@
 
 .scoreSection {
   display: flex;
-  font-size: 24px;
+  font-size: 20px;
   align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+  gap: 1rem;
+  color: rgb(64, 127, 191);
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
 }
 
 .timer {
@@ -33,4 +40,15 @@
   padding: 2rem;
   color: white;
   background: radial-gradient(green, green, transparent);
+}
+
+.mantine-Rating-root {
+  text-align: right;
+  animation-name: example;
+  animation-duration: 4s;
+}
+
+@keyframes example {
+  from {transform: scale(1)}
+  to {transform: scale(1.5)}
 }

@@ -12,7 +12,7 @@ const AvatarParts = {
   NOSE_STYLE: 'noseStyle',
   EAR_SIZE: 'earSize',
   EYEBROW_STYLE: 'eyeBrowStyle',
-  BG_COLOR: 'bgColor'
+  BG_COLOR: 'bgColor',
 };
 
 export default AvatarParts;

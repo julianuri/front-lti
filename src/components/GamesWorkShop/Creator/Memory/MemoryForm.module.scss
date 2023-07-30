@@ -2,7 +2,6 @@
 @import '../../../../styles/utils';
 @import '../../../../styles/form/form';
 
-
 .isInvalidCheckBox {
   @extend %isInvalidCheckBox;
 }
@@ -52,7 +51,7 @@
     & > div {
       display: flex;
 
-      & > input[type=text] {
+      & > input[type="text"] {
         flex-grow: 1;
         //color: #6f7bba;
       }

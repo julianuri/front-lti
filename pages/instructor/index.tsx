@@ -1,12 +1,7 @@
 import Instructor from '../../src/components/Instructor/Instructor';
-import Layout from '../../src/components/Layout';
 
 function InstructorPage() {
-	return (
-		<Layout>
-			<Instructor />
-		</Layout>
-	);
+  return <Instructor />;
 }
 
 export default InstructorPage;

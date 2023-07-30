@@ -5,62 +5,82 @@ import DirectionEnum from '../../../types/enums/DirectionEnum';
 import OrderEnum from '../../../types/enums/OrderEnum';
 import Die from './Dice/Dice';
 import Link from 'next/link';
-import SnakeCard from './Question/SnakeCard';
 import { getRun } from '../../../service/RunService';
-import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { getRandomQuestion } from '../../../service/QuestionService';
-import ISnakeQuestion from '../../../types/props/ISnakeQuestion';
 import { setLTIScore } from '../../../service/ScoreService';
+import Card from '../Quiz/Card/Card';
+import ICard from '../../../types/ICard';
+import QuestionTypeEnum from '../../../types/enums/QuestionTypeEnum';
+import { notifications } from '@mantine/notifications';
 
 type BoardData = {
-  path: string,
-  tiles_per_row: number,
-  tiles_per_column: number,
-  rem_per_tile: number,
+  path: string;
+  tiles_per_row: number;
+  tiles_per_column: number;
+  rem_per_tile: number;
   interactive_objects: {
-    initialPosition: number,
-    finalPosition: number,
-    direction: number,
-    yMovement: number,
-    xMovement: number}[]
+    initialPosition: number;
+    finalPosition: number;
+    direction: number;
+    yMovement: number;
+    xMovement: number;
+  }[];
 };
 
 const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
-
-
   const { userId } = useSelector((state: RootState) => state.auth);
-  const [boardData, setBoardData] = useState<BoardData>({tiles_per_row: -1, tiles_per_column: 1, rem_per_tile: 4});
+  const [boardData, setBoardData] = useState<BoardData>({
+    tiles_per_row: -1,
+    tiles_per_column: 1,
+    rem_per_tile: 4,
+  });
   const [hasWon, setHasWon] = useState(false);
   const [ROLLS_TO_SHOW_QUESTION, setRollsToShowQuestion] = useState<number>(0);
   const [diceNumber, setDiceNumber] = useState(1);
   const [isDiceClickable, setIsDiceClickable] = useState(false);
-  const [position, setPosition] = useState( 1);
+  const [position, setPosition] = useState(1);
   const [player, setPlayer] = useState({ userId: 37778, color: 'white' });
-  const [direction, setDirection] = useState( DirectionEnum.RIGHT );
+  const [direction, setDirection] = useState(DirectionEnum.RIGHT);
   const [horizontalCoordinate, setHorizontalCoordinate] = useState<number>(0);
   const [verticalCoordinate, setVerticalCoordinate] = useState<number>(0);
   const [rollsLeft, setRollsLeft] = useState(ROLLS_TO_SHOW_QUESTION);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [questionType, setQuestionType] = useState<ISnakeQuestion>({id: 0, options: [{option: 'saaaaaaaaaaaa'}], question: 'Sample' });
-  const [answer, setAnswer] = useState({id: -1, answerIndex: -1});
+  const [question, setQuestion] = useState<ICard>({
+    id: 0,
+    options: [{ option: 'Sample' }],
+    question: 'Sample',
+    type: QuestionTypeEnum.SIMPLE
+  });
+  const [answer, setAnswer] = useState<{id:number, answer: any}>({ id: -1, answer: -1 });
   const dataFetchedRef = useRef(false);
   const shouldUpdatePositionRef = useRef(false);
-  const [score, setScore] = useState<number>(0);
+  const [score, setScore] = useState<number>(-1);
 
   useEffect(() => {
     if (showModal) {
       const data = {
-        assignmentId, userId, gameId
+        assignmentId,
+        userId,
+        gameId,
       };
 
-      getRandomQuestion(data).then(async (data: any) => {
-        setQuestionType({ id: data.id, options: data.options, question: data.question });
-      }).catch((error) =>
-        toast.error(error.message));
+      getRandomQuestion(data)
+        .then(async (data: any) => {
+          if (data.id !== undefined) {
+            setQuestion({
+              id: data.id,
+              options: data.options,
+              question: data.question,
+              type: data.type
+            });
+          } else {
+            setShowModal(false);
+          }
+        })
+        .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
     }
-
   }, [showModal]);
 
   useEffect(() => {
@@ -74,26 +94,35 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
       };
 
       const data = {
-        assignmentId, userId, gameId, userPosition
+        assignmentId,
+        userId,
+        gameId,
+        userPosition,
       };
 
-      getRun(data).catch((error) =>
-        toast.error(error.message));
+      getRun(data).catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
     }
-
   }, [isDiceClickable]);
 
   useEffect(() => {
-    callRunService();
+    if (dataFetchedRef.current || process.env.NODE_ENV !== 'development') {
+      callRunService();
+    }
+    return () => {
+      dataFetchedRef.current = true;
+    };
   }, [answer, hasWon]);
 
-  const callRunService = function() {
-    if (dataFetchedRef.current) {
-      const request = {
-        assignmentId, userId, gameId, answer
-      };
+  const callRunService = function () {
+    const request = {
+      assignmentId,
+      userId,
+      gameId,
+      answer
+    };
 
-      getRun(request).then(async (data) => {
+    getRun(request)
+      .then(async (data) => {
         if (position !== 100) {
           setBoardData(data.board_data);
           setHorizontalCoordinate(data.run.user_input.x);
@@ -104,34 +133,39 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
           setRollsToShowQuestion(data.game_data.info.rolls_to_show_question);
           setRollsLeft(data.run.user_input.rolls_left);
         } else {
-          setLTIScore(request).then(async (data) => {
-            setScore(data.score);
-          }).catch((error) =>
-            toast.error(error.message));
+          setLTIScore(request)
+            .then(async (data) => {
+              setScore(data.score);
+            })
+            .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
         }
-      }).catch((error) =>
-        toast.error(error.message));
-    } else {
-      dataFetchedRef.current = true;
-    }
+      })
+      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
   };
 
-  const shouldIncreaseRow = function(prev: number, steps: number): boolean {
-    const surpassesBoardLimit = boardData.tiles_per_row * boardData.tiles_per_column < prev + steps;
+  const shouldIncreaseRow = function (prev: number, steps: number): boolean {
+    const surpassesBoardLimit =
+      boardData.tiles_per_row * boardData.tiles_per_column < prev + steps;
     if (surpassesBoardLimit) {
       return false;
     }
 
-    return ((Math.floor(prev / boardData.tiles_per_row) < Math.floor((prev + steps) / boardData.tiles_per_row) ||
-      (prev % boardData.tiles_per_row) === 0) && (prev + steps) % boardData.tiles_per_row !== 0);
+    return (
+      (Math.floor(prev / boardData.tiles_per_row) <
+        Math.floor((prev + steps) / boardData.tiles_per_row) ||
+        prev % boardData.tiles_per_row === 0) &&
+      (prev + steps) % boardData.tiles_per_row !== 0
+    );
   };
 
   const realClickHandler = (steps: number) => {
-    const surpassesBoardLimit = boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
+    const surpassesBoardLimit =
+      boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
     const currentPosition = position;
 
     if (surpassesBoardLimit) {
-      const leftOverX = boardData.tiles_per_row - (position % boardData.tiles_per_row);
+      const leftOverX =
+        boardData.tiles_per_row - (position % boardData.tiles_per_row);
       setPosition(position + leftOverX - (steps - leftOverX));
     } else {
       setPosition(position + steps);
@@ -140,71 +174,117 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
     movePlayer(steps, currentPosition, direction);
   };
 
-  const handleInteractiveObject = function(position: number, steps: number) {
-    const leftOverX = boardData.tiles_per_row - (position % boardData.tiles_per_row);
-    return boardData.interactive_objects.find(x => {
-      const surpassesBoardLimit = boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
+  const handleInteractiveObject = function (position: number, steps: number) {
+    const leftOverX =
+      boardData.tiles_per_row - (position % boardData.tiles_per_row);
+    return boardData.interactive_objects.find((x) => {
+      const surpassesBoardLimit =
+        boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
       if (surpassesBoardLimit) {
-        return x.initialPosition === position + steps || x.initialPosition === position + leftOverX - (steps - leftOverX);
+        return (
+          x.initialPosition === position + steps ||
+          x.initialPosition === position + leftOverX - (steps - leftOverX)
+        );
       }
 
       return x.initialPosition === position + steps;
     });
   };
 
-  const movePlayer = function(steps: number, position: number, direction: number) {
-
+  const movePlayer = function (
+    steps: number,
+    position: number,
+    direction: number,
+  ) {
     if (shouldIncreaseRow(position, steps)) {
       if (position % boardData.tiles_per_row !== 0) changeDirection();
-      setTimeout(() => {
-          setVerticalCoordinate((current) => current + ((-1) * boardData.rem_per_tile));
+      setTimeout(
+        () => {
+          setVerticalCoordinate(
+            (current) => current + -1 * boardData.rem_per_tile,
+          );
         },
-        (position % boardData.tiles_per_row === 0) ? OrderEnum.FAST : OrderEnum.NORMAL);
+        position % boardData.tiles_per_row === 0
+          ? OrderEnum.FAST
+          : OrderEnum.NORMAL,
+      );
       increaseXAxisWhenIncreasingRow(position, steps, direction);
-
     } else {
-
-      const surpassesBoardLimit = boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
+      const surpassesBoardLimit =
+        boardData.tiles_per_row * boardData.tiles_per_column < position + steps;
       if (surpassesBoardLimit) {
-        const leftOverX = boardData.tiles_per_row - (position % boardData.tiles_per_row);
+        const leftOverX =
+          boardData.tiles_per_row - (position % boardData.tiles_per_row);
         setTimeout(() => {
-          setHorizontalCoordinate((current) => current + (boardData.rem_per_tile * direction * leftOverX));
+          setHorizontalCoordinate(
+            (current) =>
+              current + boardData.rem_per_tile * direction * leftOverX,
+          );
         }, OrderEnum.FASTEST);
         steps = steps - leftOverX;
-        setTimeout(function() {
-          setHorizontalCoordinate((current) => current + ((-1) * (boardData.rem_per_tile * direction) * (steps)));
+        setTimeout(function () {
+          setHorizontalCoordinate(
+            (current) =>
+              current + -1 * (boardData.rem_per_tile * direction) * steps,
+          );
         }, OrderEnum.SLOW);
       } else {
         if ((position + steps) % boardData.tiles_per_row === 0) {
           changeDirection();
         }
-        setHorizontalCoordinate((current) => current + ((boardData.rem_per_tile * direction) * (steps)));
+        setHorizontalCoordinate(
+          (current) => current + boardData.rem_per_tile * direction * steps,
+        );
       }
-
     }
   };
 
-  const increaseXAxisWhenIncreasingRow = function(position: number, steps: number, direction: number) {
-    const leftOverX = boardData.tiles_per_row - (position % boardData.tiles_per_row);
+  const increaseXAxisWhenIncreasingRow = function (
+    position: number,
+    steps: number,
+    direction: number,
+  ) {
+    const leftOverX =
+      boardData.tiles_per_row - (position % boardData.tiles_per_row);
     //WHEN YOUR NEXT STOP IS HIGHER THAN THE FIRST TILE OF THE NEXT ROW
     //AND YOUR CURRENT TILE IS NOT THE LAST ONE OF THE CURRENT ROW
-    if ((position + steps) % boardData.tiles_per_row > 1 && leftOverX != boardData.tiles_per_row) {
+    if (
+      (position + steps) % boardData.tiles_per_row > 1 &&
+      leftOverX != boardData.tiles_per_row
+    ) {
       setTimeout(() => {
-        setHorizontalCoordinate((current) => current + ((boardData.rem_per_tile * direction) * (leftOverX)));
+        setHorizontalCoordinate(
+          (current) => current + boardData.rem_per_tile * direction * leftOverX,
+        );
       }, OrderEnum.FASTEST);
       steps = steps - leftOverX;
-      setTimeout(function() {
-        setHorizontalCoordinate((current) => current + ((-1) * (boardData.rem_per_tile * direction) * (steps - 1)));
+      setTimeout(function () {
+        setHorizontalCoordinate(
+          (current) =>
+            current + -1 * (boardData.rem_per_tile * direction) * (steps - 1),
+        );
       }, OrderEnum.SLOW);
     } else {
-      setTimeout(() => {
-        setHorizontalCoordinate((current) => current + ((boardData.rem_per_tile * direction) * (steps - 1)));
-      }, (position % boardData.tiles_per_row === 0) ? OrderEnum.NORMAL : OrderEnum.FAST);
+      setTimeout(
+        () => {
+          setHorizontalCoordinate(
+            (current) =>
+              current + boardData.rem_per_tile * direction * (steps - 1),
+          );
+        },
+        position % boardData.tiles_per_row === 0
+          ? OrderEnum.NORMAL
+          : OrderEnum.FAST,
+      );
     }
   };
 
-  const changeDirection = function() {
-    setDirection(direction === DirectionEnum.LEFT ? DirectionEnum.RIGHT : DirectionEnum.LEFT);
+  const changeDirection = function () {
+    setDirection(
+      direction === DirectionEnum.LEFT
+        ? DirectionEnum.RIGHT
+        : DirectionEnum.LEFT,
+    );
   };
 
   const diceHandler = () => {
@@ -212,26 +292,36 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
       shouldUpdatePositionRef.current = true;
       setIsDiceClickable(false);
       const diceNumber = Math.floor(Math.random() * 6 + 1);
-      /*if (position === 1) diceNumber = 3;
-      if (position === 68) diceNumber = 3;
-      if (position === 92) diceNumber = 3;
-      if (position === 95) diceNumber = 5;*/
       const currentPosition = position;
 
       setDiceNumber(diceNumber);
       realClickHandler(diceNumber);
 
-      const interactiveObject = handleInteractiveObject(currentPosition, diceNumber);
+      const interactiveObject = handleInteractiveObject(
+        currentPosition,
+        diceNumber,
+      );
       if (interactiveObject !== undefined) {
         setTimeout(() => {
-          setVerticalCoordinate((current) => current + ((-1) * boardData.rem_per_tile * interactiveObject.yMovement));
-          setHorizontalCoordinate((current) => current + (boardData.rem_per_tile * interactiveObject.xMovement));
+          setVerticalCoordinate(
+            (current) =>
+              current +
+              -1 * boardData.rem_per_tile * interactiveObject.yMovement,
+          );
+          setHorizontalCoordinate(
+            (current) =>
+              current + boardData.rem_per_tile * interactiveObject.xMovement,
+          );
           setDirection(interactiveObject.direction);
           setPosition(interactiveObject.finalPosition);
         }, OrderEnum.SLOWER);
       }
 
-      if (currentPosition + diceNumber === boardData.tiles_per_column * boardData.tiles_per_row && rollsLeft > 1) {
+      if (
+        currentPosition + diceNumber ===
+          boardData.tiles_per_column * boardData.tiles_per_row &&
+        rollsLeft > 1
+      ) {
         setHasWon(true);
       } else {
         setTimeout(() => setIsDiceClickable(true), OrderEnum.SLOWEST);
@@ -243,7 +333,6 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
           setShowModal(true);
         }
       }, OrderEnum.SLOWEST * 1.1);
-
     }
   };
 
@@ -255,38 +344,68 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
         setHasWon(true);
       }
     }
-
   }, [showModal]);
 
-  const handleAnswerOptionClick = (id: number, answerIndex: number) => {
-    setAnswer({id, answerIndex});
+  const handleAnswerOptionClick = (id: number, answer: any) => {
+    setAnswer({ id, answer });
+    setQuestion({
+      id: 0,
+      options: [{ option: 'Sample' }],
+      question: 'Sample',
+      type: QuestionTypeEnum.SIMPLE
+    });
     setShowModal(false);
   };
 
-  return <div className={styles['main-container']} style={{ 'position': 'relative', 'display': 'grid' }}>
-
-    <div className={styles.board}>
-      <img style={{ 'height': boardData.rem_per_tile * boardData.tiles_per_column + 'rem' }}
-           src={boardData.path} alt={'snake'} />
-      <div>
-
-        <div className={styles.chip} style={{
-          'left': horizontalCoordinate + 'rem',
-          'top': verticalCoordinate + 'rem',
-          'backgroundColor': player.color
-        }} />
+  return (
+    <div
+      className={styles['main-container']}
+      style={{ position: 'relative', display: 'grid' }}
+    >
+      <div className={styles.board}>
+        <img
+          style={{
+            height: boardData.rem_per_tile * boardData.tiles_per_column + 'rem',
+          }}
+          src={boardData.path}
+          alt={'snake'}
+        />
+        <div>
+          <div
+            className={styles.chip}
+            style={{
+              left: horizontalCoordinate + 'rem',
+              top: verticalCoordinate + 'rem',
+              backgroundColor: player.color,
+            }}
+          />
+        </div>
       </div>
+      <div className={styles['dice-container']} onClick={diceHandler}>
+        <Die key={diceNumber} value={diceNumber} />
+      </div>
+      {(showModal && question.id !== 0) ? (
+        <>
+          <div className={styles.overlay}></div>
+          <Card
+            currentQuestion={question}
+            handleSnakeAnswer={handleAnswerOptionClick}
+          />
+        </>
+      ) : null}
+      {score != -1 ? (
+        <div className={styles.score}>
+          Score
+          <br /> {score} / 100
+        </div>
+      ) : (
+        <div className={styles['empty-score']}></div>
+      )}
+      <Link className={styles.button} href="/student/assignments">
+        back
+      </Link>
     </div>
-    <div className={styles['dice-container']} onClick={diceHandler}>
-      <Die key={diceNumber} value={diceNumber} />
-    </div>
-    {showModal ? (<>
-      <div className={styles.overlay}></div>
-      <SnakeCard question={questionType} handleAnswerOptionClick={handleAnswerOptionClick}/>
-    </>) : null}
-    {score != 0 ? <div className={styles.score}>Score<br/> {score} / 100</div> : <div className={styles['empty-score']}></div>}
-    <Link className={styles.button} href='/student/assignments'>back</Link>
-  </div>;
+  );
 };
 
 export default Snakes;

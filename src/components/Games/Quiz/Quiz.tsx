@@ -3,82 +3,102 @@ import Card from './Card/Card';
 import styles from './Quiz.module.scss';
 import ICard from '../../../types/ICard';
 import { getRun } from '../../../service/RunService';
-import toast from 'react-hot-toast';
+
 import { useSelector } from 'react-redux';
 import { setLTIScore } from '../../../service/ScoreService';
 import IBoardProps from '../../../types/props/IBoardProps';
 import { RootState } from '../../../redux/store';
+import QuestionTypeEnum from '../../../types/enums/QuestionTypeEnum';
+import gameEnum from '../../../types/enums/GameEnum';
+import { Rating } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 
-const Board = ({ assignmentId, gameId }: IBoardProps) => {
+const Board = ({ assignmentId }: IBoardProps) => {
 
-	const { userId, launchId } = useSelector((state: RootState) => state.auth);
-	const [currentQuestion, setCurrentQuestion] = useState(0);
-	const [showScore, setShowScore] = useState(false);
-	const [score, setScore] = useState(0);
-	const [answers, setAnswers] = useState<number[]>([]);
-	const [question, setQuestion] = useState<ICard>({question: '', options: []});
-	const [totalQuestions, setTotalQuestions] = useState(999);
-	const dataFetchedRef = useRef(false);
+  const { userId, launchId } = useSelector((state: RootState) => state.auth);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [question, setQuestion] = useState<ICard>({
+    question: '',
+    options: [],
+    type: QuestionTypeEnum.SIMPLE
+  });
+  const [totalQuestions, setTotalQuestions] = useState(999);
+  const dataFetchedRef = useRef(false);
+  const [stars, setStars] = useState(0);
 
-	useEffect(() => {
-		if (dataFetchedRef.current) {
-			const data = {
-				assignmentId, userId: userId, gameId, order: currentQuestion, answerIndex: answers[currentQuestion - 1]
-			};
+  useEffect(() => {
+    if ((dataFetchedRef.current || process.env.NODE_ENV !== 'development') && assignmentId !== undefined) {
+      const data = {
+        assignmentId,
+        userId: userId,
+        gameId: gameEnum.quiz,
+        order: currentQuestion,
+        answerIndex: answers[currentQuestion - 1],
+      };
 
-			getRun(data).then(async (data) => {
-				if (currentQuestion < totalQuestions) {
-					setAnswers(data.answers);
+      getRun(data)
+        .then(async (data) => {
+          if (currentQuestion < totalQuestions) {
+            setAnswers(data.answers);
 
-					if (currentQuestion != data.game_data.info.order) {
-						setCurrentQuestion(data.game_data.info.order);
-					}
+            if (currentQuestion != data.game_data.info.order) {
+              setCurrentQuestion(data.game_data.info.order);
+            }
 
-					setQuestion({
-						question: data.game_data.info.question,
-						options: data.game_data.info.options
-					});
+            setQuestion({
+              question: data.game_data.info.question,
+              options: data.game_data.info.options,
+              type: data.game_data.info.type,
+            });
 
-					setTotalQuestions(data.totalQuestions);
-				} else if (currentQuestion >= totalQuestions) {
-					setLTIScore({assignmentId, userId, gameId, launchId})
-						.then((data) => {
-							setScore(data.score);
-							setShowScore(true);
-						});
-				}
-			}).catch((error) =>
-				toast.error(error.message));
-		} else {
-			dataFetchedRef.current = true;
-		}
-	}, [currentQuestion]);
+            setTotalQuestions(data.totalQuestions);
+          } else if (currentQuestion >= totalQuestions) {
+            setLTIScore({ assignmentId, userId, gameId: gameEnum.quiz, launchId }).then(
+              (data) => {
+                setScore(data.score);
+                setShowScore(true);
+                setStars(data.score/20);
+              },
+            );
+          }
+        })
+        .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+    }
+    return () => {
+      dataFetchedRef.current = true;
+    };
+  }, [currentQuestion]);
 
-	const handleAnswerOptionClick = (chosenAnswerIndex: number) => {
+  const handleAnswerOptionClick = (chosenAnswerIndex: any) => {
+    setAnswers([...answers, chosenAnswerIndex]);
+    const nextQuestion = currentQuestion + 1;
+    setCurrentQuestion(nextQuestion);
+  };
 
-		setAnswers([...answers, chosenAnswerIndex]);
-		const nextQuestion = currentQuestion + 1;
-		setCurrentQuestion(nextQuestion);
-	};
+  return (
+    <div className={styles.board}>
 
-	return (
-		<div className={styles.board}>
-			<div className={styles.question}>
-				{showScore
-					? (
-						<div className={styles.scoreSection}>
-							You scored {score} out of {totalQuestions}
-						</div>
-					)
-					: (<Card
-						currentQuestion={question}
-						totalQuestions={totalQuestions}
-						questionOrder={currentQuestion}
-						handleAnswerOptionClick={handleAnswerOptionClick}
-					/>)}
-			</div>
-		</div>
-	);
+        {showScore ? (
+          <>
+            <div className={styles.scoreSection}>
+              <div> Conseguiste {score} de {100}</div>
+              <Rating fractions={10} value={stars} readOnly />
+            </div>
+          </>
+        ) : (
+          <Card
+            currentQuestion={question}
+            totalQuestions={totalQuestions}
+            questionOrder={currentQuestion}
+            handleQuizAnswer={handleAnswerOptionClick}
+          />
+        )}
+
+    </div>
+  );
 };
 
 export default Board;

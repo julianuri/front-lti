@@ -1,12 +1,7 @@
 import LtiConfig from '../../src/components/LtiConfig/LtiConfig';
-import Layout from '../../src/components/Layout';
 
 function LtiConfigPage() {
-	return (
-		<Layout>
-			<LtiConfig />
-		</Layout>
-	);
+  return <LtiConfig />;
 }
 
 export default LtiConfigPage;

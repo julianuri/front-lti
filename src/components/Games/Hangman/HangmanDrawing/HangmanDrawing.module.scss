@@ -10,16 +10,16 @@
 .stick {
   width: 0.5rem;
   height: 15rem;
-  background-color: #0374B5;
+  background-color: #0374b5;
   margin-left: 3.25rem;
 }
 
 .top {
-   width: 7rem;
-   height: 0.5rem;
-   background-color: #0374B5;
-   margin-left: 3.25rem;
- }
+  width: 7rem;
+  height: 0.5rem;
+  background-color: #0374b5;
+  margin-left: 3.25rem;
+}
 
 .rope {
   width: 0.5rem;
@@ -47,13 +47,13 @@
 }
 
 .body {
-   background-color: #ffcca8;
-   position: absolute;
-   width: 0.5rem;
-   height: 4rem;
-   top: 5.5rem;
-   left: 9.75rem;
- }
+  background-color: #ffcca8;
+  position: absolute;
+  width: 0.5rem;
+  height: 4rem;
+  top: 5.5rem;
+  left: 9.75rem;
+}
 
 .rightArm {
   background-color: #ffcca8;
@@ -66,14 +66,14 @@
 }
 
 .leftArm {
-   background-color: #ffcca8;
-   position: absolute;
-   transform: rotate(135deg);
-   width: 0.5rem;
-   height: 2.5rem;
-   top: 5rem;
-   left: 9rem;
- }
+  background-color: #ffcca8;
+  position: absolute;
+  transform: rotate(135deg);
+  width: 0.5rem;
+  height: 2.5rem;
+  top: 5rem;
+  left: 9rem;
+}
 
 .leftLeg {
   background-color: #ffcca8;
@@ -86,11 +86,11 @@
 }
 
 .rightLeg {
-   background-color: #ffcca8;
-   position: absolute;
-   transform: rotate(315deg);
-   width: 0.5rem;
-   height: 2.5rem;
-   top: 9rem;
-   left: 10.5rem;
- }
+  background-color: #ffcca8;
+  position: absolute;
+  transform: rotate(315deg);
+  width: 0.5rem;
+  height: 2.5rem;
+  top: 9rem;
+  left: 10.5rem;
+}

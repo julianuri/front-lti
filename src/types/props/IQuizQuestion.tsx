@@ -1,12 +1,16 @@
+import QuestionTypeEnum from '../enums/QuestionTypeEnum';
+
 interface IQuizQuestion {
-  question: string
-  options: Option[]
-  order: number
-  answer: number
+  id?: number,
+  question: string;
+  options: Option[];
+  order: number;
+  answer: number | boolean | boolean[];
+  type: QuestionTypeEnum
 }
 
 interface Option {
-  option: string
+  option: string;
 }
 
 export default IQuizQuestion;

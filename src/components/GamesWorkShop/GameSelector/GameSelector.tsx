@@ -1,56 +1,61 @@
-import toast from 'react-hot-toast';
 import classes from './GameSelector.module.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getGames } from '../../../service/GameService';
 import GameCard from './GameCard/GameCard';
-import Link from 'next/link';
-import styles from '../Creator/GenericCreator.module.scss';
 import IGame from '../../../types/IGame';
-import GenericCreator from '../Creator/GenericCreator';
-import GameEnum from '../../../types/enums/GameEnum';
-import SnakeMaker from '../Creator/Snake/SnakeMaker';
-import MemoryCreator from '../Creator/Memory/MemoryCreator';
-
-interface ISelectedGame {
-  id: number
-  name: string
-}
+import { useRouter } from 'next/router';
+import { getAllQuestionBanks } from '../../../service/QuestionBankService';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import gameEnum from '../../../types/enums/GameEnum';
+import { notifications } from '@mantine/notifications';
 
 const GameSelector = () => {
 
+  const { userId } = useSelector((state: RootState) => state.auth);
   const [games, setGames] = useState<IGame[]>([]);
-  const [selectedGame, setSelectedGame] = useState<ISelectedGame>({ name: '', id: 0 });
+  const router = useRouter();
+  const effectRan = useRef(false);
 
   useEffect(() => {
-    getGames().then(async (response) => {
-      setGames(response.data);
-    }).catch((error) =>
-      toast.error(error.message)
-    );
+    if (effectRan.current || process.env.NODE_ENV !== 'development') {
+      Promise.all([getGames(), getAllQuestionBanks(userId)])
+        .then(([gamesRS, questionBanksRS]) => {
+          if (questionBanksRS.data.length === 0) {
+            const newGames = gamesRS.data.filter((game: IGame) => game.id !== gameEnum.quiz && game.id !== gameEnum.snake);
+            setGames(newGames);
+            notifications.show({
+              message: 'Agrega un banco de preguntas para crear tareas con los juegos de "Quiz" y "Serpientes y Escaleras"',
+              autoClose: 10000,
+            });
+          } else {
+            setGames(gamesRS.data);
+          }
+        })
+        .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+    }
+    return () => {
+      effectRan.current = true;
+    };
   }, []);
 
-  const gameSelector = (
+
+  return (
     <div className={classes.container}>
       <div className={classes.cardsContainer}>
         {games.map((game: IGame) => {
           return (
-            <GameCard key={game.id} id={game.id} name={game.name} setGame={setSelectedGame} svgImage={game.svgRoute} />
+            <GameCard
+              key={game.id}
+              id={game.id}
+              name={game.name}
+              setGame={() => void router.replace(`/assignment/create/${game.name}`)}
+              svgImage={game.svgRoute}
+            />
           );
         })}
       </div>
-      <Link className={styles.button} href='/instructor'>Back</Link>
     </div>
-  );
-
-  return (
-    <>
-      {selectedGame.id != 0 && (selectedGame.id == GameEnum.quiz || selectedGame.id == GameEnum.hangman) ? <GenericCreator gameId={selectedGame.id} /> : null}
-      {selectedGame.id == GameEnum.memory ? <MemoryCreator gameId={selectedGame.id} /> : null}
-      {selectedGame.id == GameEnum.snake ? <SnakeMaker gameId={selectedGame.id} /> : null}
-      {(selectedGame.id == 0)
-        ? gameSelector
-        : <button className={styles.button} onClick={() => setSelectedGame({ name: '', id: 0 })}>Back</button>}
-    </>
   );
 };
 

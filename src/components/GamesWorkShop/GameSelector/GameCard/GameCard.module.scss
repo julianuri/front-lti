@@ -9,6 +9,7 @@
   flex-direction: column;
   background-color: colors.$base-green;
   border: colors.$dark-green 0.3rem solid;
+  max-width: 25%;
 
   & > p {
     margin: auto;

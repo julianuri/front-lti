@@ -15,18 +15,18 @@ import { notifications } from '@mantine/notifications';
 
 const Board = ({ assignmentId }: IBoardProps) => {
 
-  const { userId, launchId } = useSelector((state: RootState) => state.auth);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [showScore, setShowScore] = useState(false);
-  const [score, setScore] = useState(0);
-  const [answers, setAnswers] = useState<any[]>([]);
-  const [question, setQuestion] = useState<ICard>({
+	const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
+	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [showScore, setShowScore] = useState(false);
+	const [score, setScore] = useState(0);
+	const [answers, setAnswers] = useState<number[]>([]);
+	const [question, setQuestion] = useState<ICard>({
     question: '',
     options: [],
     type: QuestionTypeEnum.SIMPLE
   });
-  const [totalQuestions, setTotalQuestions] = useState(999);
-  const dataFetchedRef = useRef(false);
+	const [totalQuestions, setTotalQuestions] = useState(999);
+	const dataFetchedRef = useRef(false);
   const [stars, setStars] = useState(0);
 
   useEffect(() => {
@@ -54,23 +54,22 @@ const Board = ({ assignmentId }: IBoardProps) => {
               type: data.game_data.info.type,
             });
 
-            setTotalQuestions(data.totalQuestions);
-          } else if (currentQuestion >= totalQuestions) {
-            setLTIScore({ assignmentId, userId, gameId: gameEnum.quiz, launchId }).then(
-              (data) => {
-                setScore(data.score);
-                setShowScore(true);
-                setStars(data.score/20);
-              },
-            );
-          }
-        })
-        .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
-    }
+					setTotalQuestions(data.totalQuestions);
+				} else if (currentQuestion >= totalQuestions) {
+					setLTIScore({assignmentId, userId, gameId: gameEnum.quiz, sessionId, launchId}).then(
+            (data) => {
+							setScore(data.score);
+							setShowScore(true);
+              setStars(data.score/20);
+						}
+          );
+				}
+			}).catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+		}
     return () => {
       dataFetchedRef.current = true;
     };
-  }, [currentQuestion]);
+	}, [currentQuestion]);
 
   const handleAnswerOptionClick = (chosenAnswerIndex: any) => {
     setAnswers([...answers, chosenAnswerIndex]);

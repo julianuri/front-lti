@@ -30,12 +30,12 @@ type BoardData = {
 };
 
 const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
-  const { userId } = useSelector((state: RootState) => state.auth);
+  const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
   const [boardData, setBoardData] = useState<BoardData>({
     tiles_per_row: -1,
     tiles_per_column: 1,
     rem_per_tile: 4,
-  });
+  } as BoardData);
   const [hasWon, setHasWon] = useState(false);
   const [ROLLS_TO_SHOW_QUESTION, setRollsToShowQuestion] = useState<number>(0);
   const [diceNumber, setDiceNumber] = useState(1);
@@ -118,7 +118,9 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
       assignmentId,
       userId,
       gameId,
-      answer
+      answer,
+      sessionId,
+      launchId
     };
 
     getRun(request)

@@ -11,8 +11,7 @@ import { notifications } from '@mantine/notifications';
 
 const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   const BODY_PARTS = 5;
-
-  const { userId } = useSelector((state: RootState) => state.auth);
+  const { userId, sessionId, launchId } = useSelector((state: RootState) => state.auth);
   const [word, setWord] = useState<string>('');
   const [order, setOrder] = useState<number>(0);
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
@@ -45,13 +44,14 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
               setOrder(data.game_data.info.order);
             }
 
-            setWord(data.game_data.info.word_to_guess);
-            setTotalQuestions(data.totalQuestions);
-            setClue(data.game_data.info.clue);
-            setHasWon(null);
-            setMistakes(0);
-          } else if (order >= totalQuestions) {
-            setLTIScore({ assignmentId, userId, gameId }).then((data) => {
+          setWord(data.game_data.info.word_to_guess);
+          setTotalQuestions(data.totalQuestions);
+          setClue(data.game_data.info.clue);
+          setHasWon(null);
+          setMistakes(0);
+        } else if (order >= totalQuestions) {
+          setLTIScore({assignmentId, userId, gameId, sessionId, launchId})
+            .then((data) => {
               setScore(data.score);
             });
           }

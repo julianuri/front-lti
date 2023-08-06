@@ -21,7 +21,7 @@ const HangmanCreator = () => {
   const dispatch = useDispatch();
   const [opened, { open, close }] = useDisclosure(false);
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl  } = useSelector((state: RootState) => state.auth);
 
   const schema = object().shape({
     assignmentName: string().required(),
@@ -55,7 +55,9 @@ const HangmanCreator = () => {
       questions: [...items],
       courseId: contextId,
       gameId: GameEnum.hangman,
-      requiredAssignmentId: null
+      requiredAssignmentId: null,
+      resourceId: resourceId,
+      lineitemUrl: lineitemUrl,
     };
 
     if (data.requiredAssignmentId != '') {

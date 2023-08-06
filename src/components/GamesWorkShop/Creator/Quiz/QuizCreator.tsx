@@ -16,7 +16,7 @@ const QuizCreator = () => {
 
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId, userId } = useSelector((state: RootState) => state.auth);
+  const { contextId, userId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const [questionBanks, setQuestionBanks] = useState([]);
 
   const schema = object().shape({
@@ -58,7 +58,9 @@ const QuizCreator = () => {
       courseId: contextId,
       gameId: gameEnum.quiz,
       questionBankId: data.questionBankId,
-      requiredAssignmentId: null
+      requiredAssignmentId: null,
+      resourceId: resourceId,
+      lineitemUrl: lineitemUrl,
     };
 
     if (data.questionBankId == '') {

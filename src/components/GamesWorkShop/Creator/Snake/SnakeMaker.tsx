@@ -14,7 +14,7 @@ const SnakeMaker = function ({ gameId }: { gameId: number }) {
   const dispatch = useDispatch();
   const { userId } = useSelector((state: RootState) => state.auth);
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const [questionBanks, setQuestionBanks] = useState([]);
   const {
     register,
@@ -41,6 +41,8 @@ const SnakeMaker = function ({ gameId }: { gameId: number }) {
       questionBankId: data.questionBankId,
       rollsToShowQuestion: data.rollsToShowQuestion,
       board: selectedCarouselItem,
+      resourceId: resourceId,
+      lineitemUrl: lineitemUrl,
     };
 
     if (data.questionBankId == '') {

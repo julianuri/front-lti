@@ -41,7 +41,7 @@ const QuestionBanks = () => {
     dropBank(id)
       .then(async () => {
         setQuestionBanks([...questionBanks.filter(bank => bank.id !== id)]);
-        notifications.show({ message: 'El banco fue borrado exitosamente', autoClose: false});
+        notifications.show({ message: 'El banco fue borrado exitosamente'});
       })
       .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
   };

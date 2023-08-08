@@ -86,7 +86,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
     saveQuestionBank(request)
       .then(async () => {
         void router.push('/banks');
-        notifications.show({ message: '¡Banco guardado!', autoClose: false, });
+        notifications.show({ message: '¡Banco guardado!', });
       })
       .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
   };

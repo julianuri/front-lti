@@ -22,7 +22,7 @@ const RegisterForm = () => {
             userId: response.id,
           }),
         );
-        notifications.show({ message: 'Usuario Registrado', autoClose: false, });
+        notifications.show({ message: 'Usuario Registrado', });
         router.push('lti-config');
       })
       .catch((error) => {

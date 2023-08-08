@@ -7,7 +7,7 @@ import {
 } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
-import Avatar, { AvatarConfig, genConfig } from 'react-nice-avatar';
+import Avatar, { genConfig } from 'react-nice-avatar';
 import { getAvatarConfig, saveAvatarConfig } from '../service/AvatarService';
 import { Box, NavLink } from '@mantine/core';
 import {
@@ -24,7 +24,8 @@ const Layout = (props: any) => {
   const dispatch = useDispatch();
   const route = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [avatar, setAvatar] = useState<AvatarConfig>({});
+  const { avatarConfig } = useSelector((state: RootState) => state.avatarConfig);
+  const [avatar, setAvatar] = useState({...avatarConfig});
   const { role, userId } = useSelector((state: RootState) => state.auth);
   const [roleUI, setRole] = useState('');
   const hasLoaded = useRef<boolean>(false);
@@ -106,6 +107,10 @@ const Layout = (props: any) => {
       ]);
     }
   }, [role]);
+
+  useEffect(() => {
+    setAvatar(avatarConfig);
+  }, [avatarConfig]);
 
   useEffect(() => {
     if ((hasLoaded.current || process.env.NODE_ENV !== 'development') && userId != null) {

@@ -29,7 +29,6 @@ const AvatarBuilder = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
   } = useForm();
   const { avatarConfig } = useSelector(
@@ -38,12 +37,10 @@ const AvatarBuilder = () => {
   const [avatarEditor, setAvatarEditor] = useState(avatarConfig);
 
   const onSubmit = (data: any) => {
-    console.table(data);
-
     saveAvatarConfig(data, userId)
       .then(() => {
         dispatch(avatarSliceActions.saveConfig(data));
-        notifications.show({ message: 'Tu avatar ha sido modificado', autoClose: false, });
+        notifications.show({ message: 'Tu avatar ha sido modificado' });
       })
       .catch((error) => notifications.show({ message:error.message, autoClose: false, color: 'red'}));
   };

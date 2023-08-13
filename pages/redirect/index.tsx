@@ -11,11 +11,11 @@ function RedirectPage() {
 
 	useEffect(() => {
 		if (role === RoleEnum.STUDENT) {
-		  dispatchUser();
-		  void router.push({ pathname: 'student', query: { ...router.query } });
+			dispatchUser();
+			void router.push({ pathname: 'student', query: { ...router.query } });
 		} else if (role === RoleEnum.TEACHER) {
-		  dispatchUser();
-		  void router.push({ pathname: 'assignment/create', query: { ...router.query } });
+			dispatchUser();
+			void router.push({ pathname: 'assignment', query: { ...router.query } });
 		}
 	}, [router.isReady]);
 

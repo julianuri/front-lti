@@ -37,28 +37,33 @@ const Layout = (props: any) => {
     icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
     childrenOffset: 28,
     role: 'TEACHER|STUDENT',
-    children: [
-      { key: 0, label: 'Crear tareas', href: '/assignment/create', role: '' },
-      { key: 1, label: 'Editar tareas', href: '/assignment/edit', role: '' },
-      { key: 2, label: 'Eliminar tareas', href: '/assignment/delete', role: '' }
-    ]
+    href: '/assignment'
   },
     {
       key: 1,
+      variant: 'light',
+      label: 'Tareas',
+      icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
+      childrenOffset: 28,
+      role: 'STUDENT',
+      href: '/student/assignments'
+    },
+    {
+      key: 2,
       label: 'Banco de Preguntas',
       icon: <IconQuestionMark size={36} strokeWidth={2} color={'#407fbf'} />,
       role: 'TEACHER',
       href: '/banks'
     },
     {
-      key: 2,
+      key: 3,
       label: 'Estadísticas',
       role: 'TEACHER|STUDENT',
       icon: <IconReportAnalytics size={36} strokeWidth={2} color={'#407fbf'} />,
       childrenOffset: 28
     },
     {
-      key: 3,
+      key: 4,
       label: 'Avatar',
       role: 'STUDENT',
       icon: <IconReportAnalytics size={36} strokeWidth={2} color={'#407fbf'} />,
@@ -75,30 +80,34 @@ const Layout = (props: any) => {
         label: 'Tareas',
         icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
         childrenOffset: 28,
-        role: 'TEACHER|STUDENT',
-        children: [
-          { key: 0, label: 'Crear tareas', href: '/assignment/create', role: 'TEACHER' },
-          { key: 1, label: 'Editar tareas', href: '/assignment/edit', role: 'TEACHER' },
-          { key: 2, label: 'Eliminar tareas', href: '/assignment/delete', role: 'TEACHER' },
-          { key: 3, label: 'Ver tareas', href: '/student/assignments', role: 'STUDENT' },
-        ]
+        role: 'TEACHER',
+        href: '/assignment',
       },
         {
           key: 1,
+          variant: 'light',
+          label: 'Tareas',
+          icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
+          childrenOffset: 28,
+          role: 'STUDENT',
+          href: '/student/assignments'
+        },
+        {
+          key: 2,
           label: 'Banco de Preguntas',
           icon: <IconQuestionMark size={36} strokeWidth={2} color={'#407fbf'} />,
           role: 'TEACHER',
           href: '/banks'
         },
         {
-          key: 2,
+          key: 3,
           label: 'Estadísticas',
           icon: <IconReportAnalytics size={36} strokeWidth={2} color={'#407fbf'} />,
           childrenOffset: 28,
           role: 'TEACHER|STUDENT',
         },
         {
-          key: 3,
+          key: 4,
           label: 'Avatar',
           role: 'STUDENT',
           icon: <IconUserCircle size={36} strokeWidth={2} color={'#407fbf'} />,
@@ -149,9 +158,9 @@ const Layout = (props: any) => {
 
   return (
     <div className={classes.lti_page}>
-      <Box w={'100%'}>
+      { (roleUI !== '') ? <Box w={'100%'}>
         { roleUI.includes(RoleEnum.STUDENT) ? <Avatar style={{ width: '8rem', height: '8rem', margin: 'auto', marginBottom: '1rem' }} {...avatar} /> : null}
-        {menu.filter(c => c.role.includes(roleUI)).map((navLink) => {
+        { menu.filter(c => c.role.includes(roleUI)).map((navLink) => {
         return <NavLink active={navLink.key === activeIndex}
                         onClick={() => {
                           setActiveIndex(navLink.key);
@@ -170,7 +179,7 @@ const Layout = (props: any) => {
             return <NavLink key={child.key} label={child.label} component={Link} href={child.href}></NavLink>;
           }): null}
         </NavLink>;
-      })}</Box>
+      })}</Box> : null}
       <main className={classes.main}>{props?.children}
       </main>
     </div>

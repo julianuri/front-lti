@@ -5,7 +5,7 @@ import { avatarSliceActions, RootState } from '../../../redux/store';
 import { useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import Avatar from 'react-nice-avatar';
-import AvatarParts from '../../../types/enums/AvatarParts';
+import AvatarParts from '../../../types/consts/AvatarParts';
 import { saveAvatarConfig } from '../../../service/AvatarService';
 import { notifications } from '@mantine/notifications';
 

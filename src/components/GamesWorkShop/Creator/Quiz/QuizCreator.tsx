@@ -11,25 +11,33 @@ import { saveAssignment } from '../../../../service/AssignmentService';
 import { getAllQuestionBanks } from '../../../../service/QuestionBankService';
 import { notifications } from '@mantine/notifications';
 import gameEnum from '../../../../types/enums/GameEnum';
+import { useRouter } from 'next/router';
+import useDifferentAssignments from '../../../../hooks/useDifferentAssignments';
 
-const QuizCreator = () => {
+interface RouteAssignment {
+  assignmentId: number | typeof NaN;
+}
 
+const QuizCreator = ({ assignmentId }: RouteAssignment) => {
+
+  const router = useRouter();
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId, userId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
   const [questionBanks, setQuestionBanks] = useState([]);
+  const editAssignment = !Number.isNaN(assignmentId);
 
   const schema = object().shape({
     assignmentName: string().required(),
     attempts: number().min(1).max(20),
-    requiredAssignmentId: string(),
+    requiredAssignmentId: string()
   });
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
-    reset
+    setValue,
+    formState: { errors, isValid }
   } = useForm({
     mode: 'all',
     resolver: yupResolver(schema),
@@ -42,9 +50,19 @@ const QuizCreator = () => {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
-  const transformedAssignments = assignments.map((a: IAssignment) =>  { return {value: a.id, label: a.name};});
+  const transformedAssignments = useDifferentAssignments(assignments, editAssignment, assignmentId);
 
   useEffect(() => {
+    if (editAssignment) {
+      const assignment = (assignments as IAssignment[])
+        .find(a => a.id === assignmentId) as IAssignment;
+
+      setValue('assignmentName', assignment.name);
+      setValue('attempts', assignment.attempts);
+      setValue('requiredAssignmentId', assignment.requiredAssignment);
+      setValue('questionBankId', assignment.questionBank);
+    }
+
     getAllQuestionBanks(userId).then((data) => {
       setQuestionBanks(data.data);
     });
@@ -60,8 +78,12 @@ const QuizCreator = () => {
       questionBankId: data.questionBankId,
       requiredAssignmentId: null,
       resourceId: resourceId,
-      lineitemUrl: lineitemUrl,
+      lineitemUrl: lineitemUrl
     };
+
+    if (editAssignment) {
+      request.id = assignmentId;
+    }
 
     if (data.questionBankId == '') {
       request.questionBankId = questionBanks[0].id;
@@ -71,36 +93,36 @@ const QuizCreator = () => {
       request.requiredAssignmentId = data.requiredAssignmentId;
     }
 
-   saveAssignment(request)
+
+    saveAssignment(request)
       .then(async (response) => {
         dispatch(
           assignmentSliceActions.saveAssignment({
-            id: response.data.id,
-            name: response.data.name,
-            gameId: response.data.gameId
+            ...response.data
           })
         );
-        setLoading(false);
-        reset();
-        notifications.show({message: 'La tarea fue guardada exitosamente', autoClose: 3000});
+        void router.replace({ pathname: '/assignment' });
+
+        notifications.show({ message: 'La tarea fue guardada exitosamente', autoClose: 3000 });
       })
-      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red' }));
   };
 
   return (
     <>
       <Container size={1000}>
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
-          <form onSubmit={handleSubmit(onSubmit, (errors)=> console.table(errors))}>
+          <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
 
               <Grid.Col span={4}>
                 <TextInput
+                  maxLength={50}
                   name='assignmentName'
                   control={control}
                   label='Nombre de la Tarea'
                   error={errors.assignmentName !== undefined ? 'Introduzca nombre' : null}
-                  withAsterisk={errors.assignmentName !== undefined}/>
+                  withAsterisk={errors.assignmentName !== undefined} />
               </Grid.Col>
 
               <Grid.Col span={2}>
@@ -119,7 +141,7 @@ const QuizCreator = () => {
                 <NativeSelect
                   name='requiredAssignmentId'
                   control={control}
-                  data={[{value: '' , label: 'No seleccionada'}, ...transformedAssignments]}
+                  data={[{ value: '', label: 'No seleccionada' }, ...transformedAssignments]}
                   label='Tarea asociada'
                 />
               </Grid.Col>
@@ -128,18 +150,18 @@ const QuizCreator = () => {
                 <NativeSelect
                   name='questionBankId'
                   control={control}
-                  data={[ ...questionBanks.map((a: any) => {
-                    return {value: a.id, label: a.name};
+                  data={[...questionBanks.map((a: any) => {
+                    return { value: a.id, label: a.name };
                   })]}
                   label='Selecciona un banco'
                 />
               </Grid.Col>
 
-              <Grid.Col span={12} style={{paddingTop: 0}}>
+              <Grid.Col span={12} style={{ paddingTop: 0 }}>
                 <Group position='right' mt='md' style={{ 'marginTop': '1rem' }}>
 
                   <Button loading={loading} type='submit' disabled={!isValid} variant='outline'>
-                    Crear Tarea
+                    {(editAssignment) ? 'Editar Tarea' : 'Crear Tarea'}
                   </Button>
                 </Group>
               </Grid.Col>

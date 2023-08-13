@@ -1,7 +1,7 @@
 import IBoardProps from '../../../types/props/IBoardProps';
 import styles from './Snakes.module.scss';
 import { useEffect, useRef, useState } from 'react';
-import DirectionEnum from '../../../types/enums/DirectionEnum';
+import DirectionEnum from '../../../types/consts/DirectionEnum';
 import OrderEnum from '../../../types/enums/OrderEnum';
 import Die from './Dice/Dice';
 import Link from 'next/link';

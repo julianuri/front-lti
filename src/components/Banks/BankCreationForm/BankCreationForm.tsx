@@ -107,6 +107,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
 
               <Grid.Col span={12}>
                 <TextInput
+                  maxLength={50}
                   name='bankName'
                   control={control}
                   label='Nombre del Banco'
@@ -178,6 +179,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
 
       <Modal opened={opened}
              onClose={close}
+             styles={{title: { color: '#228be6', fontWeight: 'bold' }}}
              title={(bankId !== undefined) ? 'Modificar Pregunta' : 'Agregar Pregunta'}
              centered>
 

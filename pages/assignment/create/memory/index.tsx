@@ -1,9 +1,11 @@
-import GameEnum from '../../../../src/types/enums/GameEnum';
 import MemoryCreator from '../../../../src/components/GamesWorkShop/Creator/Memory/MemoryCreator';
+import { useRouter } from 'next/router';
 
-function CreateQuizPage() {
+function CreateMemoryPage() {
+  const router = useRouter();
+  const { assignmentId } = router.query;
 
-  return <MemoryCreator gameId={GameEnum.memory}/>;
+  return <MemoryCreator assignmentId={parseInt(assignmentId as string)}/>;
 }
 
-export default CreateQuizPage;
+export default CreateMemoryPage;

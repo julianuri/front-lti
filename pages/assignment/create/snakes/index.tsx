@@ -1,9 +1,11 @@
-import GameEnum from '../../../../src/types/enums/GameEnum';
 import SnakeMaker from '../../../../src/components/GamesWorkShop/Creator/Snake/SnakeMaker';
+import { useRouter } from 'next/router';
 
-function CreateQuizPage() {
+function CreateSnakesPage() {
+  const router = useRouter();
+  const { assignmentId } = router.query;
 
-  return <SnakeMaker gameId={GameEnum.snake}/>;
+  return <SnakeMaker assignmentId={parseInt(assignmentId as string)}/>;
 }
 
-export default CreateQuizPage;
+export default CreateSnakesPage;

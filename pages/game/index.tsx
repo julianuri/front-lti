@@ -26,7 +26,7 @@ function GamePage() {
           query: { ...router.query },
         });
         break;
-      case GameEnum.snake:
+      case GameEnum.snakes:
         void router.push({
           pathname: '/game/snake',
           query: { ...router.query },

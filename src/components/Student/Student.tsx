@@ -1,55 +1,41 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { assignmentSliceActions, RootState } from '../../redux/store';
-import { getAssignments } from '../../service/AssignmentService';
-import { useEffect, useRef } from 'react';
-import styles from './Student.module.scss';
-import Link from 'next/link';
-import IAssignment from '../../types/IAssignment';
-import { notifications } from '@mantine/notifications';
+import { Paper } from '@mantine/core';
+import { useRouter } from 'next/router';
 
 const Student = () => {
-  const dispatch = useDispatch();
-  const { userId, contextId } = useSelector(
-    (state: RootState) => state.auth,
-  );
-  const hasLoaded = useRef(false);
+  const router = useRouter();
+  const {
+    launchedGameId,
+    attemptsLimitHasBeenReached,
+  } = router.query;
 
-  //TODO: EVALUATE IF USE EFFECT SHOULD BE REMOVED WHEN STUDENT LAYOUT IS CHANGED
-  useEffect(() => {
-    if (userId !== undefined) {
-      if (hasLoaded.current) {
-        getAssignments(userId, contextId, true)
-          .then((response) => {
-            if (response.data?.length === 0) {
-              notifications.show({ message: 'El maestro no ha creado ninguna tarea', autoClose: 3000});
-            } else {
-              dispatch(
-                assignmentSliceActions.saveAssignments(
-                  response.data.map((a: IAssignment) => {
-                    return { ...a };
-                  }),
-                ),
-              );
-            }
-          })
-          .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red' }));
-      } else {
-        hasLoaded.current = true;
-      }
+  const getMessage = function() {
+    if (launchedGameId === undefined) {
+      return 'Su profesor ha publicado una tarea sin configurar';
+    } else if (attemptsLimitHasBeenReached !== undefined) {
+      return 'Ha llegado al límite de intentos para la tarea';
     }
-  }, [userId]);
+  };
+
+  const message = getMessage();
+
 
   return (
-    <>
-      <div className={styles.cardsContainer}>
-        <Link className={styles.card} href={'/student/assignments'}>
-          Assignments
-        </Link>
-        <Link className={styles.card} href={'student/avatar'}>
-          Avatar Builder
-        </Link>
-      </div>
-    </>
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }}
+           style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             gap: '1rem',
+             padding: '1rem',
+             color: '#228be6',
+             fontWeight: 'bold'
+           }}>
+      <p>{message}</p>
+    </Paper>
   );
 };
 

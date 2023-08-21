@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import DirectionEnum from '../../../types/consts/DirectionEnum';
 import OrderEnum from '../../../types/enums/OrderEnum';
 import Die from './Dice/Dice';
-import Link from 'next/link';
 import { getRun } from '../../../service/RunService';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
@@ -14,6 +13,7 @@ import Card from '../Quiz/Card/Card';
 import ICard from '../../../types/ICard';
 import QuestionTypeEnum from '../../../types/enums/QuestionTypeEnum';
 import { notifications } from '@mantine/notifications';
+import { Paper, Rating } from '@mantine/core';
 
 type BoardData = {
   path: string;
@@ -56,7 +56,9 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
   const [answer, setAnswer] = useState<{id:number, answer: any}>({ id: -1, answer: -1 });
   const dataFetchedRef = useRef(false);
   const shouldUpdatePositionRef = useRef(false);
-  const [score, setScore] = useState<number>(-1);
+  const [score, setScore] = useState<number | null>(null);
+  const [showScore, setShowScore] = useState(false);
+  const [stars, setStars] = useState(0);
 
   useEffect(() => {
     if (showModal) {
@@ -138,6 +140,8 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
           setLTIScore(request)
             .then(async (data) => {
               setScore(data.score);
+              setShowScore(true);
+              setStars(data.score/20);
             })
             .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
         }
@@ -360,6 +364,27 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
   };
 
   return (
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }}
+           style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             gap: '1rem',
+             padding: '1rem'
+           }}>
+
+      {showScore ? (
+
+          <div className={styles.scoreSection}>
+            <div> Conseguiste {score} de {100}</div>
+            <Rating fractions={10} value={stars} readOnly />
+          </div>
+
+        ) : (
     <div
       className={styles['main-container']}
       style={{ position: 'relative', display: 'grid' }}
@@ -395,18 +420,8 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
           />
         </>
       ) : null}
-      {score != -1 ? (
-        <div className={styles.score}>
-          Score
-          <br /> {score} / 100
-        </div>
-      ) : (
-        <div className={styles['empty-score']}></div>
-      )}
-      <Link className={styles.button} href="/student/assignments">
-        back
-      </Link>
-    </div>
+    </div>)}
+    </Paper>
   );
 };
 

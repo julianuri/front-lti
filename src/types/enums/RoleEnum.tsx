@@ -1,6 +1,7 @@
 enum RoleEnum {
   STUDENT = 'STUDENT',
-  TEACHER = 'TEACHER'
+  TEACHER = 'TEACHER',
+  ADMIN = 'ADMIN'
 }
 
 export default RoleEnum;

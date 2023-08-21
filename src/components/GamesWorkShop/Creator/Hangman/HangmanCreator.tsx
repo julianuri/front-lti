@@ -21,19 +21,16 @@ interface RouteAssignment {
   assignmentId: number | typeof NaN;
 }
 
-
 const HangmanCreator = ({assignmentId}: RouteAssignment) => {
 
   const router = useRouter();
   const dispatch = useDispatch();
   const [opened, { open, close }] = useDisclosure(false);
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId, resourceId, lineitemUrl  } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl, resourceName, attempts  } = useSelector((state: RootState) => state.auth);
   const editAssignment = !Number.isNaN(assignmentId);
 
   const schema = object().shape({
-    assignmentName: string().required(),
-    attempts: number().min(1).max(20),
     requiredAssignmentId: string(),
   });
 
@@ -47,8 +44,6 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
     mode: 'all',
     resolver: yupResolver(schema),
     defaultValues: {
-      assignmentName: '',
-      attempts: 1,
       requiredAssignmentId: '',
     }
   });
@@ -62,8 +57,6 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
     if (editAssignment) {
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
-      setValue('assignmentName', assignment.name);
-      setValue('attempts', assignment.attempts);
       setValue('requiredAssignmentId', assignment.requiredAssignment);
       setItems(assignment.game_data.map(g => {
         return {
@@ -78,8 +71,8 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
   const onSubmit = (data: any) => {
     setLoading(true);
     const request = {
-      assignmentName: data.assignmentName,
-      attempts: data.attempts,
+      assignmentName: resourceName,
+      attempts: +attempts,
       questions: [...items],
       courseId: contextId,
       gameId: GameEnum.hangman,
@@ -103,6 +96,9 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
             ...response.data
           })
         );
+        dispatch(assignmentSliceActions.saveLinkedAssignment({
+          linkedAssignmentId: response.data.id,
+        }));
         void router.replace({pathname: '/assignment'});
         notifications.show({message: 'La tarea fue guardada exitosamente', autoClose: 3000});
       })
@@ -132,30 +128,7 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
           <form onSubmit={handleSubmit(onSubmit, (errors)=> console.table(errors))}>
             <Grid>
-
-              <Grid.Col span={5}>
-                <TextInput
-                  maxLength={50}
-                  name='assignmentName'
-                  control={control}
-                  label='Nombre de la Tarea'
-                  error={errors.assignmentName !== undefined ? 'Introduzca nombre' : null}
-                  withAsterisk={errors.assignmentName !== undefined}/>
-              </Grid.Col>
-
-              <Grid.Col span={3}>
-                <NumberInput
-                  name='attempts'
-                  control={control}
-                  min={1}
-                  max={20}
-                  label='Intentos'
-                  error={errors.attempts !== undefined ? 'Introduzca número válido' : null}
-                  withAsterisk={errors.attempts !== undefined}
-                />
-              </Grid.Col>
-
-              <Grid.Col span={4}>
+              <Grid.Col span={12}>
                 <NativeSelect
                   name='requiredAssignmentId'
                   control={control}

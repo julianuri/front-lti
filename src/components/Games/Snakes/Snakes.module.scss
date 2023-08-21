@@ -69,3 +69,16 @@
 .overlay {
   @extend %overlay;
 }
+
+.scoreSection {
+  display: flex;
+  font-size: 20px;
+  align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+  gap: 1rem;
+  color: rgb(64, 127, 191);
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+}

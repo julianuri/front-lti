@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import styles from './AvatarBuilder.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { avatarSliceActions, RootState } from '../../../redux/store';
@@ -8,306 +7,349 @@ import Avatar from 'react-nice-avatar';
 import AvatarParts from '../../../types/consts/AvatarParts';
 import { saveAvatarConfig } from '../../../service/AvatarService';
 import { notifications } from '@mantine/notifications';
+import { Button, Grid, Paper } from '@mantine/core';
+import { NativeSelect } from 'react-hook-form-mantine';
+import { object, string } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const AvatarBuilder = () => {
   const dispatch = useDispatch();
   const hairStyle = useRef([
-    { name: 'normal', avatarName: 'normal' },
-    { name: 'long', avatarName: 'womanLong' },
-    { name: 'short', avatarName: 'womanShort' },
+    { name: 'Normal', value: 'normal' },
+    { name: 'Largo', value: 'womanLong' },
+    { name: 'Corto', value: 'womanShort' }
   ]);
 
-  const shirtStyles = useRef(['hoody', 'short', 'polo']);
-  const eyeStyles = useRef(['circle', 'oval', 'smile']);
-  const hatStyles = useRef(['none', 'beanie', 'turban']);
-  const glassesStyles = useRef(['none', 'round', 'square']);
-  const mouthStyles = useRef(['laugh', 'smile', 'peace']);
-  const earSizes = useRef(['small', 'big']);
-  const noseStyles = useRef(['short', 'long', 'round']);
+  const shirtStyles = useRef([
+    { name: 'Cuello', value: 'hoody' },
+    { name: 'Corta', value: 'short' },
+    { name: 'Polo', value: 'polo' }]);
+
+  const eyeStyles = useRef([
+    {name: 'Circulares', value: 'circle'},
+    {name: 'Ovalados', value: 'oval'},
+    {name: 'Entreabiertos', value: 'smile'}]);
+
+  const hatStyles = useRef( [
+    {name: 'Sin Sombrero', value: 'none'},
+    {name: 'Gorro', value: 'beanie'},
+    {name: 'Turbante', value: 'turban'}]);
+
+  const glassesStyles = useRef([
+    {name: 'Sin lentes', value: 'none'},
+    {name: 'Redondos', value: 'round'},
+    {name: 'Cuadrados', value: 'square'}]);
+  const mouthStyles = useRef([
+    {name: 'Sonrisa abierta', value: 'laugh'},
+    {name: 'Sonrisa pequeña', value: 'smile'},
+    {name: 'Sonrisa grande', value: 'peace'}]);
+
+  const earSizes = useRef( [
+    {name: 'Pequeñas', value: 'small'},
+    {name: 'Grandes', value: 'big'}]);
+  const noseStyles = useRef([
+    {name: 'Corta', value: 'short'},
+    {name: 'Normal', value: 'long'},
+    {name: 'Redonda', value: 'round'}]);
 
   const { userId } = useSelector((state: RootState) => state.auth);
+
+  const schema = object().shape({
+    hairStyle: string(),
+    eyeBrowStyle: string(),
+    shirtStyle: string(),
+    eyeStyle: string(),
+    hatStyle: string(),
+    glassesStyle: string(),
+    mouthStyle: string(),
+    earSize: string(),
+    noseStyle: string(),
+    shirtColor: string(),
+    hairColor: string(),
+    faceColor: string(),
+    bgColor: string(),
+  });
+
   const {
+    control,
     register,
     handleSubmit,
-    reset,
-  } = useForm();
+    setValue,
+  } = useForm({
+    mode: 'all',
+    resolver: yupResolver(schema),
+    defaultValues: {
+      hairStyle: '',
+      eyeBrowStyle: '',
+      shirtStyle: '',
+      eyeStyle: '',
+      hatStyle: '',
+      glassesStyle: '',
+      mouthStyle: '',
+      earSize: '',
+      noseStyle: '',
+      shirtColor: '',
+      hairColor: '',
+      faceColor: '',
+      hatColor: '',
+      bgColor: '',
+    }
+  });
+
   const { avatarConfig } = useSelector(
-    (state: RootState) => state.avatarConfig,
+    (state: RootState) => state.avatarConfig
   );
   const [avatarEditor, setAvatarEditor] = useState(avatarConfig);
 
   const onSubmit = (data: any) => {
-    saveAvatarConfig(data, userId)
+    const request = {sex: 'woman', ...data};
+    saveAvatarConfig(request, userId)
       .then(() => {
-        dispatch(avatarSliceActions.saveConfig(data));
+        dispatch(avatarSliceActions.saveConfig(request));
         notifications.show({ message: 'Tu avatar ha sido modificado' });
       })
-      .catch((error) => notifications.show({ message:error.message, autoClose: false, color: 'red'}));
+      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red' }));
+
   };
 
   useEffect(() => {
-    reset({ ...avatarConfig });
+    setValue('hairStyle', avatarConfig.hairStyle);
+    setValue('eyeBrowStyle', avatarConfig.eyeBrowStyle);
+    setValue('shirtStyle', avatarConfig.shirtStyle);
+
+    setValue('eyeStyle', avatarConfig.eyeStyle);
+    setValue('hatStyle', avatarConfig.hatStyle);
+    setValue('glassesStyle', avatarConfig.glassesStyle);
+    setValue('mouthStyle', avatarConfig.mouthStyle);
+    setValue('earSize', avatarConfig.earSize);
+    setValue('noseStyle', avatarConfig.noseStyle);
+    setValue('shirtColor', avatarConfig.shirtColor);
+
+    setValue('hatColor', avatarConfig.hatColor);
+    setValue('hairColor', avatarConfig.hairColor);
+    setValue('faceColor', avatarConfig.faceColor);
+    setValue('bgColor', avatarConfig.bgColor);
   }, []);
 
   const modifyAvatar = (e: any, key: string) => {
+    console.log(e);
     const aux = { ...avatarEditor };
     aux[key] = e;
     setAvatarEditor(aux);
   };
 
   return (
-    <div className={styles.container}>
+    <Paper style={{minHeight: '100%', padding: '1rem' }}>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <Avatar
-          style={{ width: '12rem', height: '12rem', gridColumn: '1/4' }}
-          {...avatarEditor}
-        />
+        <Grid style={{gap: '1rem'}} align={'center'} justify={'center'}>
 
-        <div className={styles.field}>
-          <label>Hair Style</label>
-          <select
-            {...register(AvatarParts.HAIR_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.HAIR_STYLE);
-              },
-            })}
-          >
-            {hairStyle.current.map((a: any) => {
-              return (
-                <option key={a.name} value={a.avatarName}>
-                  {a.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col style={{
+            display: 'flex',
+            justifyContent: 'center'
+          }} span={12}>
+            <Avatar
+              style={{ width: '10rem', height: '10rem', gridColumn: '1/4' }}
+              {...avatarEditor}
+            />
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Eyebrow Style</label>
-          <select
-            {...register(AvatarParts.EYEBROW_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.EYEBROW_STYLE);
-              },
-            })}
-          >
-            {[
-              { name: 'normal', value: 'up' },
-              { name: 'stylized', value: 'upWoman' },
-            ].map((a: any) => {
-              return (
-                <option key={a.name} value={a.value}>
-                  {a.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='hairStyle'
+                          control={control}
+                          data={[...hairStyle.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Cabello'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.HAIR_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Shirt Style</label>
-          <select
-            {...register(AvatarParts.SHIRT_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.SHIRT_STYLE);
-              },
-            })}
-          >
-            {shirtStyles.current.map((a: any) => {
-              return (
-                <option className={styles.option} key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='eyeBrowStyle'
+                          control={control}
+                          data={[
+                            { name: 'Normales', value: 'up' },
+                            { name: 'Estilizadas', value: 'upWoman' }
+                          ].map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })}
+                          label='Pestañas'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.EYEBROW_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Nose Style</label>
-          <select
-            {...register(AvatarParts.NOSE_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.NOSE_STYLE);
-              },
-            })}
-          >
-            {noseStyles.current.map((a: string) => {
-              return (
-                <option className={styles.option} key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='shirtStyle'
+                          control={control}
+                          data={[...shirtStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Camisa'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.SHIRT_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Hat Style</label>
-          <select
-            {...register(AvatarParts.HAT_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.HAT_STYLE);
-              },
-            })}
-          >
-            {hatStyles.current.map((a: string) => {
-              return (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='noseStyle'
+                          control={control}
+                          data={[...noseStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Nariz'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.NOSE_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Glasses Style</label>
-          <select
-            {...register(AvatarParts.GLASSES_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.GLASSES_STYLE);
-              },
-            })}
-          >
-            {glassesStyles.current.map((a: string) => {
-              return (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='glassesStyle'
+                          control={control}
+                          data={[...glassesStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Lentes'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.GLASSES_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label htmlFor={AvatarParts.EYE_STYLE}>Eye Style</label>
-          <select
-            id={AvatarParts.EYE_STYLE}
-            {...register(AvatarParts.EYE_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.EYE_STYLE);
-              },
-            })}
-          >
-            {eyeStyles.current.map((item: string) => {
-              return (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='eyeStyle'
+                          control={control}
+                          data={[...eyeStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Ojos'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.EYE_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Ear Size</label>
-          <select
-            {...register(AvatarParts.EAR_SIZE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.EAR_SIZE);
-              },
-            })}
-          >
-            {earSizes.current.map((a: string) => {
-              return (
-                <option className={styles.option} key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='earSize'
+                          control={control}
+                          data={[...earSizes.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Orejas'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.EAR_SIZE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Mouth Style</label>
-          <select
-            {...register(AvatarParts.MOUTH_STYLE, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.MOUTH_STYLE);
-              },
-            })}
-          >
-            {mouthStyles.current.map((a: string) => {
-              return (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='mouthStyle'
+                          control={control}
+                          data={[...mouthStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Boca'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.MOUTH_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Hat Color</label>
-          <input
-            type="color"
-            {...register(AvatarParts.HAT_COLOR, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.HAT_COLOR);
-              },
-            })}
-          />
-        </div>
 
-        <div className={styles.field}>
-          <label>Hair Color</label>
-          <input
-            type="color"
-            {...register(AvatarParts.HAIR_COLOR, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.HAIR_COLOR);
-              },
-            })}
-          />
-        </div>
+          <Grid.Col span={2}>
+            <NativeSelect name='hatStyle'
+                          control={control}
+                          data={[...hatStyles.current.map((a: any) => {
+                            return { value: a.value, label: a.name };
+                          })]}
+                          label='Sombrero'
+                          onChange={(e) => {
+                            modifyAvatar(e.target.value, AvatarParts.HAT_STYLE);
+                          }}>
+            </NativeSelect>
+          </Grid.Col>
 
-        <div className={styles.field}>
-          <label>Shirt Color</label>
-          <input
-            type="color"
-            {...register(AvatarParts.SHIRT_COLOR, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.SHIRT_COLOR);
-              },
-            })}
-          />
-        </div>
+          <Grid.Col span={2} />
 
-        <div className={styles.field}>
-          <label>Face Color</label>
-          <input
-            type="color"
-            {...register(AvatarParts.FACE_COLOR, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.FACE_COLOR);
-              },
-            })}
-          />
-        </div>
 
-        <div className={styles.field}>
-          <label>Background Color</label>
-          <input
-            type="color"
-            {...register(AvatarParts.BG_COLOR, {
-              onChange: (e) => {
-                modifyAvatar(e.target.value, AvatarParts.BG_COLOR);
-              },
-            })}
-          />
-        </div>
+          <Grid.Col style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}} span={2}>
+            <label>Color sombrero</label>
+            <input
+              type="color"
+              {...register(AvatarParts.HAT_COLOR, {
+                onChange: (e) => {
+                  modifyAvatar(e.target.value, AvatarParts.HAT_COLOR);
+                },
+              })}
+            />
+          </Grid.Col>
 
-        <input
-          className={styles.button + ' ' + styles.atTheEnd}
-          value="Save Avatar"
-          type="submit"
-        />
+          <Grid.Col style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}} span={2}>
+            <label>Color cabello</label>
+            <input
+              type='color'
+              {...register(AvatarParts.HAIR_COLOR, {
+                onChange: (e) => {
+                  modifyAvatar(e.target.value, AvatarParts.HAIR_COLOR);
+                }
+              })}
+            />
+          </Grid.Col>
+
+          <Grid.Col style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}} span={2}>
+            <label>Color camisa</label>
+            <input
+              type='color'
+              {...register(AvatarParts.SHIRT_COLOR, {
+                onChange: (e) => {
+                  modifyAvatar(e.target.value, AvatarParts.SHIRT_COLOR);
+                }
+              })}
+            />
+          </Grid.Col>
+
+          <Grid.Col style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}} span={2}>
+            <label>Color cara</label>
+            <input
+              type='color'
+              {...register(AvatarParts.FACE_COLOR, {
+                onChange: (e) => {
+                  modifyAvatar(e.target.value, AvatarParts.FACE_COLOR);
+                }
+              })}
+            />
+          </Grid.Col>
+
+          <Grid.Col style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}} span={2}>
+            <label>Color fondo</label>
+            <input
+              type='color'
+              {...register(AvatarParts.BG_COLOR, {
+                onChange: (e) => {
+                  modifyAvatar(e.target.value, AvatarParts.BG_COLOR);
+                }
+              })}
+            />
+          </Grid.Col>
+
+          <Grid.Col style={{
+            display: 'flex',
+            justifyContent: 'center'
+          }} span={12}>
+            <Button
+              type='submit'
+            >
+              Guardar
+            </Button>
+          </Grid.Col>
+        </Grid>
       </form>
-      <Link className={styles.button} href="/student">
-        back
-      </Link>
-    </div>
+    </Paper>
   );
 };
 

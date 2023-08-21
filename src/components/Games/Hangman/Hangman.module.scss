@@ -17,10 +17,12 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  font-size: xx-large;
+  font-size: x-large;
 
   & > .letter {
     border-bottom: 0.1rem solid black;
+    min-width: 2rem;
+    text-align: center;
   }
 }
 
@@ -41,14 +43,22 @@
 }
 
 .clue {
-  color: colors.$dark-blue;
   width: 100%;
   display: flex;
   font-size: x-large;
+  color: colors.$dark-blue;
+  font-weight: bold;
 }
 
 .scoreSection {
   display: flex;
-  font-size: 24px;
+  font-size: 20px;
   align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+  gap: 1rem;
+  color: rgb(64, 127, 191);
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
 }

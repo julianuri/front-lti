@@ -1,4 +1,4 @@
-import { Button, Modal, Paper, Table } from '@mantine/core';
+import { Button, Modal, Paper, Table, Tooltip } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import { getAllQuestionBanks } from '../../service/QuestionBankService';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,6 @@ import { notifications } from '@mantine/notifications';
 import { Carousel } from '@mantine/carousel';
 import { getGames } from '../../service/GameService';
 import IGame from '../../types/IGame';
-import gameEnum from '../../types/enums/GameEnum';
 import GameCard from './Creator/GameCard/GameCard';
 import useAssignments from '../../hooks/useAssignments';
 import { getGameName, stringToDate } from '../../utils/GenericUtils';
@@ -22,6 +21,7 @@ const GamesWorkShop = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { userId, contextId } = useSelector((state: RootState) => state.auth);
+  const { linkedAssignmentId } = useSelector((state: RootState) => state.assignment);
   const [assignments, setAssignments] = useAssignments(userId, contextId);
   const [opened, { open, close }] = useDisclosure(false);
   const effectRan = useRef(false);
@@ -32,7 +32,7 @@ const GamesWorkShop = () => {
       Promise.all([getGames(), getAllQuestionBanks(userId)])
         .then(([gamesRS, questionBanksRS]) => {
           if (questionBanksRS.data.length === 0) {
-            const newGames = gamesRS.data.filter((game: IGame) => game.id !== gameEnum.quiz && game.id !== gameEnum.snakes);
+            const newGames = gamesRS.data.filter((game: IGame) => game.id !== GameEnum.quiz && game.id !== GameEnum.snakes);
             setGames(newGames);
             notifications.show({
               message: 'Agrega un banco de preguntas para crear tareas con los juegos de "Quiz" y "Serpientes y Escaleras"',
@@ -57,9 +57,22 @@ const GamesWorkShop = () => {
           [...assignments.filter(assignment => assignment.id !== id)]
           ),
         );
-        notifications.show({ message: 'La tarea fue borrado exitosamente'});
+
+        if (+linkedAssignmentId === id) {
+          dispatch(assignmentSliceActions.saveLinkedAssignment({
+            linkedAssignmentId: 0,
+          }));
+        }
+        notifications.show({ message: 'La tarea fue borrada exitosamente', autoClose: 2000,});
       })
       .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+  };
+
+  const getLinkedAssignmentName = function() {
+    if (+linkedAssignmentId !== 0) {
+      return assignments.find(a => a.id === +linkedAssignmentId)?.name;
+    }
+    return '';
   };
 
   const redirectToAssignmentCreation = function(gameId: number, assignmentId: number) {
@@ -82,18 +95,24 @@ const GamesWorkShop = () => {
     minHeight: '100%',
     textAlign: 'center'
   }}>
-    <Button
-      onClick={() => open()}
-      style={{
-        width: '25%',
-        alignSelf: 'end'
-      }} leftIcon={<IconPlaylistAdd
-      size={20}
-      strokeWidth={1.5}
-      color={'#407fbf'}
-    />} variant='outline'>
-      {'Agregar Tarea'}
-    </Button>
+    <Tooltip label={`Ya enlanzaste esta tarea de Canvas con ${getLinkedAssignmentName()}`}
+             style={{display: (linkedAssignmentId === 0) ? 'none' : 'inherit' }}>
+      <span>
+      <Button
+        onClick={() => open()}
+        disabled={linkedAssignmentId !== 0}
+        style={{
+          width: '30%',
+          alignSelf: 'center'
+        }} leftIcon={<IconPlaylistAdd
+        size={20}
+        strokeWidth={1.5}
+        color={(linkedAssignmentId === 0) ? '#407fbf' : 'grey'}
+      />} variant='outline'>
+        {'Agregar Tarea'}
+      </Button>
+        </span>
+    </Tooltip>
 
     {(opened) ?
       <Modal opened={opened}

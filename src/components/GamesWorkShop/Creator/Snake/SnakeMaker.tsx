@@ -10,7 +10,7 @@ import { notifications } from '@mantine/notifications';
 import { number, object, string } from 'yup';
 import GameEnum from '../../../../types/enums/GameEnum';
 import { Button, Container, Divider, Grid, Group, Paper, Image } from '@mantine/core';
-import { NativeSelect, NumberInput, TextInput } from 'react-hook-form-mantine';
+import { NativeSelect, NumberInput } from 'react-hook-form-mantine';
 import useDifferentAssignments from '../../../../hooks/useDifferentAssignments';
 import { yupResolver } from '@hookform/resolvers/yup';
 import IAssignment from '../../../../types/IAssignment';
@@ -25,11 +25,9 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
   const router = useRouter();
   const { userId } = useSelector((state: RootState) => state.auth);
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl, resourceName, attempts } = useSelector((state: RootState) => state.auth);
   const [questionBanks, setQuestionBanks] = useState([]);
   const schema = object().shape({
-    assignmentName: string().required(),
-    attempts: number().min(1).max(20),
     rolls: number().min(5).max(30),
     requiredAssignmentId: string()
   });
@@ -44,8 +42,6 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
       mode: 'all',
       resolver: yupResolver(schema),
       defaultValues: {
-        assignmentName: '',
-        attempts: 1,
         rolls: 10,
         requiredAssignmentId: '',
         questionBankId: ''
@@ -62,10 +58,9 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
 
-      setValue('assignmentName', assignment.name);
-      setValue('attempts', assignment.attempts);
       setValue('requiredAssignmentId', assignment.requiredAssignment);
       setValue('questionBankId', assignment.questionBank);
+      setSelectedCarouselItem(assignment.game_data[0].info.board);
     }
 
     getAllQuestionBanks(userId).then((data) => {
@@ -76,8 +71,8 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
   const onSubmit = (data: any) => {
     setLoading(true);
     const request = {
-      assignmentName: data.assignmentName,
-      attempts: data.attempts,
+      assignmentName: resourceName,
+      attempts: +attempts,
       courseId: contextId,
       gameId: GameEnum.snakes,
       requiredAssignmentId: null,
@@ -107,6 +102,9 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
             ...response.data
           })
         );
+        dispatch(assignmentSliceActions.saveLinkedAssignment({
+          linkedAssignmentId: response.data.id,
+        }));
         void router.replace({ pathname: '/assignment' });
         notifications.show({ message: 'La tarea fue guardada exitosamente', autoClose: 3000 });
       })
@@ -114,6 +112,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
   };
 
   const handleClick = function(id: number) {
+    console.log('click: ' + id);
     setSelectedCarouselItem(id);
   };
 
@@ -124,40 +123,18 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
           <Grid>
 
             <Grid.Col span={3}>
-              <TextInput
-                maxLength={50}
-                name='assignmentName'
-                control={control}
-                label='Nombre de la tarea'
-                error={errors.assignmentName !== undefined ? 'Introduzca nombre' : null}
-                withAsterisk={errors.assignmentName !== undefined} />
-            </Grid.Col>
-
-            <Grid.Col span={1}>
-              <NumberInput
-                name='attempts'
-                control={control}
-                min={1}
-                max={20}
-                label='Intentos'
-                error={errors.attempts !== undefined ? 'Introduzca número válido' : null}
-                withAsterisk={errors.attempts !== undefined}
-              />
-            </Grid.Col>
-
-            <Grid.Col span={2}>
               <NumberInput
                 name='rolls'
                 control={control}
                 min={1}
                 max={20}
-                label='Frecuencia'
+                label='Frecuencia de las preguntas'
                 error={errors.rolls !== undefined ? 'Introduzca número válido' : null}
                 withAsterisk={errors.rolls !== undefined}
               />
             </Grid.Col>
 
-            <Grid.Col span={3}>
+            <Grid.Col span={4}>
               <NativeSelect
                 name='requiredAssignmentId'
                 control={control}
@@ -166,7 +143,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
               />
             </Grid.Col>
 
-            <Grid.Col span={3}>
+            <Grid.Col span={5}>
               <NativeSelect
                 name='questionBankId'
                 control={control}
@@ -180,10 +157,14 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
             <Grid.Col span={12}>
               <Divider size='xs' />
               <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
-                <Carousel maw={320} mx='auto' withIndicators height={320}>
+                <Carousel initialSlide={selectedCarouselItem}
+                          maw={320}
+                          mx='auto'
+                          withIndicators
+                          height={320} onSlideChange={(id) => handleClick(id)}>
 
                   {BOARDS.map(board => {
-                    return (<Carousel.Slide key={board.id} onClick={() => handleClick(board.id)}>
+                    return (<Carousel.Slide key={board.id}>
                       <Image src={board.image} />
                     </Carousel.Slide>);
                   })}

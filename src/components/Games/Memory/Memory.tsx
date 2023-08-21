@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import MemoryAnswerType from '../../../types/enums/MemoryAnswerType';
 import { notifications } from '@mantine/notifications';
+import { Paper, Rating } from '@mantine/core';
 
-const shuffle = function (array: FlipCard[]) {
+const shuffle = function(array: FlipCard[]) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -30,9 +31,10 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
   const [cards, setCards] = useState<FlipCard[]>([]);
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [selectedCards, setSelectedCards] = useState<FlipCard[]>([]);
-  const [score, setScore] = useState<number>(0);
+  const [score, setScore] = useState<number | null>(null);
   const dataFetchedRef = useRef(false);
   const [canFlipCards, setCanFlipCards] = useState<boolean>(true);
+  const [stars, setStars] = useState(0);
 
   useEffect(() => {
     if (dataFetchedRef.current || process.env.NODE_ENV !== 'development') {
@@ -49,14 +51,14 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
       userId: userId,
       gameId,
       failedAttempts: failedAttempts,
-      answers: (updateAnswer) ? [...new Set([...selectedCards.map((card) => card.id)])] : [],
+      answers: (updateAnswer) ? [...new Set([...selectedCards.map((card) => card.id)])] : []
     };
     getRun(data)
       .then(async (data) => {
         const selected = data.game_data.info.cards
           .filter((card: FlipCard) => data.run.user_input.answers.includes(card.id))
           .map((card: FlipCard) => {
-            return {...card, unclickable: true};
+            return { ...card, unclickable: true };
           });
         setFailedAttempts(data.run.user_input.failed_attempts);
         setSelectedCards(selected);
@@ -64,7 +66,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
           setCards(shuffle(data.game_data.info.cards));
         }
       })
-      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red' }));
   };
 
   useEffect(() => {
@@ -80,20 +82,17 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
         failedAttempts,
         'totalMatches': cards.length / 2,
         sessionId,
-        launchId,
+        launchId
       }).then((data) => {
-          setScore(data.score);
+        setScore(data.score);
+        setStars(data.score / 20);
       });
     }
   }, [selectedCards.length]);
 
-  const getUnclickableAmount = (): number => {
-    return selectedCards.filter((card: FlipCard) => card.unclickable === true).length;
-  };
-
-  const getCardClasses = function (x: FlipCard, selectedIndexes: FlipCard[]) {
+  const getCardClasses = function(x: FlipCard, selectedIndexes: FlipCard[]) {
     const elem = selectedIndexes.find(
-      (y) => x.id === y.id && x.match == y.match,
+      (y) => x.id === y.id && x.match == y.match
     );
     let classes = styles['flip-card'] + ' ';
     if (elem !== undefined) {
@@ -107,7 +106,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
     return classes;
   };
 
-  const clickHandler = function (card: FlipCard) {
+  const clickHandler = function(card: FlipCard) {
     const audio = new Audio('/static/audios/flip_card.mp3');
     audio.volume = 0.2;
     void audio.play();
@@ -120,7 +119,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
         setSelectedCards((prev) =>
           prev.map((x) => {
             return { ...x, unclickable: true };
-          }),
+          })
         );
         const audio = new Audio('/static/audios/won.mp3');
         audio.volume = 0.2;
@@ -137,46 +136,59 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
               setCanFlipCards(true);
               return [...prev.filter((p) => p.unclickable === true)];
             }),
-          600,
+          600
         );
       }
     }
   };
 
   return (
-    <>
-      <div className={styles.counter}>
-        {'Failed Attempts: ' + failedAttempts + ' Score: ' + score}
-      </div>
-      <div className={styles['cards-grid']}>
-        {cards.map((card) => {
-          return (
-            <div
-              className={getCardClasses(card, selectedCards)}
-              key={card.id + card.match}
-              onClick={() => clickHandler(card)}
-            >
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }} style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             gap: '1rem',
+             padding: '1rem'
+           }}>
+      {score != null ? (
+          <div className={styles.scoreSection}>
+            <div> Conseguiste {score} de {100}</div>
+            <Rating fractions={10} value={stars} readOnly />
+          </div>
+        ) :
+        <div className={styles['cards-grid']}>
+          {cards.map((card) => {
+            return (
               <div
-                className={
-                  styles['flip-card-inner'] +
-                  ' ' +
-                  styles['flip-card-inner-click']
-                }
+                className={getCardClasses(card, selectedCards)}
+                key={card.id + card.match}
+                onClick={() => clickHandler(card)}
               >
-                <div className={styles['flip-card-front']}></div>
-                {card.type === MemoryAnswerType.TEXT ? (
-                  <div className={styles['flip-card-back']}>{card.match}</div>
-                ) : (
-                  <div className={styles['flip-card-back']}>
-                    <img src={card.match} />
-                  </div>
-                )}
+                <div
+                  className={
+                    styles['flip-card-inner'] +
+                    ' ' +
+                    styles['flip-card-inner-click']
+                  }
+                >
+                  <div className={styles['flip-card-front']}></div>
+                  {card.type === MemoryAnswerType.TEXT ? (
+                    <div className={styles['flip-card-back']}>{card.match}</div>
+                  ) : (
+                    <div className={styles['flip-card-back']}>
+                      <img src={card.match} />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </>
+            );
+          })}
+        </div>}
+    </Paper>
   );
 };
 

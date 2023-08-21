@@ -10,7 +10,7 @@ import IBoardProps from '../../../types/props/IBoardProps';
 import { RootState } from '../../../redux/store';
 import QuestionTypeEnum from '../../../types/enums/QuestionTypeEnum';
 import gameEnum from '../../../types/enums/GameEnum';
-import { Rating } from '@mantine/core';
+import { Paper, Rating } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 const Board = ({ assignmentId }: IBoardProps) => {
@@ -78,15 +78,27 @@ const Board = ({ assignmentId }: IBoardProps) => {
   };
 
   return (
-    <div className={styles.board}>
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }}
+           style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             gap: '1rem',
+             padding: '1rem'
+           }}>
+
 
         {showScore ? (
-          <>
+
             <div className={styles.scoreSection}>
               <div> Conseguiste {score} de {100}</div>
               <Rating fractions={10} value={stars} readOnly />
             </div>
-          </>
+
         ) : (
           <Card
             currentQuestion={question}
@@ -96,7 +108,8 @@ const Board = ({ assignmentId }: IBoardProps) => {
           />
         )}
 
-    </div>
+
+    </Paper>
   );
 };
 

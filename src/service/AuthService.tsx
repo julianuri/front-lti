@@ -11,7 +11,7 @@ async function registerUser(data: UserForm) {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error ha ocurrido: ${response.status}`;
     throw new Error(message);
   }
 

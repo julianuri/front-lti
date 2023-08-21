@@ -23,13 +23,11 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId, userId, resourceId, lineitemUrl } = useSelector((state: RootState) => state.auth);
+  const { contextId, userId, resourceId, lineitemUrl, resourceName, attempts } = useSelector((state: RootState) => state.auth);
   const [questionBanks, setQuestionBanks] = useState([]);
   const editAssignment = !Number.isNaN(assignmentId);
 
   const schema = object().shape({
-    assignmentName: string().required(),
-    attempts: number().min(1).max(20),
     requiredAssignmentId: string()
   });
 
@@ -42,8 +40,6 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
     mode: 'all',
     resolver: yupResolver(schema),
     defaultValues: {
-      assignmentName: '',
-      attempts: 1,
       requiredAssignmentId: '',
       questionBankId: ''
     }
@@ -57,8 +53,6 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
 
-      setValue('assignmentName', assignment.name);
-      setValue('attempts', assignment.attempts);
       setValue('requiredAssignmentId', assignment.requiredAssignment);
       setValue('questionBankId', assignment.questionBank);
     }
@@ -71,8 +65,8 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
   const onSubmit = (data: any) => {
     setLoading(true);
     const request = {
-      assignmentName: data.assignmentName,
-      attempts: data.attempts,
+      assignmentName: resourceName,
+      attempts: +attempts,
       courseId: contextId,
       gameId: gameEnum.quiz,
       questionBankId: data.questionBankId,
@@ -101,6 +95,9 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
             ...response.data
           })
         );
+        dispatch(assignmentSliceActions.saveLinkedAssignment({
+          linkedAssignmentId: response.data.id,
+        }));
         void router.replace({ pathname: '/assignment' });
 
         notifications.show({ message: 'La tarea fue guardada exitosamente', autoClose: 3000 });
@@ -115,29 +112,7 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
 
-              <Grid.Col span={4}>
-                <TextInput
-                  maxLength={50}
-                  name='assignmentName'
-                  control={control}
-                  label='Nombre de la Tarea'
-                  error={errors.assignmentName !== undefined ? 'Introduzca nombre' : null}
-                  withAsterisk={errors.assignmentName !== undefined} />
-              </Grid.Col>
-
-              <Grid.Col span={2}>
-                <NumberInput
-                  name='attempts'
-                  control={control}
-                  min={1}
-                  max={20}
-                  label='Intentos'
-                  error={errors.attempts !== undefined ? 'Introduzca número válido' : null}
-                  withAsterisk={errors.attempts !== undefined}
-                />
-              </Grid.Col>
-
-              <Grid.Col span={3}>
+              <Grid.Col span={6}>
                 <NativeSelect
                   name='requiredAssignmentId'
                   control={control}
@@ -146,7 +121,7 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
                 />
               </Grid.Col>
 
-              <Grid.Col span={3}>
+              <Grid.Col span={6}>
                 <NativeSelect
                   name='questionBankId'
                   control={control}

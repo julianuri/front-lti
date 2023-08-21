@@ -38,7 +38,6 @@ const Layout = (props: any) => {
     variant: 'light',
     label: 'Tareas',
     icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
-    childrenOffset: 28,
     role: 'TEACHER|STUDENT',
     disabled: false,
     href: '/assignment'
@@ -48,7 +47,6 @@ const Layout = (props: any) => {
       variant: 'light',
       label: 'Tareas',
       icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
-      childrenOffset: 28,
       role: 'STUDENT',
       disabled: true,
       href: '/student/assignments'
@@ -87,7 +85,6 @@ const Layout = (props: any) => {
         variant: 'light',
         label: 'Tareas',
         icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
-        childrenOffset: 28,
         role: 'TEACHER',
         disabled: false,
         href: '/assignment',
@@ -97,7 +94,6 @@ const Layout = (props: any) => {
           variant: 'light',
           label: 'Tarea',
           icon: <IconDeviceGamepad size={36} strokeWidth={2} color={'#407fbf'} />,
-          childrenOffset: 28,
           role: 'STUDENT',
           disabled: launchedGameId === 0,
           href: `/game?assignmentId=${launchedAssignmentId}&gameId=${launchedGameId}`

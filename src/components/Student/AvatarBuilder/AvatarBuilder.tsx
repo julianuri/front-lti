@@ -112,6 +112,18 @@ const AvatarBuilder = () => {
 
   };
 
+  const normalizeHex = (hex: string) => {
+    if (hex.length > 4) {
+      return hex;
+    }
+
+    const red = `${hex[0]}${hex[0]}`;
+    const green = `${hex[1]}${hex[1]}`;
+    const blue = `${hex[2]}${hex[2]}`;
+
+    return `${red}${green}${blue}`;
+  };
+
   useEffect(() => {
     setValue('hairStyle', avatarConfig.hairStyle);
     setValue('eyeBrowStyle', avatarConfig.eyeBrowStyle);
@@ -123,16 +135,15 @@ const AvatarBuilder = () => {
     setValue('mouthStyle', avatarConfig.mouthStyle);
     setValue('earSize', avatarConfig.earSize);
     setValue('noseStyle', avatarConfig.noseStyle);
-    setValue('shirtColor', avatarConfig.shirtColor);
 
-    setValue('hatColor', avatarConfig.hatColor);
-    setValue('hairColor', avatarConfig.hairColor);
-    setValue('faceColor', avatarConfig.faceColor);
-    setValue('bgColor', avatarConfig.bgColor);
+    setValue('shirtColor', '#' + normalizeHex(avatarConfig.shirtColor.substring(1)));
+    setValue('hatColor',  '#' + normalizeHex(avatarConfig.hatColor.substring(1)));
+    setValue('hairColor', '#' + normalizeHex(avatarConfig.hairColor.substring(1)));
+    setValue('faceColor', '#' +normalizeHex(avatarConfig.faceColor.substring(1)));
+    setValue('bgColor', '#' + normalizeHex(avatarConfig.bgColor.substring(1)));
   }, []);
 
   const modifyAvatar = (e: any, key: string) => {
-    console.log(e);
     const aux = { ...avatarEditor };
     aux[key] = e;
     setAvatarEditor(aux);

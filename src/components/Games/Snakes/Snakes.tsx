@@ -5,8 +5,8 @@ import DirectionEnum from '../../../types/consts/DirectionEnum';
 import OrderEnum from '../../../types/enums/OrderEnum';
 import Die from './Dice/Dice';
 import { getRun } from '../../../service/RunService';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
 import { getRandomQuestion } from '../../../service/QuestionService';
 import { setLTIScore } from '../../../service/ScoreService';
 import Card from '../Quiz/Card/Card';
@@ -59,6 +59,7 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
   const [score, setScore] = useState<number | null>(null);
   const [showScore, setShowScore] = useState(false);
   const [stars, setStars] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (showModal) {
@@ -142,6 +143,10 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
               setScore(data.score);
               setShowScore(true);
               setStars(data.score/20);
+              dispatch(assignmentSliceActions.saveLaunchedAssignment({
+                launchedAssignmentId: 0,
+                launchedGameId: 0
+              }));
             })
             .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
         }

@@ -2,22 +2,18 @@ import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
 import GameEnum from '../../src/types/enums/GameEnum';
 import IGame from '../../src/types/IGame';
-import GameCard from '../../src/components/GamesWorkShop/Creator/GameCard/GameCard';
 import { getGame } from '../../src/service/GameService';
 import { notifications } from '@mantine/notifications';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../src/redux/store';
-import { Carousel } from '@mantine/carousel';
 import Image from 'next/image';
 import classes from '../../src/components/GamesWorkShop/Creator/GameCard/GameCard.module.scss';
 import GamesNames from '../../src/types/consts/GamesNames';
-import { Button, Divider, Modal, Paper } from '@mantine/core';
+import { Button, Paper } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 function GamePage() {
   const router = useRouter();
   const { gameId } = router.query;
-  const [opened, { open, close }] = useDisclosure(true);
+  const [opened] = useDisclosure(true);
   const [game, setGame] = useState<IGame>({
     name: '',
     description: '',

@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import IBoardProps from '../../../types/props/IBoardProps';
 import { getRun } from '../../../service/RunService';
 import { setLTIScore } from '../../../service/ScoreService';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
 import { notifications } from '@mantine/notifications';
 import { Paper, Rating } from '@mantine/core';
 
@@ -24,6 +24,7 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   const dataFetchedRef = useRef(false);
   const [clickedLetters, setClickedLetters] = useState([]);
   const [stars, setStars] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const audio = new Audio('/static/audios/hangup.mp3');
@@ -83,6 +84,10 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
             .then((data) => {
               setScore(data.score);
               setStars(data.score/20);
+              dispatch(assignmentSliceActions.saveLaunchedAssignment({
+                launchedAssignmentId: 0,
+                launchedGameId: 0
+              }));
             });
           }
         })

@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { getRun } from '../../../service/RunService';
 import { setLTIScore } from '../../../service/ScoreService';
 import IBoardProps from '../../../types/props/IBoardProps';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
 import MemoryAnswerType from '../../../types/enums/MemoryAnswerType';
 import { notifications } from '@mantine/notifications';
 import { Paper, Rating } from '@mantine/core';
@@ -35,6 +35,7 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
   const dataFetchedRef = useRef(false);
   const [canFlipCards, setCanFlipCards] = useState<boolean>(true);
   const [stars, setStars] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (dataFetchedRef.current || process.env.NODE_ENV !== 'development') {
@@ -86,6 +87,10 @@ const Memory = ({ assignmentId, gameId }: IBoardProps) => {
       }).then((data) => {
         setScore(data.score);
         setStars(data.score / 20);
+        dispatch(assignmentSliceActions.saveLaunchedAssignment({
+          launchedAssignmentId: 0,
+          launchedGameId: 0
+        }));
       });
     }
   }, [selectedCards.length]);

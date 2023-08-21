@@ -21,9 +21,9 @@ const AvatarBuilder = () => {
   ]);
 
   const shirtStyles = useRef([
-    { name: 'Cuello', value: 'hoody' },
-    { name: 'Corta', value: 'short' },
-    { name: 'Polo', value: 'polo' }]);
+    { name: 'Modelo 1', value: 'hoody' },
+    { name: 'Modelo 2', value: 'short' },
+    { name: 'Modelo 3', value: 'polo' }]);
 
   const eyeStyles = useRef([
     {name: 'Circulares', value: 'circle'},

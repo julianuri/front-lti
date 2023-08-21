@@ -58,6 +58,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
 
+      setValue('rolls', assignment.game_data[0].info.rolls_to_show_question);
       setValue('requiredAssignmentId', assignment.requiredAssignment);
       setValue('questionBankId', assignment.questionBank);
       setSelectedCarouselItem(assignment.game_data[0].info.board);
@@ -122,13 +123,13 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
         <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
           <Grid>
 
-            <Grid.Col span={3}>
+            <Grid.Col span={4}>
               <NumberInput
                 name='rolls'
                 control={control}
                 min={1}
                 max={20}
-                label='Frecuencia de las preguntas'
+                label='Pregunta Frecuencia'
                 error={errors.rolls !== undefined ? 'Introduzca número válido' : null}
                 withAsterisk={errors.rolls !== undefined}
               />
@@ -143,7 +144,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
               />
             </Grid.Col>
 
-            <Grid.Col span={5}>
+            <Grid.Col span={4}>
               <NativeSelect
                 name='questionBankId'
                 control={control}

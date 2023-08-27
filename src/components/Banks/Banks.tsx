@@ -55,9 +55,9 @@ const QuestionBanks = () => {
     <Button
       onClick={() => router.replace('/banks/create')}
       style={{
-      width: '25%',
-      alignSelf: 'end'
-    }} leftIcon={<IconPlaylistAdd
+        width: '30%',
+        alignSelf: 'center'
+      }} leftIcon={<IconPlaylistAdd
       size={20}
       strokeWidth={1.5}
       color={'#407fbf'}

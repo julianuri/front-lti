@@ -21,47 +21,34 @@ interface RouteAssignment {
   assignmentId: number | typeof NaN;
 }
 
-const HangmanCreator = ({assignmentId}: RouteAssignment) => {
+const HangmanCreator = ({ assignmentId }: RouteAssignment) => {
 
   const router = useRouter();
   const dispatch = useDispatch();
   const [opened, { open, close }] = useDisclosure(false);
   const { assignments } = useSelector((state: RootState) => state.assignment);
-  const { contextId, resourceId, lineitemUrl, resourceName, attempts  } = useSelector((state: RootState) => state.auth);
+  const { contextId, resourceId, lineitemUrl, resourceName, attempts } = useSelector((state: RootState) => state.auth);
   const editAssignment = !Number.isNaN(assignmentId);
 
-  const schema = object().shape({
-    requiredAssignmentId: string(),
-  });
 
   const {
-    control,
     handleSubmit,
-    setValue,
-    formState: { errors, isValid },
+    formState: { isValid },
     trigger
-  } = useForm({
-    mode: 'all',
-    resolver: yupResolver(schema),
-    defaultValues: {
-      requiredAssignmentId: '',
-    }
-  });
+  } = useForm();
 
   const [items, setItems] = useState<IHangmanQuestion[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const transformedAssignments = useDifferentAssignments(assignments, editAssignment, assignmentId);
   const [selectedItem, setSelectedItem] = useState<IHangmanQuestion>();
 
   useEffect(() => {
     if (editAssignment) {
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
-      setValue('requiredAssignmentId', assignment.requiredAssignment);
       setItems(assignment.game_data.map(g => {
-        return {
-          id: g.info.id, wordToGuess: g.info.word_to_guess, clue: g.info.clue, order: g.info.order
-        };
+          return {
+            id: g.info.id, wordToGuess: g.info.word_to_guess, clue: g.info.clue, order: g.info.order
+          };
         }
       ));
       void trigger();
@@ -78,18 +65,14 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
       gameId: GameEnum.hangman,
       requiredAssignmentId: null,
       resourceId: resourceId,
-      lineitemUrl: lineitemUrl,
+      lineitemUrl: lineitemUrl
     };
 
     if (editAssignment) {
       request.id = assignmentId;
     }
 
-    if (data.requiredAssignmentId != '') {
-      request.requiredAssignmentId = data.requiredAssignmentId;
-    }
-
-   saveAssignment(request)
+    saveAssignment(request)
       .then(async (response) => {
         dispatch(
           assignmentSliceActions.saveAssignment({
@@ -97,12 +80,12 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
           })
         );
         dispatch(assignmentSliceActions.saveLinkedAssignment({
-          linkedAssignmentId: response.data.id,
+          linkedAssignmentId: response.data.id
         }));
-        void router.replace({pathname: '/assignment'});
-        notifications.show({message: 'La tarea fue guardada exitosamente', autoClose: 3000});
+        void router.replace({ pathname: '/assignment' });
+        notifications.show({ message: 'La tarea fue guardada exitosamente', autoClose: 3000 });
       })
-      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red'}));
+      .catch((error) => notifications.show({ message: error.message, autoClose: false, color: 'red' }));
   };
 
   const deleteItem = (index: number) => {
@@ -126,19 +109,9 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
     <>
       <Container size={1000}>
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
-          <form onSubmit={handleSubmit(onSubmit, (errors)=> console.table(errors))}>
+          <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
               <Grid.Col span={12}>
-                <NativeSelect
-                  name='requiredAssignmentId'
-                  control={control}
-                  data={[{value: '' , label: 'No seleccionada'}, ...transformedAssignments]}
-                  label='Tarea asociada'
-                />
-              </Grid.Col>
-
-              <Grid.Col span={12}>
-                <Divider size='xs' />
                 <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
                   <Table striped highlightOnHover withBorder withColumnBorders style={{ textAlign: 'center' }}>
                     <thead>
@@ -177,7 +150,7 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
               </Grid.Col>
 
 
-              <Grid.Col span={12} style={{paddingTop: 0}}>
+              <Grid.Col span={12} style={{ paddingTop: 0 }}>
                 <Divider size='xs' />
                 <Group position='right' mt='md' style={{ 'marginTop': '1rem' }}>
 
@@ -188,7 +161,7 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
                   />} variant='outline' onClick={newQuestionHandler}>
                     {'Agregar Palabra'}
                   </Button>
-                  <Button loading={loading} type='submit' disabled={items.length == 0 || !isValid } variant='outline'>
+                  <Button loading={loading} type='submit' disabled={items.length == 0 || !isValid} variant='outline'>
                     {(editAssignment) ? 'Editar Tarea' : 'Crear Tarea'}
                   </Button>
                 </Group>
@@ -200,15 +173,15 @@ const HangmanCreator = ({assignmentId}: RouteAssignment) => {
 
       <Modal opened={opened}
              onClose={close}
-             styles={{title: { color: '#228be6', fontWeight: 'bold' }}}
+             styles={{ title: { color: '#228be6', fontWeight: 'bold' } }}
              title={(editQuestion) ? 'Modificar Palabra' : 'Agregar Palabra'}
              centered>
         {
           <HangmanForm
-          items={items}
-          setItems={setItems}
-          closeModal={close}
-          selectedItem={selectedItem}
+            items={items}
+            setItems={setItems}
+            closeModal={close}
+            selectedItem={selectedItem}
           />
         }
       </Modal>

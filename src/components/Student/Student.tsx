@@ -6,12 +6,16 @@ const Student = () => {
   const {
     launchedGameId,
     attemptsLimitHasBeenReached,
+    timeHasRunOut,
   } = router.query;
 
   const getMessage = function() {
     if (launchedGameId === undefined) {
       return 'Su profesor ha publicado una tarea sin configurar';
-    } else if (attemptsLimitHasBeenReached !== undefined) {
+    } else if (timeHasRunOut !== undefined) {
+      return 'El tiempo para realizar la tarea se ha acabado';
+    }
+    else if (attemptsLimitHasBeenReached !== undefined) {
       return 'Ha llegado al límite de intentos para la tarea';
     }
   };

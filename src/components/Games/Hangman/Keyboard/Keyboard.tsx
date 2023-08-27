@@ -1,7 +1,6 @@
 import { KEYS } from '../../../../types/consts/Keys';
 import styles from './Keyboard.module.scss';
-import { Space } from '@mantine/core';
-import { Fragment } from 'react';
+import { useEffect, useState } from 'react';
 
 interface KeyboardProps {
   checkLetter: (key: string) => void;
@@ -9,13 +8,18 @@ interface KeyboardProps {
   clickedLetters: string[];
 }
 
-const keyAudio = new Audio('/static/audios/key.mp3');
-
-const playAudio = function () {
-  void keyAudio.play();
-};
-
 const Keyboard = (props: KeyboardProps) => {
+
+  const [audio, setAudio] = useState<any>(null);
+
+  useEffect(() => {
+    setAudio(new Audio('/static/audios/key.mp3'));
+  }, []);
+
+  const playAudio = function () {
+    audio.play();
+  };
+
   return (
     <div className={styles.keyboard}>
       {KEYS.map((key) => {

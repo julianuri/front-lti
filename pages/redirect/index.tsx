@@ -20,6 +20,7 @@ function RedirectPage() {
 		resource_name,
 		attemptsLimitHasBeenReached,
 		attempts,
+		timeHasRunOut,
 	} = router.query;
 
 	const dispatch = useDispatch();
@@ -27,7 +28,7 @@ function RedirectPage() {
 	useEffect(() => {
 		if (role === RoleEnum.STUDENT) {
 			dispatchUser();
-			if (launchedGameId === undefined || attemptsLimitHasBeenReached !== undefined) {
+			if (launchedGameId === undefined || attemptsLimitHasBeenReached !== undefined || timeHasRunOut !== undefined) {
 				void router.push({ pathname: 'student', query: { ...router.query } });
 			} else {
 				dispatchLaunchedAssignment();

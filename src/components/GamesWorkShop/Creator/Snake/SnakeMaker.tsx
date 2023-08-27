@@ -11,7 +11,6 @@ import { number, object, string } from 'yup';
 import GameEnum from '../../../../types/enums/GameEnum';
 import { Button, Container, Divider, Grid, Group, Paper, Image } from '@mantine/core';
 import { NativeSelect, NumberInput } from 'react-hook-form-mantine';
-import useDifferentAssignments from '../../../../hooks/useDifferentAssignments';
 import { yupResolver } from '@hookform/resolvers/yup';
 import IAssignment from '../../../../types/IAssignment';
 import { useRouter } from 'next/router';
@@ -51,7 +50,6 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCarouselItem, setSelectedCarouselItem] = useState(0);
   const editAssignment = !Number.isNaN(assignmentId);
-  const transformedAssignments = useDifferentAssignments(assignments, editAssignment, assignmentId);
 
   useEffect(() => {
     if (editAssignment) {
@@ -59,7 +57,6 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
         .find(a => a.id === assignmentId) as IAssignment;
 
       setValue('rolls', assignment.game_data[0].info.rolls_to_show_question);
-      setValue('requiredAssignmentId', assignment.requiredAssignment);
       setValue('questionBankId', assignment.questionBank);
       setSelectedCarouselItem(assignment.game_data[0].info.board);
     }
@@ -92,10 +89,6 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
       request.questionBankId = questionBanks[0].id;
     }
 
-    if (data.requiredAssignmentId != '') {
-      request.requiredAssignmentId = data.requiredAssignmentId;
-    }
-
     saveAssignment(request)
       .then(async (response) => {
         dispatch(
@@ -123,7 +116,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
         <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
           <Grid>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={6}>
               <NumberInput
                 name='rolls'
                 control={control}
@@ -135,16 +128,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
               />
             </Grid.Col>
 
-            <Grid.Col span={4}>
-              <NativeSelect
-                name='requiredAssignmentId'
-                control={control}
-                data={[{ value: '', label: 'No seleccionada' }, ...transformedAssignments]}
-                label='Tarea asociada'
-              />
-            </Grid.Col>
-
-            <Grid.Col span={4}>
+            <Grid.Col span={6}>
               <NativeSelect
                 name='questionBankId'
                 control={control}

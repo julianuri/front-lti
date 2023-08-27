@@ -10,14 +10,10 @@ import MemoryAnswerType from '../../../../types/enums/MemoryAnswerType';
 import { notifications } from '@mantine/notifications';
 import GameEnum from '../../../../types/enums/GameEnum';
 import { useRouter } from 'next/router';
-import useDifferentAssignments from '../../../../hooks/useDifferentAssignments';
-import { NativeSelect, NumberInput, TextInput } from 'react-hook-form-mantine';
 import { Button, Container, Divider, Grid, Group, Modal, Paper, Table } from '@mantine/core';
 import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { createFile, getMemoryAnswerTypeName } from '../../../../utils/GenericUtils';
 import { useDisclosure } from '@mantine/hooks';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { number, object, string } from 'yup';
 
 interface RouteAssignment {
   assignmentId: number | typeof NaN;
@@ -30,35 +26,21 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId, resourceId, lineitemUrl, resourceName, attempts } = useSelector((state: RootState) => state.auth);
 
-  const schema = object().shape({
-    requiredAssignmentId: string(),
-  });
   const {
-    control,
     handleSubmit,
-    setValue,
     formState: { isValid },
     trigger
-  } = useForm({
-    mode: 'all',
-    resolver: yupResolver(schema),
-    defaultValues: {
-      requiredAssignmentId: '',
-    }
-  });
+  } = useForm();
   const [items, setItems] = useState<IMemoryMatch[]>([]);
   const [opened, { open, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const editAssignment = !Number.isNaN(assignmentId);
-  const transformedAssignments = useDifferentAssignments(assignments, editAssignment, assignmentId);
   const [selectedItem, setSelectedItem] = useState<IMemoryMatch>();
 
   useEffect(() => {
     if (editAssignment) {
-      console.table('ENTRE');
       const assignment = (assignments as IAssignment[])
         .find(a => a.id === assignmentId) as IAssignment;
-      setValue('requiredAssignmentId', assignment.requiredAssignment);
 
       const newMatches = [];
       const info = assignment.game_data[0].info.cards;
@@ -139,10 +121,6 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
 
     formData.set('questions', JSON.stringify(newArray));
 
-    if (data.requiredAssignmentId != '') {
-      formData.set('requiredAssignmentId', data.requiredAssignmentId);
-    }
-
     saveMemoryAssignment(formData)
       .then(async (response) => {
         dispatch(
@@ -172,18 +150,7 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
-
               <Grid.Col span={12}>
-                <NativeSelect
-                  name='requiredAssignmentId'
-                  control={control}
-                  data={[{ value: '', label: 'No seleccionada' }, ...transformedAssignments]}
-                  label='Tarea asociada'
-                />
-              </Grid.Col>
-
-              <Grid.Col span={12}>
-                <Divider size='xs' />
                 <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
                   <Table striped highlightOnHover withBorder withColumnBorders style={{ textAlign: 'center' }}>
                     <thead>

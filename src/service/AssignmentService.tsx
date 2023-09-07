@@ -74,4 +74,20 @@ async function dropAssignment(id: any) {
   return await response.json();
 }
 
-export { getAssignments, saveAssignment, dropAssignment, saveMemoryAssignment };
+async function getAssignmentStats(id: any) {
+  const response = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL +
+      'api/assignments/' +
+      id +
+      '/stats'
+  );
+
+  if (!response.ok) {
+    const message = `An error has occurred: ${response.status}`;
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
+export { getAssignments, saveAssignment, dropAssignment, saveMemoryAssignment, getAssignmentStats };

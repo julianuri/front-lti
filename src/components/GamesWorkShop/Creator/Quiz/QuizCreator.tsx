@@ -28,7 +28,7 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid }
+    formState: { isValid }
   } = useForm();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +63,7 @@ const QuizCreator = ({ assignmentId }: RouteAssignment) => {
       request.id = assignmentId;
     }
 
-    if (data.questionBankId == '') {
+    if (data.questionBankId == undefined) {
       request.questionBankId = questionBanks[0].id;
     }
 

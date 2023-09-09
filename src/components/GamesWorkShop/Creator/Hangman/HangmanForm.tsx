@@ -21,7 +21,7 @@ interface HangmanFormValues {
 const HangmanForm = ({ items, setItems, closeModal, selectedItem }: HangmanFormProps) => {
 
   const schema = object().shape({
-    word: string().required(),
+    word: string().required().matches(/^[a-zA-Z]+$/, 'La palabra solo puede tener letras'),
     clue: string().required()
   });
 
@@ -71,7 +71,7 @@ const HangmanForm = ({ items, setItems, closeModal, selectedItem }: HangmanFormP
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid>
           <Grid.Col span={12}>
-            <TextInput maxLength={50} name='word' pattern="[A-Za-z]" control={control} label='Palabra a Adivinar'
+            <TextInput maxLength={50} name='word' control={control} label='Palabra a Adivinar'
                        error={errors.word !== undefined ? 'Introduzca palabra' : null}
                          withAsterisk={errors.word !== undefined}/>
           </Grid.Col>

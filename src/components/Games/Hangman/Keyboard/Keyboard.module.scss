@@ -28,7 +28,7 @@
 .keyboard {
   display: grid;
   margin-top: 1rem;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(14, 1fr);
   gap: 1rem;
   justify-content: center;
 }

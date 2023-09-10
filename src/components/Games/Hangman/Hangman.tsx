@@ -184,7 +184,6 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
              flexDirection: 'column',
              alignItems: 'center',
              justifyContent: 'center',
-             gap: '1rem',
              padding: '1rem'
            }}>
 

@@ -4,11 +4,24 @@ async function getGames() {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 
   return await response.json();
 }
 
-export { getGames };
+async function getGame(id: number) {
+  const response = await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_URL + 'api/game?gameId=' + id,
+  );
+
+  if (!response.ok) {
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
+    throw new Error(message);
+  }
+
+  return await response.json();
+}
+
+export { getGames, getGame };

@@ -12,7 +12,7 @@ import { useDisclosure } from '@mantine/hooks';
 import QuizForm from './Question/QuizForm';
 import { getBankQuestions, saveQuestionBank } from '../../../service/QuestionBankService';
 import getQuestionTypeText from '../../../utils/QuestionTypeToText';
-import { router } from 'next/client';
+import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
 
 
@@ -25,6 +25,7 @@ type SaveQuestionBankRQ = {
 
 const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, bankName: string | undefined }) => {
 
+  const router = useRouter();
   const [opened, { open, close }] = useDisclosure(false);
   const { userId } = useSelector((state: RootState) => state.auth);
   const [items, setItems] = useState<IQuizQuestion[]>([]);
@@ -107,6 +108,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
 
               <Grid.Col span={12}>
                 <TextInput
+                  maxLength={50}
                   name='bankName'
                   control={control}
                   label='Nombre del Banco'
@@ -178,6 +180,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
 
       <Modal opened={opened}
              onClose={close}
+             styles={{title: { color: '#228be6', fontWeight: 'bold' }}}
              title={(bankId !== undefined) ? 'Modificar Pregunta' : 'Agregar Pregunta'}
              centered>
 

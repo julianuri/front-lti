@@ -1,21 +1,34 @@
 @use "../../../../styles/colors";
 
 .key {
-  padding: 1rem;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 1rem;
-  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #202124;
+  color: white;
+  height: 45px;
+  width: 45px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: bold;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
 
   &:not([disabled]):hover {
-    background-color: colors.$dark-blue;
-    color: colors.$base-white;
+    background-color: white;
+    color: black;
+  }
+
+  &:disabled {
+    background-color: gray;
   }
 }
 
 .keyboard {
-  display: flex;
+  display: grid;
+  margin-top: 1rem;
+  grid-template-columns: repeat(14, 1fr);
   gap: 1rem;
-  flex-wrap: wrap;
   justify-content: center;
 }

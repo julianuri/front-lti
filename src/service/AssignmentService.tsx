@@ -14,7 +14,7 @@ async function getAssignments(
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 
@@ -32,7 +32,7 @@ async function saveAssignment(data: any) {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 
@@ -49,7 +49,7 @@ async function saveMemoryAssignment(data: any) {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 
@@ -67,7 +67,7 @@ async function dropAssignment(id: any) {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 

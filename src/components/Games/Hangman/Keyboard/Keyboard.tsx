@@ -1,26 +1,34 @@
 import { KEYS } from '../../../../types/consts/Keys';
 import styles from './Keyboard.module.scss';
+import { useEffect, useState } from 'react';
 
 interface KeyboardProps {
   checkLetter: (key: string) => void;
   isFinished: boolean;
+  clickedLetters: string[];
 }
 
-const keyAudio = new Audio('/static/audios/key.mp3');
-
-const playAudio = function () {
-  void keyAudio.play();
-};
-
 const Keyboard = (props: KeyboardProps) => {
+
+  const [audio, setAudio] = useState<any>(null);
+
+  useEffect(() => {
+    setAudio(new Audio('/static/audios/key.mp3'));
+  }, []);
+
+  const playAudio = function () {
+    audio.play();
+  };
+
   return (
     <div className={styles.keyboard}>
       {KEYS.map((key) => {
         return (
+
           <button
             key={key}
-            className={styles.key + ' ' + 'disabled'}
-            disabled={props.isFinished}
+            className={(props.clickedLetters.includes(key)) ? styles.key + ' ' + 'disabled': styles.key}
+            disabled={props.isFinished || (props.clickedLetters.includes(key))}
             onClick={() => {
               props.checkLetter(key);
               playAudio();
@@ -28,6 +36,7 @@ const Keyboard = (props: KeyboardProps) => {
           >
             {key}
           </button>
+
         );
       })}
     </div>

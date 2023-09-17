@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 import IBoardProps from '../../../types/props/IBoardProps';
 import { getRun } from '../../../service/RunService';
 import { setLTIScore } from '../../../service/ScoreService';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
 import { notifications } from '@mantine/notifications';
+import { Paper, Rating } from '@mantine/core';
 
 const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   const BODY_PARTS = 5;
@@ -21,6 +22,9 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
   const [clue, setClue] = useState<string>('');
   const [score, setScore] = useState<number | null>(null);
   const dataFetchedRef = useRef(false);
+  const [clickedLetters, setClickedLetters] = useState([]);
+  const [stars, setStars] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const audio = new Audio('/static/audios/hangup.mp3');
@@ -32,6 +36,7 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
         gameId,
         order,
         hasWon,
+        clickedLetters,
       };
 
       getRun(data)
@@ -44,15 +49,45 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
               setOrder(data.game_data.info.order);
             }
 
-          setWord(data.game_data.info.word_to_guess);
-          setTotalQuestions(data.totalQuestions);
-          setClue(data.game_data.info.clue);
-          setHasWon(null);
-          setMistakes(0);
+            if (data.run.user_input.clickedLetters.length > clickedLetters.length) {
+              setClickedLetters([...data.run.user_input.clickedLetters]);
+            }
+
+            let alreadyGuessedLetters: string[] = [];
+            data.game_data.info.word_to_guess.split('').forEach((letter: string) => {
+              if (data.run.user_input.clickedLetters.includes(letter)) {
+                alreadyGuessedLetters = [...alreadyGuessedLetters, letter];
+                data.run.user_input.clickedLetters.splice(
+                  data.run.user_input.clickedLetters.findIndex(clickedLetter => clickedLetter === letter), 1);
+              }
+            });
+
+            if (alreadyGuessedLetters.length > 0) {
+              setGuessedLetters([...alreadyGuessedLetters]);
+            }
+
+            setWord(data.game_data.info.word_to_guess);
+            setTotalQuestions(data.totalQuestions);
+            setClue(data.game_data.info.clue);
+            if (data.run.user_input.clickedLetters.length === 0 && alreadyGuessedLetters.length === 0) {
+              setHasWon(null);
+              setGuessedLetters([]);
+
+              if (clickedLetters.length > 0) {
+                setClickedLetters([]);
+              }
+            }
+
+            setMistakes(data.run.user_input.clickedLetters.length);
         } else if (order >= totalQuestions) {
           setLTIScore({assignmentId, userId, gameId, sessionId, launchId})
             .then((data) => {
               setScore(data.score);
+              setStars(data.score/20);
+              dispatch(assignmentSliceActions.saveLaunchedAssignment({
+                launchedAssignmentId: 0,
+                launchedGameId: 0
+              }));
             });
           }
         })
@@ -64,7 +99,7 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
       audio.currentTime = 0;
       dataFetchedRef.current = true;
     };
-  }, [order]);
+  }, [order, clickedLetters]);
 
   const getRandomLetter = function (word: string): string {
     return word[Math.floor(Math.random() * word.length)];
@@ -72,6 +107,8 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
 
   const checkLetter = function (key: string): void {
     if (guessedLetters.includes(key)) return;
+    console.table(clickedLetters);
+    setClickedLetters((prev) => [...prev, key]);
 
     setGuessedLetters((prev) => {
       const newGuessedLetters = [...prev, key];
@@ -137,29 +174,33 @@ const Hangman = ({ assignmentId, gameId }: IBoardProps) => {
     </div>
   );
 
-  const hangmanBoard = (
-    <>
-      <HangmanDrawing mistakes={mistakes} />
-      {<div className={styles.clue}>{`Clue: ${clue}`}</div>}
-      {wordToGuess}
-      <div>{hasWon ? <div className={styles.green}>YOU WON</div> : null}</div>
-      <div>
-        {hasWon === false ? <div className={styles.red}>YOU LOST</div> : null}
-      </div>
-      <Keyboard checkLetter={checkLetter} isFinished={hasWon != null} />
-    </>
-  );
-
   return (
-    <div className={styles.hangmanContainer}>
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }}
+           style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             padding: '1rem'
+           }}>
+
       {score != null ? (
+
         <div className={styles.scoreSection}>
-          {score}/{100}
+          <div> Conseguiste {score} de {100}</div>
+          <Rating fractions={10} value={stars} readOnly />
         </div>
-      ) : (
-        hangmanBoard
-      )}
-    </div>
+
+      ) :  <>
+        <HangmanDrawing mistakes={mistakes} />
+        <div className={styles.clue}>{clue}</div>
+        {wordToGuess}
+        <Keyboard checkLetter={checkLetter} clickedLetters={clickedLetters} isFinished={hasWon != null} />
+      </>}
+    </Paper>
   );
 };
 

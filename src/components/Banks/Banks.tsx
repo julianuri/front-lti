@@ -6,6 +6,7 @@ import { RootState } from '../../redux/store';
 import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
+import { stringToDate } from '../../utils/GenericUtils';
 
 interface QuestionBank {
   id: number,
@@ -25,11 +26,8 @@ const QuestionBanks = () => {
     getAllQuestionBanks(userId).then((response) => {
       const banks = response.data.map((bank: QuestionBank) => {
         const newBank = {...bank};
-        newBank.created_at = new Date(bank.created_at).toLocaleDateString(
-          'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
-        newBank.updated_at = new Date(bank.updated_at).toLocaleDateString(
-          'es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' });
-
+        newBank.created_at = stringToDate(bank.created_at);
+        newBank.updated_at = stringToDate(bank.updated_at);
         return newBank;
         }
       );
@@ -57,9 +55,9 @@ const QuestionBanks = () => {
     <Button
       onClick={() => router.replace('/banks/create')}
       style={{
-      width: '25%',
-      alignSelf: 'end'
-    }} leftIcon={<IconPlaylistAdd
+        width: '30%',
+        alignSelf: 'center'
+      }} leftIcon={<IconPlaylistAdd
       size={20}
       strokeWidth={1.5}
       color={'#407fbf'}

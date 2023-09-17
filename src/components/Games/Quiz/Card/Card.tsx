@@ -3,9 +3,9 @@ import LoadingSpinner from '../../../Common/Spinner/Spinner';
 import styles from './Card.module.scss';
 import QuestionTypeEnum from '../../../../types/enums/QuestionTypeEnum';
 import { useState } from 'react';
-import { Checkbox, Radio, Switch } from 'react-hook-form-mantine';
-import { Button, Card as MantineCard, Container, Grid } from '@mantine/core';
-import { boolean, object, string } from 'yup';
+import { Checkbox, Radio } from 'react-hook-form-mantine';
+import { Button, Container, Grid } from '@mantine/core';
+import { object } from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -156,10 +156,6 @@ export default function Card(props: CardProps) {
     }
   };
 
-  /*<Switch value={false} styles={{label: {color: 'white'}}} labelPosition={'right'} name={'checkbox'} control={control}
-                    label={'Falso'} onChange={() => checkButtonValidity()}/>
-            <Switch value={true} styles={{label: {color: 'white'}}} labelPosition={'right'} name={'checkbox'} control={control}
-                    label={'Verdadero'} onChange={() => checkButtonValidity()}/>*/
 
   const card = getCard();
 
@@ -171,7 +167,7 @@ export default function Card(props: CardProps) {
             <Grid className={cardStyle}>
               <Grid.Col span={12}>
                 <div className={styles.questionSection}>
-                  { (props?.totalQuestions !== undefined && props?.questionOrder !== undefined) ?
+                  { (props?.totalQuestions !== undefined && props?.questionOrder !== undefined && props?.totalQuestions !== 999) ?
                     (<div className={styles.questionCount}>
                       <span>
                         Pregunta{' '}

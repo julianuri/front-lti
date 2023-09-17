@@ -4,13 +4,13 @@ import styles from './Quiz.module.scss';
 import ICard from '../../../types/ICard';
 import { getRun } from '../../../service/RunService';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLTIScore } from '../../../service/ScoreService';
 import IBoardProps from '../../../types/props/IBoardProps';
-import { RootState } from '../../../redux/store';
+import { assignmentSliceActions, RootState } from '../../../redux/store';
 import QuestionTypeEnum from '../../../types/enums/QuestionTypeEnum';
 import gameEnum from '../../../types/enums/GameEnum';
-import { Rating } from '@mantine/core';
+import { Paper, Rating } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 const Board = ({ assignmentId }: IBoardProps) => {
@@ -28,6 +28,7 @@ const Board = ({ assignmentId }: IBoardProps) => {
 	const [totalQuestions, setTotalQuestions] = useState(999);
 	const dataFetchedRef = useRef(false);
   const [stars, setStars] = useState(0);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if ((dataFetchedRef.current || process.env.NODE_ENV !== 'development') && assignmentId !== undefined) {
@@ -61,6 +62,10 @@ const Board = ({ assignmentId }: IBoardProps) => {
 							setScore(data.score);
 							setShowScore(true);
               setStars(data.score/20);
+              dispatch(assignmentSliceActions.saveLaunchedAssignment({
+                launchedAssignmentId: 0,
+                launchedGameId: 0
+              }));
 						}
           );
 				}
@@ -78,15 +83,27 @@ const Board = ({ assignmentId }: IBoardProps) => {
   };
 
   return (
-    <div className={styles.board}>
+    <Paper styles={{
+      title: { color: '#228be6', fontWeight: 'bold' }
+    }}
+           style={{
+             display: 'flex',
+             minHeight: '100%',
+             flexDirection: 'column',
+             alignItems: 'center',
+             justifyContent: 'center',
+             gap: '1rem',
+             padding: '1rem'
+           }}>
+
 
         {showScore ? (
-          <>
+
             <div className={styles.scoreSection}>
               <div> Conseguiste {score} de {100}</div>
               <Rating fractions={10} value={stars} readOnly />
             </div>
-          </>
+
         ) : (
           <Card
             currentQuestion={question}
@@ -96,7 +113,8 @@ const Board = ({ assignmentId }: IBoardProps) => {
           />
         )}
 
-    </div>
+
+    </Paper>
   );
 };
 

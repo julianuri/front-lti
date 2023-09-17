@@ -56,7 +56,10 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
       thirdMultiple: false,
       fourthMultiple: false,
       type: QuestionTypeEnum.SIMPLE,
-      checkbox: false,
+      checkbox0: false,
+      checkbox1: false,
+      checkbox2: false,
+      checkbox3: false,
     }
   });
 
@@ -72,7 +75,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
         setValue('secondOption', selectedItem.options[1].option);
         setValue('thirdOption', selectedItem.options[2].option);
         setValue('fourthOption', selectedItem.options[3].option);
-        setValue('checkbox', true);
+        setValue(`checkbox${selectedItem.answer}`, true);
         setCheckedIndex(selectedItem.answer as number);
         break;
       case  QuestionTypeEnum.MULTIPLE:
@@ -90,6 +93,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
         setValue('switch', selectedItem.answer as boolean);
         break;
       }
+      changeQuestionType(selectedItem.type);
     }
   }, [selectedItem]);
 
@@ -133,6 +137,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
   };
 
   const checkBoxChange = (index: any) => {
+    console.log(isValid);
     if (!index.checked) {
       setCheckedIndex(-1);
     } else {
@@ -189,7 +194,8 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
 
   const disableButton = function(): boolean {
     if (questionType === QuestionTypeEnum.SIMPLE) {
-      return !isValid || !getValues('checkbox');
+      return !isValid || (!getValues('checkbox0') && !getValues('checkbox1') && !getValues('checkbox2') &&
+        !getValues('checkbox3'));
     } else if (questionType === QuestionTypeEnum.MULTIPLE) {
       return !isValid || (!getValues('firstMultiple') && !getValues('secondMultiple') && !getValues('thirdMultiple') &&
         !getValues('fourthMultiple'));
@@ -203,7 +209,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <Grid>
           <Grid.Col span={12}>
-            <TextInput name='question' control={control} label='Pregunta'
+            <TextInput maxLength={100} name='question' control={control} label='Pregunta'
                        error={errors.question !== undefined ? 'Introduzca pregunta' : null}
                        withAsterisk={errors.question !== undefined}/>
           </Grid.Col>
@@ -233,10 +239,10 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
           { questionType === QuestionTypeEnum.SIMPLE ? (<>
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='firstOption' control={control} label='Primera Opción'
+                <TextInput maxLength={50} name='firstOption' control={control} label='Primera Opción'
                            error={errors.firstOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.firstOption !== undefined} />
-                <Checkbox name={'checkbox'} style={{alignSelf: 'flex-end'}}
+                <Checkbox name={'checkbox0'} style={{alignSelf: 'flex-end'}}
                           control={control}
                           value={0}
                           disabled={checkedIndex != -1 && checkedIndex != 0}
@@ -245,10 +251,10 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
             </Grid.Col>
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='secondOption' control={control} label='Segunda Opción'
+                <TextInput maxLength={50} name='secondOption' control={control} label='Segunda Opción'
                            error={errors.secondOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.secondOption !== undefined}/>
-                <Checkbox name={'checkbox'} style={{alignSelf: 'flex-end'}}
+                <Checkbox name={'checkbox1'} style={{alignSelf: 'flex-end'}}
                           control={control}
                           value={1}
                           disabled={checkedIndex != -1 && checkedIndex != 1}
@@ -258,10 +264,10 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
 
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='thirdOption' control={control} label='Tercera Opción'
+                <TextInput maxLength={50} name='thirdOption' control={control} label='Tercera Opción'
                            error={errors.thirdOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.thirdOption !== undefined}/>
-                <Checkbox name={'checkbox'} style={{alignSelf: 'flex-end'}}
+                <Checkbox name={'checkbox2'} style={{alignSelf: 'flex-end'}}
                           control={control}
                           value={2}
                           disabled={checkedIndex != -1 && checkedIndex != 2}
@@ -271,10 +277,10 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
 
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='fourthOption' control={control} label='Cuarta Opción'
+                <TextInput maxLength={50} name='fourthOption' control={control} label='Cuarta Opción'
                            error={errors.fourthOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.fourthOption !== undefined}/>
-                <Checkbox name={'checkbox'} style={{alignSelf: 'flex-end'}}
+                <Checkbox name={'checkbox3'} style={{alignSelf: 'flex-end'}}
                           control={control}
                           value={3}
                           disabled={checkedIndex != -1 && checkedIndex != 3}
@@ -286,7 +292,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
           { questionType === QuestionTypeEnum.MULTIPLE ? (<>
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='firstOption' control={control} label='Primera Opción'
+                <TextInput maxLength={50} name='firstOption' control={control} label='Primera Opción'
                            error={errors.firstOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.firstOption !== undefined} />
                 <Checkbox name={'firstMultiple'} style={{alignSelf: 'flex-end'}}
@@ -297,7 +303,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
             </Grid.Col>
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='secondOption' control={control} label='Segunda Opción'
+                <TextInput maxLength={50} name='secondOption' control={control} label='Segunda Opción'
                            error={errors.secondOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.secondOption !== undefined}/>
                 <Checkbox name={'secondMultiple'} style={{alignSelf: 'flex-end'}}
@@ -309,7 +315,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
 
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='thirdOption' control={control} label='Tercera Opción'
+                <TextInput maxLength={50} name='thirdOption' control={control} label='Tercera Opción'
                            error={errors.thirdOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.thirdOption !== undefined}/>
                 <Checkbox name={'thirdMultiple'} style={{alignSelf: 'flex-end'}}
@@ -321,7 +327,7 @@ const QuizForm = ({ items, setItems, closeModal, selectedItem }: QuestionFormPro
 
             <Grid.Col span={6}>
               <Group style={{flexWrap: 'nowrap'}}>
-                <TextInput name='fourthOption' control={control} label='Cuarta Opción'
+                <TextInput maxLength={50} name='fourthOption' control={control} label='Cuarta Opción'
                            error={errors.fourthOption !== undefined ? 'Introduzca opción' : null}
                            withAsterisk={errors.fourthOption !== undefined}/>
                 <Checkbox name={'fourthMultiple'} style={{alignSelf: 'flex-end'}}

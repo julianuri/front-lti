@@ -4,7 +4,7 @@ async function getAvatarConfig(userId: string) {
   );
 
   if (!response.ok) {
-    const message = `An error has occurred: ${response.status}`;
+    const message = `Un error con estado: ${response.status} ha ocurrido`;
     throw new Error(message);
   }
 

@@ -73,7 +73,7 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
   });
 
   return (
-    <div>
+    <div className={styles.histogram}>
       <div className={styles.statsSubTitle}>
         {title}
       </div>

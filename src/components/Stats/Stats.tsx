@@ -9,7 +9,7 @@ type StatsProps = {
 }
 
 const GRAPH_HEIGHT = 400;
-const GRAPH_WIDTH = GRAPH_HEIGHT * 2;
+const GRAPH_WIDTH = GRAPH_HEIGHT * 1;
 
 const Stats = ({assignmentId}: StatsProps) => {
   const [leaderboard, setLeaderboard] = useState([]);

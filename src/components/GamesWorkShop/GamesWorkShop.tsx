@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getAllQuestionBanks } from '../../service/QuestionBankService';
 import { useDispatch, useSelector } from 'react-redux';
 import { assignmentSliceActions, RootState } from '../../redux/store';
-import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
+import { IconPencil, IconPlaylistAdd, IconTrash, IconReportAnalytics } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
 import { Carousel } from '@mantine/carousel';
@@ -87,6 +87,10 @@ const GamesWorkShop = () => {
     }
   };
 
+  const redirectToAssignmentStats = function(assignmentId: number) {
+    void router.replace({pathname: '/stats', query: {assignmentId}});
+  };
+
   return <Paper style={{backgroundColor: 'white',
     gap: '2rem',
     padding: '1rem',
@@ -149,6 +153,13 @@ const GamesWorkShop = () => {
           <td>{stringToDate(element.registerDate)}</td>
           <td>{getGameName(element.gameId)}</td>
           <td style={{display: 'flex', gap: '0.5rem', justifyContent: 'center'}}>
+            <IconReportAnalytics
+              style={{cursor: 'pointer'}}
+              size={20}
+              strokeWidth={2}
+              color={'rgb(64, 127, 191)'}
+              onClick={() => redirectToAssignmentStats(element.id)}
+            />
             <IconPencil
               style={{cursor: 'pointer'}}
               size={20}

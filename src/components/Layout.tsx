@@ -108,14 +108,6 @@ const Layout = (props: any) => {
         },
         {
           key: 3,
-          label: 'Estadísticas',
-          icon: <IconReportAnalytics size={36} strokeWidth={2} color={'#407fbf'} />,
-          childrenOffset: 28,
-          disabled: false,
-          role: 'TEACHER|STUDENT',
-        },
-        {
-          key: 4,
           label: 'Avatar',
           role: 'STUDENT',
           icon: <IconUserCircle size={36} strokeWidth={2} color={'#407fbf'} />,

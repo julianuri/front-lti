@@ -1,4 +1,4 @@
-import LeaderboardItem from "./LeaderboardItem";
+import LeaderboardItem from './LeaderboardItem';
 import styles from './Stats.module.scss';
 
 type LeaderboardItem = {
@@ -12,7 +12,7 @@ type LeaderboardProps = {
 }
 
 const Leaderboard = ({ items, title }: LeaderboardProps) => {
-  const itemsDoms = items.map((item, i) => <LeaderboardItem index={i + 1} name={item.name} value={item.value}/>);
+  const itemsDoms = items.map((item, i) => <LeaderboardItem key={i} index={i + 1} name={item.name} value={item.value}/>);
 
   return (
     <div className={styles.leaderboard}>
@@ -23,7 +23,7 @@ const Leaderboard = ({ items, title }: LeaderboardProps) => {
         {itemsDoms}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Leaderboard;

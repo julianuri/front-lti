@@ -1,4 +1,4 @@
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated } from '@react-spring/web';
 
 type RectangleProps = {
   width: number;
@@ -29,8 +29,8 @@ export const Rectangle = (props: RectangleProps) => {
       width={springProps.width}
       height={springProps.height}
       opacity={0.7}
-      stroke="#9d174d"
-      fill="#9d174d"
+      stroke='#9d174d'
+      fill='#9d174d'
       fillOpacity={0.3}
       strokeWidth={1}
       rx={1}

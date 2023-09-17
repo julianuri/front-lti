@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
-import * as d3 from "d3";
-import { Rectangle } from "./Rectangle";
+import { useEffect, useMemo, useRef } from 'react';
+import * as d3 from 'd3';
+import { Rectangle } from './Rectangle';
 import styles from './Stats.module.scss';
 
 const MARGIN = { top: 30, right: 30, bottom: 40, left: 50 };
@@ -44,16 +44,16 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
   // Render the X axis using d3.js, not react
   useEffect(() => {
     const svgElement = d3.select(axesRef.current);
-    svgElement.selectAll("*").remove();
+    svgElement.selectAll('*').remove();
 
     const xAxisGenerator = d3.axisBottom(xScale);
     svgElement
-      .append("g")
-      .attr("transform", "translate(0," + boundsHeight + ")")
+      .append('g')
+      .attr('transform', 'translate(0,' + boundsHeight + ')')
       .call(xAxisGenerator);
 
     const yAxisGenerator = d3.axisLeft(yScale);
-    svgElement.append("g").call(yAxisGenerator);
+    svgElement.append('g').call(yAxisGenerator);
   }, [xScale, yScale, boundsHeight]);
 
   const allRects = buckets.map((bucket, i) => {
@@ -81,7 +81,7 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
         <g
             width={boundsWidth}
             height={boundsHeight}
-            transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
+            transform={`translate(${[MARGIN.left, MARGIN.top].join(',')})`}
         >
             {allRects}
         </g>
@@ -89,7 +89,7 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
             width={boundsWidth}
             height={boundsHeight}
             ref={axesRef}
-            transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
+            transform={`translate(${[MARGIN.left, MARGIN.top].join(',')})`}
         />
       </svg>
     </div>

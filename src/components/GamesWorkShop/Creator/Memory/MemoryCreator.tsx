@@ -192,14 +192,14 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
                 <Divider size='xs' />
                 <Group position='right' mt='md' style={{ 'marginTop': '1rem' }}>
 
-                  <Button leftIcon={<IconPlaylistAdd
+                  <Button disabled={items.length >= 12} leftIcon={<IconPlaylistAdd
                     size={20}
                     strokeWidth={1.5}
                     color={'#407fbf'}
                   />} variant='outline' onClick={newQuestionHandler}>
                     {'Agregar Pregunta'}
                   </Button>
-                  <Button loading={isLoading} type='submit' disabled={items.length == 0 || !isValid } variant='outline'>
+                  <Button loading={isLoading} type='submit' disabled={items.length < 2 || !isValid } variant='outline'>
                     {(editAssignment) ? 'Editar Tarea' : 'Crear Tarea'}
                   </Button>
                 </Group>

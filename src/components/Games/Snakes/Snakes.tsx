@@ -329,7 +329,7 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
       }
 
       if (
-        currentPosition + diceNumber >=
+        currentPosition + diceNumber ===
           boardData.tiles_per_column * boardData.tiles_per_row
       ) {
         setHasWon(true);

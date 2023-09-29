@@ -24,7 +24,7 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
 
   const domain: [number, number] = [domainMin, domainMax]; // [0, 100]
   const xScale = useMemo(() => {
-    return d3.scaleLinear().domain(domain).range([10, boundsWidth]);
+    return d3.scaleLinear().domain(domain).range([resolution, boundsWidth]);
   }, [data, width]);
 
   const buckets = useMemo(() => {

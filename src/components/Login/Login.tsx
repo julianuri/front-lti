@@ -6,7 +6,7 @@ import { registerUser, verifyUserCredentials } from '../../service/AuthService';
 import { AuthState } from '../../features/auth/authSlice';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
-import { Box, Button, Overlay, Paper, Popover, Progress, Text } from '@mantine/core';
+import { Box, Button, Loader, Overlay, Paper, Popover, Progress, Text } from '@mantine/core';
 import { PasswordInput, TextInput } from 'react-hook-form-mantine';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -151,7 +151,7 @@ const LoginForm = () => {
       margin: '1rem'
     }}>
 
-
+      {showOverlay && <Loader color="blue" size={30} style={{position: 'absolute', right: '10'}}/>}
       <TextInput
         style={{ padding: '1rem' }}
         maxLength={80}

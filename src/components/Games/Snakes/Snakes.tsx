@@ -329,13 +329,14 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
       }
 
       if (
-        currentPosition + diceNumber ===
+        currentPosition + diceNumber >=
           boardData.tiles_per_column * boardData.tiles_per_row &&
         rollsLeft > 1
       ) {
         setHasWon(true);
       } else {
-        setTimeout(() => setIsDiceClickable(true), OrderEnum.SLOWEST);
+        setTimeout(() =>
+          setIsDiceClickable(true), OrderEnum.SLOWEST);
       }
 
       setTimeout(() => {

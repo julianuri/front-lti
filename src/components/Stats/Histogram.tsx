@@ -18,9 +18,11 @@ type HistogramProps = {
   resolution: number;
   domainMin: number;
   domainMax: number;
+  xLabel?: string;
+  yLabel?: string;
 };
 
-export const Histogram = ({ title, description, width, height, data, resolution, domainMin, domainMax }: HistogramProps) => {
+export const Histogram = ({ title, description, width, height, data, resolution, domainMin, domainMax, xLabel, yLabel }: HistogramProps) => {
   const axesRef = useRef(null);
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
@@ -54,9 +56,23 @@ export const Histogram = ({ title, description, width, height, data, resolution,
       .append('g')
       .attr('transform', 'translate(0,' + boundsHeight + ')')
       .call(xAxisGenerator);
+    svgElement.append("text")
+      .attr("class", styles.histogramXAxis)
+      .attr("text-anchor", "end")
+      .attr("dy", "2em")
+      .attr("x", boundsWidth)
+      .attr("y", boundsHeight)
+      .text(xLabel);
 
     const yAxisGenerator = d3.axisLeft(yScale);
     svgElement.append('g').call(yAxisGenerator);
+    svgElement.append("text")
+      .attr("class", styles.histogramYAxis)
+      .attr("text-anchor", "end")
+      .attr("y", 0)
+      .attr("dy", "-1.2em")
+      .attr("transform", "rotate(-90)")
+      .text(yLabel);
   }, [xScale, yScale, boundsHeight]);
 
   const allRects = buckets.map((bucket, i) => {

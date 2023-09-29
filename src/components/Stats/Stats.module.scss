@@ -59,3 +59,15 @@
   min-height: 100%;
   padding: 1rem;
 }
+
+.histogramXAxis {
+  fill: colors.$dark-blue;
+  font-weight: bold;
+  font-size: 10;
+}
+
+.histogramYAxis {
+  fill: colors.$dark-blue;
+  font-weight: bold;
+  font-size: 10;
+}

@@ -72,6 +72,8 @@ const Stats = ({assignmentId}: StatsProps) => {
         resolution={scoreDataResolution}
         domainMin={scoreDomainMin}
         domainMax={scoreDomainMax}
+        xLabel='Puntos'
+        yLabel='Cantidad de estudiantes'
       />
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
@@ -83,6 +85,8 @@ const Stats = ({assignmentId}: StatsProps) => {
         resolution={timeDataResolution}
         domainMin={timeDomainMin}
         domainMax={timeDomainMax}
+        xLabel='Minutos'
+        yLabel='Cantidad de estudiantes'
       />
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
@@ -94,6 +98,8 @@ const Stats = ({assignmentId}: StatsProps) => {
         resolution={triesDataResolution}
         domainMin={triesDomainMin}
         domainMax={triesDomainMax}
+        xLabel='Intentos'
+        yLabel='Cantidad de estudiantes'
       />
     </Paper>
   );

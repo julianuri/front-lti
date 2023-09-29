@@ -39,11 +39,22 @@
   font-weight: bold;
 }
 
-.stats{
+.stats {
+  min-height: 100%;
+  padding: 1rem;
+  gap: 1rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  color: colors.$dark-blue;
 }
 
-.histogram{
+.divider {
+  width: 80%;
+  color: colors.$dark-blue;
+}
+
+.histogram {
+  min-height: 100%;
+  padding: 1rem;
 }

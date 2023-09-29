@@ -136,7 +136,21 @@ const Layout = (props: any) => {
       getAvatarConfig(userId)
         .then((res) => {
           if (res.data == null) {
-            const config = genConfig();
+            const config = genConfig({sex: 'woman', 
+              bgColor: '#dbdbb8', 
+              earSize: 'big', 
+              eyeStyle: 'oval', 
+              hatColor: '#D2EFF3', 
+              hatStyle: 'none', 
+              faceColor: '#F9C9B6', 
+              hairColor: '#000000', 
+              hairStyle: 'normal', 
+              noseStyle: 'long', 
+              mouthStyle: 'laugh', 
+              shirtColor: '#ddb627', 
+              shirtStyle: 'short', 
+              eyeBrowStyle: 'up', 
+              glassesStyle: 'square'});
             dispatch(avatarSliceActions.saveConfig({ ...config }));
 
             saveAvatarConfig(config, userId).catch((error) =>

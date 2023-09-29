@@ -6,7 +6,7 @@ import { registerUser, verifyUserCredentials } from '../../service/AuthService';
 import { AuthState } from '../../features/auth/authSlice';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/router';
-import { Box, Button, Paper, Popover, Progress, Text } from '@mantine/core';
+import { Box, Button, Loader, Overlay, Paper, Popover, Progress, Text } from '@mantine/core';
 import { PasswordInput, TextInput } from 'react-hook-form-mantine';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,6 +17,7 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [popoverOpened, setPopoverOpened] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const [strength, setStrength] = useState(0);
   const [color, setColor] = useState('red');
@@ -76,6 +77,7 @@ const LoginForm = () => {
   }
 
   const logInUser: SubmitHandler<UserForm> = (data) => {
+    setShowOverlay(true);
     verifyUserCredentials(data)
       .then(async (response) => {
         if (!response.ok) {
@@ -90,7 +92,7 @@ const LoginForm = () => {
             role: 'ADMIN'
           })
         );
-
+        setShowOverlay(false);
         router.replace('lti-config').then(() => {
           notifications.show({ message: 'Inicio de sesión exitoso', autoClose: 3000 });
         });
@@ -101,10 +103,12 @@ const LoginForm = () => {
         } else {
           notifications.show({ message: error.message, autoClose: false, color: 'red' });
         }
+        setShowOverlay(false);
       });
   };
 
   const registerU: SubmitHandler<UserForm> = (data) => {
+    setShowOverlay(true);
     registerUser(data)
       .then(async (response: AuthState) => {
         dispatch(
@@ -115,11 +119,13 @@ const LoginForm = () => {
           })
         );
 
+        setShowOverlay(false);
         void router.push('lti-config').then(() => {
           notifications.show({ message: 'Usuario Registrado' });
         });
       })
       .catch((error) => {
+        setShowOverlay(false);
         notifications.show({ message: 'No se pudo registrar el usuario', autoClose: false, color: 'red' });
       });
   };
@@ -133,6 +139,8 @@ const LoginForm = () => {
 
 
   return (
+    <>
+    {showOverlay && <Overlay color="#000" opacity={0.60} />}
     <Paper style={{
       top: '50%',
       left: '50%',
@@ -143,6 +151,7 @@ const LoginForm = () => {
       margin: '1rem'
     }}>
 
+      {showOverlay && <Loader color="blue" size={30} style={{position: 'absolute', right: '10'}}/>}
       <TextInput
         style={{ padding: '1rem' }}
         maxLength={80}
@@ -184,6 +193,7 @@ const LoginForm = () => {
                 style={{ margin: '1rem' }}>Registrar</Button>
       </div>
     </Paper>
+    </>
   );
 };
 

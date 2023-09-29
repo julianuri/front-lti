@@ -330,8 +330,7 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
 
       if (
         currentPosition + diceNumber >=
-          boardData.tiles_per_column * boardData.tiles_per_row &&
-        rollsLeft > 1
+          boardData.tiles_per_column * boardData.tiles_per_row
       ) {
         setHasWon(true);
       } else {
@@ -341,7 +340,8 @@ const Snakes = ({ assignmentId, gameId }: IBoardProps) => {
 
       setTimeout(() => {
         setRollsLeft((current) => current - 1);
-        if (rollsLeft === 1) {
+        if (rollsLeft === 1 && currentPosition + diceNumber <
+          boardData.tiles_per_column * boardData.tiles_per_row) {
           setShowModal(true);
         }
       }, OrderEnum.SLOWEST * 1.1);

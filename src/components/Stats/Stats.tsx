@@ -65,35 +65,41 @@ const Stats = ({assignmentId}: StatsProps) => {
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de puntajes'
-        description={'Cantidad de estudiantes divididos en rangos del máximo puntaje conseguido'}
+        description={'Cantidad de estudiantes que han obtenido puntajes dentro de cada rango'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={scoreData}
         resolution={scoreDataResolution}
         domainMin={scoreDomainMin}
         domainMax={scoreDomainMax}
+        xLabel='Puntos'
+        yLabel='Cantidad de estudiantes'
       />
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de tiempo'
-        description={'Cantidad de intentos de los estudiantes divididos en rangos de tiempo expresado en minutos'}
+        description={'Cantidad de estudiantes que han finalizado la actividad agrupados por minutos'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={timeData}
         resolution={timeDataResolution}
         domainMin={timeDomainMin}
         domainMax={timeDomainMax}
+        xLabel='Minutos'
+        yLabel='Cantidad de estudiantes'
       />
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de intentos'
-        description={'Cantidad de estudiantes divididos en rangos de los intentos realizados'}
+        description={'Cantidad de estudiantes agrupados por numero de intentos realizados'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={triesData}
         resolution={triesDataResolution}
         domainMin={triesDomainMin}
         domainMax={triesDomainMax}
+        xLabel='Intentos'
+        yLabel='Cantidad de estudiantes'
       />
     </Paper>
   );

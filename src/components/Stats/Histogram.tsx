@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as d3 from 'd3';
 import { Rectangle } from './Rectangle';
 import styles from './Stats.module.scss';
+import { IconInfoCircle } from '@tabler/icons-react';
+import { Tooltip } from '@mantine/core';
 
 const MARGIN = { top: 30, right: 30, bottom: 40, left: 50 };
 
@@ -9,6 +11,7 @@ const BUCKET_PADDING = 4;
 
 type HistogramProps = {
   title?: string;
+  description: string;
   width: number;
   height: number;
   data: number[];
@@ -17,7 +20,7 @@ type HistogramProps = {
   domainMax: number;
 };
 
-export const Histogram = ({ title, width, height, data, resolution, domainMin, domainMax }: HistogramProps) => {
+export const Histogram = ({ title, description, width, height, data, resolution, domainMin, domainMax }: HistogramProps) => {
   const axesRef = useRef(null);
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
@@ -75,8 +78,15 @@ export const Histogram = ({ title, width, height, data, resolution, domainMin, d
   return (
     <div className={styles.histogram}>
       <div className={styles.statsSubTitle}>
-        {title}
+        <div>{title}</div>
+        <Tooltip label={description}>
+        <IconInfoCircle
+          size={24}
+          strokeWidth={2}
+        />
+        </Tooltip>
       </div>
+
       <svg width={width} height={height}>
         <g
             width={boundsWidth}

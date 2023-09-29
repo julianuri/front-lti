@@ -3,7 +3,7 @@ import { getAssignmentStats } from '../../service/AssignmentService';
 import { Histogram } from './Histogram';
 import Leaderboard from './Leaderboard';
 import styles from './Stats.module.scss';
-import { Divider, Grid, Paper } from '@mantine/core';
+import { Divider, Paper } from '@mantine/core';
 
 type StatsProps = {
   assignmentId: number;
@@ -65,6 +65,7 @@ const Stats = ({assignmentId}: StatsProps) => {
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de puntajes'
+        description={'Cantidad de estudiantes divididos en rangos del máximo puntaje conseguido'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={scoreData}
@@ -75,6 +76,7 @@ const Stats = ({assignmentId}: StatsProps) => {
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de tiempo'
+        description={'Cantidad de intentos de los estudiantes divididos en rangos de tiempo expresado en minutos'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={timeData}
@@ -85,6 +87,7 @@ const Stats = ({assignmentId}: StatsProps) => {
       <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de intentos'
+        description={'Cantidad de estudiantes divididos en rangos de los intentos realizados'}
         width={GRAPH_WIDTH}
         height={GRAPH_HEIGHT}
         data={triesData}

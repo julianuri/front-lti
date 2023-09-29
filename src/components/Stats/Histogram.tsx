@@ -70,7 +70,7 @@ export const Histogram = ({ title, description, width, height, data, resolution,
       .attr('class', styles.histogramYAxis)
       .attr('text-anchor', 'end')
       .attr('y', 0)
-      .attr('dy', '-1.2em')
+      .attr('dy', '-2em')
       .attr('transform', 'rotate(-90)')
       .text(yLabel);
   }, [xScale, yScale, boundsHeight]);

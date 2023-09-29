@@ -3,6 +3,7 @@ import { getAssignmentStats } from '../../service/AssignmentService';
 import { Histogram } from './Histogram';
 import Leaderboard from './Leaderboard';
 import styles from './Stats.module.scss';
+import { Divider, Grid, Paper } from '@mantine/core';
 
 type StatsProps = {
   assignmentId: number;
@@ -59,8 +60,9 @@ const Stats = ({assignmentId}: StatsProps) => {
   }, [assignmentId]);
 
   return (
-    <div className={styles.stats}>
-      <Leaderboard items={leaderboard} title='Leaderboard' />
+    <Paper className={styles.stats}>
+      <Leaderboard items={leaderboard} title='Tabla Clasificatoria' />
+      <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de puntajes'
         width={GRAPH_WIDTH}
@@ -70,6 +72,7 @@ const Stats = ({assignmentId}: StatsProps) => {
         domainMin={scoreDomainMin}
         domainMax={scoreDomainMax}
       />
+      <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de tiempo'
         width={GRAPH_WIDTH}
@@ -79,6 +82,7 @@ const Stats = ({assignmentId}: StatsProps) => {
         domainMin={timeDomainMin}
         domainMax={timeDomainMax}
       />
+      <Divider size={'xs'} className={styles.divider} />
       <Histogram
         title='Histograma de intentos'
         width={GRAPH_WIDTH}
@@ -88,7 +92,7 @@ const Stats = ({assignmentId}: StatsProps) => {
         domainMin={triesDomainMin}
         domainMax={triesDomainMax}
       />
-    </div>
+    </Paper>
   );
 };
 

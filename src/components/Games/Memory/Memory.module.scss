@@ -2,7 +2,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: 200px 200px 200px 200px;
+  grid-template-columns: repeat(3, 10rem);
   grid-template-rows: repeat(3, 10rem);
   grid-gap: 1rem;
   gap: 1rem;

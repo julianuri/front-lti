@@ -37,7 +37,10 @@ const Stats = ({assignmentId}: StatsProps) => {
     }
 
     getAssignmentStats(assignmentId).then((response) => {
-      setLeaderboard(response['leaderboard']['data'].map((p) => ({name: p['user__name'], value: p['score__max']})));
+      setLeaderboard(response['leaderboard']['data'].map((p) => ({
+        name: p['user__name'],
+        value: p['score__max'],
+        avatar: p['avatar_config']})));
 
       // Score histogram
       setScoreData(response['score_histogram']['raw']);

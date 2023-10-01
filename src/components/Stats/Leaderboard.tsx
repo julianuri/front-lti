@@ -12,7 +12,8 @@ type LeaderboardProps = {
 }
 
 const Leaderboard = ({ items, title }: LeaderboardProps) => {
-  const itemsDoms = items.map((item, i) => <LeaderboardItem key={i} index={i + 1} name={item.name} value={item.value}/>);
+  const itemsDoms = items.map((item, i) =>
+    <LeaderboardItem key={i} index={i + 1} name={item.name} value={item.value} avatarConfig={item.avatar}/>);
 
   return (
     <div className={styles.leaderboard}>

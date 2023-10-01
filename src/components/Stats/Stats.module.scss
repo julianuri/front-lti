@@ -4,6 +4,7 @@
 .leaderboardItem {
   display: flex;
   justify-content: center;
+  align-items: center;
   text-align: center;
   position: relative;
   gap: 1rem;
@@ -21,9 +22,20 @@
 }
 
 .leaderboardItemValue {
-  width: 20%;
+  width: 10%;
   font-weight: bold;
 }
+
+.avatar {
+  width: 10%;
+  text-align: initial;
+}
+
+.avatarConfig {
+  width: 3rem;
+  height: 3rem;
+}
+
 
 .leaderboardContent {
   max-height: 600px;

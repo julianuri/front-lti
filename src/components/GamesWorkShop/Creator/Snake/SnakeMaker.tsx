@@ -14,6 +14,9 @@ import { NativeSelect, NumberInput } from 'react-hook-form-mantine';
 import { yupResolver } from '@hookform/resolvers/yup';
 import IAssignment from '../../../../types/IAssignment';
 import { useRouter } from 'next/router';
+import { useDisclosure } from '@mantine/hooks';
+import { IconInfoCircle } from '@tabler/icons-react';
+import MessageModal from '../../../Common/MessageModal/MessageModal';
 
 interface RouteAssignment {
   assignmentId: number | typeof NaN;
@@ -50,6 +53,7 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCarouselItem, setSelectedCarouselItem] = useState(0);
   const editAssignment = !Number.isNaN(assignmentId);
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
 
   useEffect(() => {
     if (editAssignment) {
@@ -115,6 +119,23 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
       <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
         <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
           <Grid>
+            <Grid.Col span={12}>
+              <div style={{position: 'relative'}}>
+                <IconInfoCircle
+                  size={24}
+                  strokeWidth={2}
+                  style={{ position: 'absolute', color: 'rgb(34, 139, 230)', right: 0, top: 0 }}
+                  onClick={() => instructions.open()}
+                />
+              </div>
+            </Grid.Col>
+
+            {<MessageModal title={'Instrucciones'} message={
+              <div style={{fontWeight: 'normal'}}>
+                <p>Selecciona la frecuencia (tiradas del dado) con la que quieres que aparezca una pregunta del banco.</p>
+                <p>Selecciona el banco de preguntas que quieres vincular a la tarea.</p>
+                <p>Selecciona el tablero a usar.</p>
+              </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
 
             <Grid.Col span={6}>
               <NumberInput
@@ -143,10 +164,10 @@ const SnakeMaker = function({ assignmentId }: RouteAssignment) {
               <Divider size='xs' />
               <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
                 <Carousel initialSlide={selectedCarouselItem}
-                          maw={320}
+                          maw={300}
                           mx='auto'
                           withIndicators
-                          height={320} onSlideChange={(id) => handleClick(id)}>
+                          height={300} onSlideChange={(id) => handleClick(id)}>
 
                   {BOARDS.map(board => {
                     return (<Carousel.Slide key={board.id}>

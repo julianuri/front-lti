@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getAllQuestionBanks } from '../../service/QuestionBankService';
 import { useDispatch, useSelector } from 'react-redux';
 import { assignmentSliceActions, RootState } from '../../redux/store';
-import { IconPencil, IconPlaylistAdd, IconTrash, IconReportAnalytics } from '@tabler/icons-react';
+import { IconPencil, IconPlaylistAdd, IconTrash, IconReportAnalytics, IconInfoCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
 import { Carousel } from '@mantine/carousel';
@@ -15,6 +15,7 @@ import { getGameName, stringToDate } from '../../utils/GenericUtils';
 import { useDisclosure } from '@mantine/hooks';
 import { dropAssignment } from '../../service/AssignmentService';
 import GameEnum from '../../types/enums/GameEnum';
+import MessageModal from '../Common/MessageModal/MessageModal';
 
 const GamesWorkShop = () => {
 
@@ -24,6 +25,7 @@ const GamesWorkShop = () => {
   const { linkedAssignmentId } = useSelector((state: RootState) => state.assignment);
   const [assignments, setAssignments] = useAssignments(userId, contextId);
   const [opened, { open, close }] = useDisclosure(false);
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
   const effectRan = useRef(false);
   const [games, setGames] = useState<IGame[]>([]);
 
@@ -99,6 +101,8 @@ const GamesWorkShop = () => {
     minHeight: '100%',
     textAlign: 'center'
   }}>
+
+    <div style={{position: 'relative'}}>
     <Tooltip label={`Ya enlanzaste esta tarea de Canvas con ${getLinkedAssignmentName()}`}
              style={{display: (linkedAssignmentId === 0) ? 'none' : 'inherit' }}>
       <span>
@@ -117,6 +121,39 @@ const GamesWorkShop = () => {
       </Button>
         </span>
     </Tooltip>
+
+    <IconInfoCircle
+      size={24}
+      strokeWidth={2}
+      style={{position: 'absolute', color: 'rgb(34, 139, 230)', right: 0}}
+      onClick={() => instructions.open()}
+    />
+    </div>
+
+    {<MessageModal title={'Instrucciones'} message={
+      <div style={{fontWeight: 'normal'}}>
+        <p>Pulsa el botón de agregar tarea para vincular la tarea de canvas con alguno de los juegos.</p>
+        <p>Tienes tres posibles acciones de interacción con una tarea vinculada:</p>
+        <p>
+        <IconReportAnalytics
+          size={20}
+          strokeWidth={2}
+          color={'rgb(64, 127, 191)'}
+        /> te permite acceder a las estadísticas asociadas a la tarea.</p>
+        <p>
+          <IconPencil
+          size={20}
+          strokeWidth={2}
+          color={'rgb(64, 127, 191)'}
+        /> te permite editar la tarea.</p>
+        <p>
+          <IconTrash
+          size={20}
+          strokeWidth={2}
+          color={'#e81a27'}
+        /> te permite desvincular la tarea.</p>
+    </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
+
 
     {(opened) ?
       <Modal opened={opened}

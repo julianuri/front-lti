@@ -11,9 +11,10 @@ import { notifications } from '@mantine/notifications';
 import GameEnum from '../../../../types/enums/GameEnum';
 import { useRouter } from 'next/router';
 import { Button, Container, Divider, Grid, Group, Modal, Paper, Table } from '@mantine/core';
-import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
+import { IconInfoCircle, IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { createFile, getMemoryAnswerTypeName } from '../../../../utils/GenericUtils';
 import { useDisclosure } from '@mantine/hooks';
+import MessageModal from '../../../Common/MessageModal/MessageModal';
 
 interface RouteAssignment {
   assignmentId: number | typeof NaN;
@@ -36,6 +37,7 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const editAssignment = !Number.isNaN(assignmentId);
   const [selectedItem, setSelectedItem] = useState<IMemoryMatch>();
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
 
   useEffect(() => {
     if (editAssignment) {
@@ -151,6 +153,36 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
               <Grid.Col span={12}>
+                <div style={{position: 'relative'}}>
+                  <IconInfoCircle
+                    size={24}
+                    strokeWidth={2}
+                    style={{ position: 'absolute', color: 'rgb(34, 139, 230)', right: 0, top: 0 }}
+                    onClick={() => instructions.open()}
+                  />
+                </div>
+              </Grid.Col>
+
+              {<MessageModal title={'Instrucciones'} message={
+                <div style={{fontWeight: 'normal'}}>
+                  <p>Existen dos modalidades para una pareja de tarjetas.</p>
+                  <p>Una pareja tipo texto se conforma por dos tarjetas con texto.</p>
+                  <p>Una pareja tipo imagen se conforma por una tarjeta con texto vinculada a una imagen.</p>
+                  <p>
+                    <IconPencil
+                      size={20}
+                      strokeWidth={2}
+                      color={'rgb(64, 127, 191)'}
+                    /> te permite editar la pareja de tarjetas.</p>
+                  <p>
+                    <IconTrash
+                      size={20}
+                      strokeWidth={2}
+                      color={'#e81a27'}
+                    /> te permite eliminar pareja de tarjetas.</p>
+                </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
+
+              <Grid.Col span={12}>
                 <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
                   <Table striped highlightOnHover withBorder withColumnBorders style={{ textAlign: 'center' }}>
                     <thead>
@@ -197,7 +229,7 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
                     strokeWidth={1.5}
                     color={'#407fbf'}
                   />} variant='outline' onClick={newQuestionHandler}>
-                    {'Agregar Pregunta'}
+                    {'Agregar Pareja'}
                   </Button>
                   <Button loading={isLoading} type='submit' disabled={items.length < 2 || !isValid } variant='outline'>
                     {(editAssignment) ? 'Editar Tarea' : 'Crear Tarea'}
@@ -214,7 +246,7 @@ const MemoryCreator = ({ assignmentId }: RouteAssignment) => {
       <Modal opened={opened}
              onClose={close}
              styles={{title: { color: '#228be6', fontWeight: 'bold' }}}
-             title={(editQuestion) ? 'Modificar Palabra' : 'Agregar Palabra'}
+             title={(editQuestion) ? 'Modificar Pareja' : 'Agregar Pareja'}
              centered>
         {
           <MemoryForm

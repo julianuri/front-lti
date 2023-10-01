@@ -7,13 +7,14 @@ import { Button, Container, Divider, Grid, Group, Modal, Paper, Table } from '@m
 import { TextInput } from 'react-hook-form-mantine';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
+import { IconInfoCircle, IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import QuizForm from './Question/QuizForm';
 import { getBankQuestions, saveQuestionBank } from '../../../service/QuestionBankService';
 import getQuestionTypeText from '../../../utils/QuestionTypeToText';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
+import MessageModal from '../../Common/MessageModal/MessageModal';
 
 
 type SaveQuestionBankRQ = {
@@ -31,6 +32,7 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
   const [items, setItems] = useState<IQuizQuestion[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IQuizQuestion>();
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
 
   const schema = object().shape({
     bankName: string().required()
@@ -105,6 +107,37 @@ const BankCreationForm = ({ bankId, bankName }: { bankId: string | undefined, ba
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
+
+              <Grid.Col span={12}>
+                <div style={{position: 'relative'}}>
+                  <IconInfoCircle
+                    size={24}
+                    strokeWidth={2}
+                    style={{ position: 'absolute', color: 'rgb(34, 139, 230)', right: 0, top: 0 }}
+                    onClick={() => instructions.open()}
+                  />
+                </div>
+              </Grid.Col>
+
+              {<MessageModal title={'Instrucciones'} message={
+                <div style={{fontWeight: 'normal'}}>
+                  <p>Agrega las preguntas que desees al banco, existen tres tipos de preguntas.</p>
+                  <p>Selección Simple.</p>
+                  <p>Selección Múltiple.</p>
+                  <p>Verdadero o Falso.</p>
+                  <p>
+                    <IconPencil
+                      size={20}
+                      strokeWidth={2}
+                      color={'rgb(64, 127, 191)'}
+                    /> te permite editar la pregunta.</p>
+                  <p>
+                    <IconTrash
+                      size={20}
+                      strokeWidth={2}
+                      color={'#e81a27'}
+                    /> te permite eliminar la pregunta.</p>
+                </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
 
               <Grid.Col span={12}>
                 <TextInput

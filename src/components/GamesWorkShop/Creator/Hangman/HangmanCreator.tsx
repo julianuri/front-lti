@@ -6,16 +6,13 @@ import { assignmentSliceActions, RootState } from '../../../../redux/store';
 import IAssignment from '../../../../types/IAssignment';
 import IHangmanQuestion from '../../../../types/props/IHangmanQuestion';
 import { Button, Container, Divider, Grid, Group, Modal, Paper, Table } from '@mantine/core';
-import { NativeSelect, NumberInput, TextInput } from 'react-hook-form-mantine';
-import { number, object, string } from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
+import { IconInfoCircle, IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import GameEnum from '../../../../types/enums/GameEnum';
 import { notifications } from '@mantine/notifications';
 import HangmanForm from './HangmanForm';
-import useDifferentAssignments from '../../../../hooks/useDifferentAssignments';
 import { useRouter } from 'next/router';
+import MessageModal from '../../../Common/MessageModal/MessageModal';
 
 interface RouteAssignment {
   assignmentId: number | typeof NaN;
@@ -29,7 +26,7 @@ const HangmanCreator = ({ assignmentId }: RouteAssignment) => {
   const { assignments } = useSelector((state: RootState) => state.assignment);
   const { contextId, resourceId, lineitemUrl, resourceName, attempts } = useSelector((state: RootState) => state.auth);
   const editAssignment = !Number.isNaN(assignmentId);
-
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
 
   const {
     handleSubmit,
@@ -111,6 +108,35 @@ const HangmanCreator = ({ assignmentId }: RouteAssignment) => {
         <Paper withBorder shadow='md' p={30} mt={30} radius='md' style={{ marginTop: 0 }}>
           <form onSubmit={handleSubmit(onSubmit, (errors) => console.table(errors))}>
             <Grid>
+              <Grid.Col span={12}>
+                <div style={{position: 'relative'}}>
+                  <IconInfoCircle
+                    size={24}
+                    strokeWidth={2}
+                    style={{ position: 'absolute', color: 'rgb(34, 139, 230)', right: 0, top: 0 }}
+                    onClick={() => instructions.open()}
+                  />
+                </div>
+              </Grid.Col>
+
+              {<MessageModal title={'Instrucciones'} message={
+                <div style={{fontWeight: 'normal'}}>
+                  <p>Introduce la palabra a adivinar junto a una pista para el
+                  estudiante. Solo se permiten carácteres del alfabeto Español.</p>
+                  <p>
+                    <IconPencil
+                      size={20}
+                      strokeWidth={2}
+                      color={'rgb(64, 127, 191)'}
+                    /> te permite editar la palabra.</p>
+                  <p>
+                    <IconTrash
+                      size={20}
+                      strokeWidth={2}
+                      color={'#e81a27'}
+                    /> te permite eliminar la palabra.</p>
+                </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
+
               <Grid.Col span={12}>
                 <Container style={{ 'margin': '1rem 0', 'padding': 0 }}>
                   <Table striped highlightOnHover withBorder withColumnBorders style={{ textAlign: 'center' }}>

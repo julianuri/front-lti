@@ -110,3 +110,8 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+%modal {
+  color: colors.$dark-blue;
+  font-weight: bold;
+}

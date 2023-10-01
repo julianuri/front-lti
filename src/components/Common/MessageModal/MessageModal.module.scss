@@ -1,0 +1,6 @@
+@use '../../../styles/colors';
+@import '../../../styles/utils';
+
+.modal {
+  @extend %modal;
+}

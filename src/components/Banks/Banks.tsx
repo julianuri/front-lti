@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { dropBank, getAllQuestionBanks } from '../../service/QuestionBankService';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
+import { IconInfoCircle, IconPencil, IconPlaylistAdd, IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { notifications } from '@mantine/notifications';
 import { stringToDate } from '../../utils/GenericUtils';
+import MessageModal from '../Common/MessageModal/MessageModal';
+import { useDisclosure } from '@mantine/hooks';
 
 interface QuestionBank {
   id: number,
@@ -20,6 +22,7 @@ const QuestionBanks = () => {
 
   const router = useRouter();
   const { userId } = useSelector((state: RootState) => state.auth);
+  const [areInstructionsOpen, instructions] = useDisclosure(false);
   const [questionBanks, setQuestionBanks] = useState<QuestionBank[]>([]);
 
   useEffect(() => {
@@ -52,18 +55,45 @@ const QuestionBanks = () => {
     minHeight: '100%',
     textAlign: 'center'
   }}>
-    <Button
-      onClick={() => router.replace('/banks/create')}
-      style={{
-        width: '30%',
-        alignSelf: 'center'
-      }} leftIcon={<IconPlaylistAdd
-      size={20}
-      strokeWidth={1.5}
-      color={'#407fbf'}
-    />} variant='outline'>
-      {'Agregar Banco'}
-    </Button>
+
+    <div style={{ position: 'relative' }}>
+      <Button
+        onClick={() => router.replace('/banks/create')}
+        style={{
+          width: '30%',
+          alignSelf: 'center'
+        }} leftIcon={<IconPlaylistAdd
+        size={20}
+        strokeWidth={1.5}
+        color={'#407fbf'}
+      />} variant='outline'>
+        {'Agregar Banco'}
+      </Button>
+      <IconInfoCircle
+        size={24}
+        strokeWidth={2}
+        style={{ position: 'absolute', color: 'rgb(34, 139, 230)', right: 0 }}
+        onClick={() => instructions.open()}
+      />
+    </div>
+
+    {<MessageModal title={'Instrucciones'} message={
+      <div style={{fontWeight: 'normal'}}>
+        <p>Pulsa el botón de agregar banco para empezar a crear un banco de preguntas.</p>
+        <p>Tienes dos posibles acciones de interacción con un banco de preguntas:</p>
+        <p>
+          <IconPencil
+            size={20}
+            strokeWidth={2}
+            color={'rgb(64, 127, 191)'}
+          /> te permite editar el banco.</p>
+        <p>
+          <IconTrash
+            size={20}
+            strokeWidth={2}
+            color={'#e81a27'}
+          /> te permite eliminar el banco.</p>
+      </div>} isOpen={areInstructionsOpen} close={instructions.close}></MessageModal>}
 
   <Table striped highlightOnHover withBorder withColumnBorders>
     <thead>
